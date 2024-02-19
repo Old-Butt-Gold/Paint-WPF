@@ -10,6 +10,8 @@ namespace OOTPiSP
     {
         private MyPoint _downMyPoint;
         private MyPoint _upMyPoint;
+        private bool _isStartMove;
+        
         private readonly Random _random = new Random();
 
         public MainWindow()
@@ -20,7 +22,7 @@ namespace OOTPiSP
 
             for (int i = 0; i < 5; i++)
             {
-                shapes.Add(new MyCircle(new MyPoint(50 + i * 50, 50 + i * 25), 75, GetRandomBrush(), GetRandomBrush()));
+               shapes.Add(new MyCircle(new MyPoint(50 + i * 50, 50 + i * 25), 75, GetRandomBrush(), GetRandomBrush()));
             }
         
             for (int i = 0; i < 5; i++)
@@ -67,22 +69,61 @@ namespace OOTPiSP
 
         SolidColorBrush GetRandomBrush() => new SolidColorBrush(GetRandomColor());
         
-        void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
+        void Canvas_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var mousePosition = e.GetPosition(Canvas);
-                _downMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
+                //var mousePosition = e.GetPosition(Canvas);
+                //_upMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
+
+                if (_isStartMove)
+                    Canvas.Children.RemoveAt(Canvas.Children.Count - 1);
+                else
+                    _isStartMove = true;
+                
+                //TODO сделать глобальный класс AbstractShape, от него создать в else класс,
+                // а затем менять его координаты в первом if, чтобы не пришлось создавать доп. копию.
+                
+                // Рисуем временную фигуру (MyCircle) с текущими координатами _downMyPoint и _upMyPoint
+                MyCircle tempCircle = new MyCircle(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
+                    (e.GetPosition(Canvas).X - _downMyPoint.X) / 2,  Canvas.Background, GetRandomBrush());
+                tempCircle.Draw(Canvas);
             }
         }
 
-        private void Canvas_OnMouseUp(object sender, MouseButtonEventArgs e)
+        void Canvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Released)
-            {
-                var mousePosition = e.GetPosition(Canvas);
-                _upMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
+            _isStartMove = false;
+            var mousePosition = e.GetPosition(Canvas);
+            _downMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
+        }
 
+        void Canvas_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            int count = Canvas.Children.Count; 
+            if (count > 0)
+                Canvas.Children.RemoveAt(count - 1);
+        }
+
+        void Canvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var mousePosition = e.GetPosition(Canvas);
+            _upMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
+                
+            /*int Corner = 0;
+            if (_upMyPoint.X > _downMyPoint.X)
+            {
+                Corner = _upMyPoint.Y > _downMyPoint.Y ? 1 : 4;
+            }
+            else
+            {
+                Corner = _upMyPoint.Y > _downMyPoint.Y ? 2 : 3;
+            }*/
+
+            if (_isStartMove)
+            {
+                Canvas.Children.RemoveAt(Canvas.Children.Count - 1);
+                _isStartMove = false;
                 MyCircle myCircle = new MyCircle(new MyPoint(_downMyPoint.X, _downMyPoint.Y), (_upMyPoint.X - _downMyPoint.X) / 2, GetRandomBrush(), GetRandomBrush());
                 myCircle.Draw(Canvas);
             }

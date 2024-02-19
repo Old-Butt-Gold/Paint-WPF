@@ -7,13 +7,14 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyCircle : AbstractShape
 {
-    
+    //int Corner;
     public MyPoint TopLeft { get; set; }
     public double Radius { get; set; }
     public MyCircle(MyPoint topLeft, double radius, Brush bgColor, Brush borderColor) : base(bgColor, borderColor)
     {
         TopLeft = topLeft;
         Radius = radius;
+        //Corner = corner;
     }
 
     public MyCircle(MyPoint topLeft, double radius)
@@ -32,17 +33,30 @@ public class MyCircle : AbstractShape
             Height = Math.Abs(Radius) * 2,
         };
         
-        
         Canvas.SetLeft(ellipse, TopLeft.X); //-Radius?
-        Canvas.SetTop(ellipse, TopLeft.Y - Radius); //-Radius?
+        Canvas.SetTop(ellipse, TopLeft.Y); //-Radius?
 
         if (Radius < 0)
         {
-            //TODO 4 положения отрисовки, если точка уходит вверх, все равно рисует окружность вниз
-            // Создаем вращающее преобразование на 90 градусов
             RotateTransform rotateTransform = new RotateTransform(90);
             ellipse.RenderTransform = rotateTransform;
         }
+        
+        /*if (Corner == 2) //2 плоскость
+        {
+            RotateTransform rotateTransform = new RotateTransform(90);
+            ellipse.RenderTransform = rotateTransform;
+        }
+        else if (Corner == 3) //3 плоскость
+        {
+            RotateTransform rotateTransform = new RotateTransform(180);
+            ellipse.RenderTransform = rotateTransform;
+        }
+        else if (Corner == 4) //4 плоскость
+        {
+            RotateTransform rotateTransform = new RotateTransform(270);
+            ellipse.RenderTransform = rotateTransform;
+        }*/
 
         canvas.Children.Add(ellipse);
     }

@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Canvas Background="Transparent" Name="Canvas" MouseDown="Canvas_OnMouseDown" MouseUp="Canvas_OnMouseUp"/>
+        <Canvas Background="Transparent" Name="Canvas" MouseLeftButtonDown="Canvas_OnMouseLeftButtonDown" MouseRightButtonDown="Canvas_OnMouseRightButtonDown" MouseLeftButtonUp="Canvas_OnMouseLeftButtonUp" MouseMove="Canvas_OnMouseMove"/>
     </Grid>
 </Window>
