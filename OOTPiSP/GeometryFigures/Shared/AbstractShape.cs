@@ -5,6 +5,10 @@ namespace OOTPiSP.GeometryFigures.Shared;
 
 public abstract class AbstractShape
 {
+    //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
+    //int Corner; //плоскость OXY
+    //double Angle; //угол поворота
+    //Point TopLeft; //Точка отрисовки
     protected AbstractShape(Brush bgColor, Brush penColor)
     {
         BackgroundColor = bgColor;

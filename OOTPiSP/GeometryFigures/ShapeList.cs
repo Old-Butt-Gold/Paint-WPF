@@ -7,14 +7,8 @@ namespace OOTPiSP.GeometryFigures
     {
         readonly List<AbstractShape> _shapes = new();
 
-        public void Add(AbstractShape shape)
-        {
-            _shapes.Add(shape);
-        }
+        public void Add(AbstractShape shape) => _shapes.Add(shape);
 
-        public void DrawAll(Canvas canvas)
-        {
-            _shapes.ForEach(shape => shape.Draw(canvas));
-        }
+        public void DrawAll(Canvas canvas) => _shapes.ForEach(shape => shape.Draw(canvas));
     }
 }

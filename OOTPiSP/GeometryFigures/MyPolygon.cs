@@ -26,7 +26,7 @@ namespace OOTPiSP.GeometryFigures
 
         public void Add(MyPoint myPoint) => Vertices.Add(myPoint);
         
-        public void RemoveLast(MyPoint myPoint) => Vertices.RemoveAt(Vertices.Count - 1);
+        public void RemoveLast() => Vertices.RemoveAt(Vertices.Count - 1);
         
         public MyPolygon() { }
         public MyPolygon(Brush bgColor, Brush penColor) : base(bgColor, penColor) { }
@@ -49,10 +49,6 @@ namespace OOTPiSP.GeometryFigures
             canvas.Children.Add(polygon);
         }
 
-        public override string ToString()
-        {
-            var message = Vertices.Select(p => $"{p.X}-{p.Y}");
-            return $"{nameof(MyPolygon)}: Vertices={string.Join("; ", message)}";
-        }
+        public override string ToString() => $"{nameof(MyPolygon)}: Vertices={string.Join("; ", Vertices.Select(p => $"{p.X}-{p.Y}"))}";
     }
 }

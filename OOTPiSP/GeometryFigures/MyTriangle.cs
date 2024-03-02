@@ -4,7 +4,7 @@ using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.GeometryFigures;
 
-public class MyTriangle : AbstractShape
+public abstract class MyTriangle : AbstractShape
 {
     public MyPoint Vertex1 { get; set; }
     public MyPoint Vertex2 { get; set; }

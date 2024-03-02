@@ -8,11 +8,11 @@ namespace OOTPiSP
 {
     public partial class MainWindow : Window
     {
-        private MyPoint _downMyPoint;
-        private MyPoint _upMyPoint;
-        private bool _isStartMove;
+        MyPoint _downMyPoint;
+        MyPoint _upMyPoint;
+        bool _isStartMove;
         
-        private readonly Random _random = new Random();
+        readonly Random _random = new Random();
 
         public MainWindow()
         {
@@ -54,7 +54,6 @@ namespace OOTPiSP
             myPolygon.Add(new MyPoint(25, 100));
             myPolygon.Add(new MyPoint(250, 250));
             
-        
             shapes.Add(myPolygon);
         
             shapes.DrawAll(Canvas);
@@ -87,12 +86,16 @@ namespace OOTPiSP
                 // Рисуем временную фигуру (MyCircle) с текущими координатами _downMyPoint и _upMyPoint
                 MyCircle tempCircle = new MyCircle(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
                     (e.GetPosition(Canvas).X - _downMyPoint.X) / 2,  Canvas.Background, GetRandomBrush());
+                
                 tempCircle.Draw(Canvas);
             }
         }
 
         void Canvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //Меняет цвет!!!
+            //(Canvas.Children[0] as Shape).Fill = GetRandomBrush();
+            
             _isStartMove = false;
             var mousePosition = e.GetPosition(Canvas);
             _downMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
