@@ -9,10 +9,6 @@ public class EquilateralMyTriangle : MyTriangle
         : base(vertex, endPoint, bgColor, penColor)
     { }
 
-    public EquilateralMyTriangle(MyPoint vertex, MyPoint endPoint)
-        : base(vertex, endPoint)
-    { }
-
     protected override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(vertex.X - endPoint.X), vertex.Y);

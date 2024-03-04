@@ -9,11 +9,6 @@ public class MyRightTriangle : MyTriangle
         : base(vertex, endPoint, bgColor, penColor)
     { }
     
-    public MyRightTriangle(MyPoint vertex, MyPoint endPoint) 
-        : base(vertex, endPoint)
-    { }
-
-
     protected override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(vertex.X - endPoint.X), vertex.Y);

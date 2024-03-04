@@ -9,10 +9,6 @@ public class MyIsoscelesTriangle : MyTriangle
         : base(vertex, endPoint, bgColor, penColor)
     { }
     
-    public MyIsoscelesTriangle(MyPoint vertex, MyPoint endPoint) 
-        : base(vertex, endPoint)
-    { }
-
     protected override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(endPoint.X - vertex.X), vertex.Y);

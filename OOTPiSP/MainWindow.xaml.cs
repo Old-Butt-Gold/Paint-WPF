@@ -1,45 +1,23 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using OOTPiSP.GeometryFigures;
-using OOTPiSP.GeometryFigures.Ellipse;
-using OOTPiSP.GeometryFigures.Rectangle;
+using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP;
 
 public partial class MainWindow : Window
 {
-    
+    bool _isHandledButton;
     MyPoint _downMyPoint;
     MyPoint _upMyPoint;
-    bool _isHandledButton;
-        
-    readonly Random _random = new();
 
+    AbstractFactory Factory { get; set; } = new CircleFactory();
+        
     public MainWindow()
     {
         InitializeComponent();
-        
-        ShapeList shapes = new ShapeList();
-        
-        for (int i = 0; i < 5; i++)
-        {
-            shapes.Add(new MyLine(new MyPoint(50 * i + 50, 50), new MyPoint(50 * i + 250, 500), GetRandomBrush(), GetRandomBrush()));
-        }
-        
-        shapes.DrawAll(Canvas);
     }
 
-    Color GetRandomColor()
-    {
-        byte[] colorBytes = new byte[3];
-        _random.NextBytes(colorBytes);
-        return Color.FromRgb(colorBytes[0], colorBytes[1], colorBytes[2]);
-    }
-
-    SolidColorBrush GetRandomBrush() => new(GetRandomColor());
-        
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         int count = Canvas.Children.Count; 
@@ -59,7 +37,6 @@ public partial class MainWindow : Window
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             var mousePosition = e.GetPosition(Canvas);
-            //_upMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
             
             if (_isHandledButton)
             {
@@ -68,14 +45,14 @@ public partial class MainWindow : Window
             else
                 _isHandledButton = true;
             
-            MySquare tempCircle = new(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
+            AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
                 new MyPoint(mousePosition.X, mousePosition.Y),  Canvas.Background, PenColorPicker.SelectedBrush);
                 
-            tempCircle.Draw(Canvas);
+            shape.Draw(Canvas);
         }
     }
 
-    void Canvas_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+    void Canvas_OnMouseUp(object sender, MouseButtonEventArgs e)
     {
         if (e.ChangedButton == MouseButton.Left)
         {
@@ -86,11 +63,58 @@ public partial class MainWindow : Window
             {
                 Canvas.Children.RemoveAt(Canvas.Children.Count - 1);
                 _isHandledButton = false;
-                MyEllipse myCircle =
-                    new(new MyPoint(_downMyPoint.X, _downMyPoint.Y),
+                AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y),
                         new MyPoint(_upMyPoint.X, _upMyPoint.Y), FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush);
-                myCircle.Draw(Canvas);
+                shape.Draw(Canvas);
             }
         }
+    }
+
+    void CircleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Круг";
+        Factory = new CircleFactory();
+    }
+
+    private void EllipseButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Эллипс";
+        Factory = new EllipseFactory();
+    }
+
+    private void SquareButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Квадрат";
+        Factory = new SquareFactory();
+    }
+
+    private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Прямоугольник";
+        Factory = new RectangleFactory();
+    }
+
+    private void LineButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Линия";
+        Factory = new LineFactory();
+    }
+
+    private void EquilateralTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Равносторонний треугольник";
+        Factory = new EquilateralTriangleFactory();
+    }
+
+    private void IsoscelesTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Равнобедренный треугольник";
+        Factory = new IsoscelesTriangleFactory();
+    }
+
+    private void RightTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Прямоугольный треугольник";
+        Factory = new RightTriangleFactory();
     }
 }

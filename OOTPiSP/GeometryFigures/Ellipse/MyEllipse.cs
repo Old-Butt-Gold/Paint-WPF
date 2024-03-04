@@ -15,12 +15,6 @@ public class MyEllipse : AbstractShape
         DownRight = downRight;
     }
 
-    public MyEllipse(MyPoint topLeft, MyPoint downRight)
-    {
-        TopLeft = topLeft;
-        DownRight = downRight;
-    }
-
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y);
 

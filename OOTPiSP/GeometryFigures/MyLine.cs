@@ -14,12 +14,6 @@ public class MyLine : AbstractShape
         End = end;
     }
 
-    public MyLine(MyPoint start, MyPoint end)
-    {
-        Start = start;
-        End = end;
-    }
-
     public override void Draw(Canvas canvas)
     {
         System.Windows.Shapes.Line line = new()

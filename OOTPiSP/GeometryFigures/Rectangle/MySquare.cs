@@ -9,9 +9,6 @@ public class MySquare : MyRectangle
         : base(topLeft, downRight, backgroundColor, penColor) 
     { }
 
-    public MySquare(MyPoint topLeft, MyPoint downRight) : base(topLeft, downRight) 
-    { }
-    
     public override string ToString() =>
         $"{nameof(MySquare)}:({TopLeft.X}-{TopLeft.Y}; Side={GetWidth()};";
     

@@ -19,31 +19,32 @@
             <hw:ColorPickerButton Name="FillColorPicker" Content="Заливка" SelectedBrush="Black" Height="Auto" Width="Auto"/>
             <hw:ColorPickerButton Name="PenColorPicker" Content="Карандаш" SelectedBrush="Black" Height="Auto" Width="Auto"/>
             
-            <Button>
+            <Button Name="CircleButton" Background="Transparent" Click="CircleButton_OnClick">
                 <Image Source="./Assets/circle.png" Width="30" Height="30"/>
             </Button>
-            <Button>
+            <Button Name="EllipseButton" Background="Transparent" Click="EllipseButton_OnClick">
                 <Image Source="./Assets/ellipse.png" Width="30" Height="30"/>
             </Button>
-            <Button>
+            <Button Name="SquareButton" Background="Transparent" Click="SquareButton_OnClick">
                 <Image Source="./Assets/square.png" Width="30" Height="30"/>
             </Button>
-            <Button>
+            <Button Name="RectangleButton" Background="Transparent" Click="RectangleButton_OnClick">
                 <Image Source="./Assets/rectangle.png" Width="30" Height="30"/>
             </Button>
-            <Button>
+            <Button Name="LineButton" Background="Transparent" Click="LineButton_OnClick">
                 <Image Source="./Assets/line.png" Width="30" Height="30"/>
             </Button>            
-            <Button>
+            <Button Name="EquilateralTriangleButton" Background="Transparent" Click="EquilateralTriangleButton_OnClick">
                 <Image Source="./Assets/triangle.png" Width="30" Height="30"/>
             </Button> 
-            <Button>
+            <Button Name="IsoscelesTriangleButton" Background="Transparent" Click="IsoscelesTriangleButton_OnClick">
                 <Image Source="./Assets/isosceles-triangle.png" Width="30" Height="30"/>
             </Button> 
-            <Button>
+            <Button Name="RightTriangleButton" Background="Transparent" Click="RightTriangleButton_OnClick">
                 <Image Source="./Assets/right-triangle.png" Width="30" Height="30"/>
             </Button> 
             
+            <TextBlock Name="Info" VerticalAlignment="Center"/>
             
         </StackPanel>
 
@@ -53,7 +54,7 @@
                 PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
                 PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
                 PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                PreviewMouseUp="Canvas_OnPreviewMouseUp">
+                MouseUp="Canvas_OnMouseUp">
         </Border>
     </Grid>
 </Window>

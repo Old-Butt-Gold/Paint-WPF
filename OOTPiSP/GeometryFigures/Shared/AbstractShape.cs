@@ -25,8 +25,6 @@ public abstract class AbstractShape(Brush bgColor, Brush penColor)
         }
     }
 
-    protected AbstractShape() : this(Brushes.Black, Brushes.Black) { }
-
     public abstract void Draw(Canvas canvas);
 
     public Brush BackgroundColor { get; } = bgColor;

@@ -18,12 +18,6 @@ public abstract class MyTriangle : AbstractShape
         DownRight = downRight;
     }
 
-    protected MyTriangle(MyPoint topLeft, MyPoint downRight)
-    {
-        TopLeft = topLeft;
-        DownRight = downRight;
-    }
-
     protected abstract void CalculateVertexByX(MyPoint vertex, MyPoint endPoint);
     protected abstract void CalculateVertexByY(MyPoint vertex, MyPoint endPoint);
 

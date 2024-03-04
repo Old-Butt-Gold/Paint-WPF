@@ -16,12 +16,6 @@ public class MyRectangle : AbstractShape
         DownRight = downRight;
     }
     
-    public MyRectangle(MyPoint topLeft, MyPoint downRight)
-    {
-        TopLeft = topLeft;
-        DownRight = downRight;
-    }
-    
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y); 
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X); 
     
