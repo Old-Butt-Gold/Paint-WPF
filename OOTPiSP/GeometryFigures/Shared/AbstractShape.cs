@@ -6,9 +6,6 @@ namespace OOTPiSP.GeometryFigures.Shared;
 public abstract class AbstractShape(Brush bgColor, Brush penColor)
 {
     //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
-    //int Corner; //плоскость OXY
-    //double Angle; //угол поворота
-    //Point TopLeft; //Точка отрисовки
 
     public int CornerOXY { get; set; }
 

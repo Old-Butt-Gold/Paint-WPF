@@ -29,6 +29,8 @@
       <Resource Include="Assets\square.png" />
       <None Remove="Assets\triangle.png" />
       <Resource Include="Assets\triangle.png" />
+      <None Remove="Assets\arc.png" />
+      <Resource Include="Assets\arc.png" />
     </ItemGroup>
 
 </Project>

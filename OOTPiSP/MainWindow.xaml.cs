@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -76,45 +77,51 @@ public partial class MainWindow : Window
         Factory = new CircleFactory();
     }
 
-    private void EllipseButton_OnClick(object sender, RoutedEventArgs e)
+    void EllipseButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Эллипс";
         Factory = new EllipseFactory();
     }
 
-    private void SquareButton_OnClick(object sender, RoutedEventArgs e)
+    void SquareButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Квадрат";
         Factory = new SquareFactory();
     }
 
-    private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
+    void RectangleButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Прямоугольник";
         Factory = new RectangleFactory();
     }
 
-    private void LineButton_OnClick(object sender, RoutedEventArgs e)
+    void LineButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Линия";
         Factory = new LineFactory();
     }
 
-    private void EquilateralTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    void EquilateralTriangleButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Равносторонний треугольник";
         Factory = new EquilateralTriangleFactory();
     }
 
-    private void IsoscelesTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    void IsoscelesTriangleButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Равнобедренный треугольник";
         Factory = new IsoscelesTriangleFactory();
     }
 
-    private void RightTriangleButton_OnClick(object sender, RoutedEventArgs e)
+    void RightTriangleButton_OnClick(object sender, RoutedEventArgs e)
     {
         Info.Text = "Выбранный компонент: Прямоугольный треугольник";
         Factory = new RightTriangleFactory();
+    }
+
+    private void ArcButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Info.Text = "Выбранный компонент: Арка";
+        Factory = new ArcFactory();
     }
 }

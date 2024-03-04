@@ -1,13 +1,13 @@
 ﻿using System.Windows.Media;
-using OOTPiSP.GeometryFigures.Ellipse;
+using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Factory;
 
-public class CircleFactory : AbstractFactory
+public class ArcFactory : AbstractFactory
 {
     public override AbstractShape CreateShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor)
     {
-        return new MyCircle(topLeft, downRight, bgColor, penColor);
+        return new MyArc(topLeft, downRight, bgColor, penColor);
     }
 }

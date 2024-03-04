@@ -20,16 +20,20 @@ public class MyEllipse : AbstractShape
 
     public override void Draw(Canvas canvas)
     {
+        double width = GetWidth();
+        double height = GetHeight();
+        
         System.Windows.Shapes.Ellipse ellipse = new System.Windows.Shapes.Ellipse
         {
             Fill = BackgroundColor,
             Stroke = PenColor,
-            Width =  GetWidth(),
-            Height = GetHeight()
+            Width =  width,
+            Height = height
         };
         
         Canvas.SetLeft(ellipse, TopLeft.X);
         Canvas.SetTop(ellipse, TopLeft.Y);
+        
         
         RecalculateCornerOXY(TopLeft, DownRight);
         

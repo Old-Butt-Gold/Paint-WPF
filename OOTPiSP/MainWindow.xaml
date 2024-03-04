@@ -43,6 +43,9 @@
             <Button Name="RightTriangleButton" Background="Transparent" Click="RightTriangleButton_OnClick">
                 <Image Source="./Assets/right-triangle.png" Width="30" Height="30"/>
             </Button> 
+            <Button Name="ArcButton" Background="Transparent" Click="ArcButton_OnClick">
+                <Image Source="./Assets/arc.png" Width="30" Height="30"/>
+            </Button>
             
             <TextBlock Name="Info" VerticalAlignment="Center"/>
             

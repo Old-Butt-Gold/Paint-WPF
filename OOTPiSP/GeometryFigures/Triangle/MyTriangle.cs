@@ -38,6 +38,26 @@ public abstract class MyTriangle : AbstractShape
             }
         };
         
+        RecalculateCornerOXY(TopLeft, DownRight);
+        
+        if (CornerOXY == 2)
+        {
+            polygon.RenderTransform = new RotateTransform(270, TopLeft.X, TopLeft.Y);
+        }
+        
+        if (CornerOXY == 3)
+        {
+            
+            polygon.RenderTransform = new RotateTransform(180, TopLeft.X, TopLeft.Y);
+        }
+
+        if (CornerOXY == 4)
+        {
+            
+            polygon.RenderTransform = new RotateTransform(90, TopLeft.X, TopLeft.Y);
+        }
+
+        //Добавить поворот, возможно изменить сигнатуру CalculateVertexByX/Y
         canvas.Children.Add(polygon);
     }
 
