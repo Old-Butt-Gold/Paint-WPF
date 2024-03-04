@@ -4,15 +4,56 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOTPiSP"
+        xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Paint" Height="450" Width="800">
     <Grid>
-        <Canvas Name="Canvas" />
-        <Border
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Панель инструментов -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5">
+            
+            <hw:ColorPickerButton Name="FillColorPicker" Content="Заливка" SelectedBrush="Black" Height="Auto" Width="Auto"/>
+            <hw:ColorPickerButton Name="PenColorPicker" Content="Карандаш" SelectedBrush="Black" Height="Auto" Width="Auto"/>
+            
+            <Button>
+                <Image Source="./Assets/circle.png" Width="30" Height="30"/>
+            </Button>
+            <Button>
+                <Image Source="./Assets/ellipse.png" Width="30" Height="30"/>
+            </Button>
+            <Button>
+                <Image Source="./Assets/square.png" Width="30" Height="30"/>
+            </Button>
+            <Button>
+                <Image Source="./Assets/rectangle.png" Width="30" Height="30"/>
+            </Button>
+            <Button>
+                <Image Source="./Assets/line.png" Width="30" Height="30"/>
+            </Button>            
+            <Button>
+                <Image Source="./Assets/triangle.png" Width="30" Height="30"/>
+            </Button> 
+            <Button>
+                <Image Source="./Assets/isosceles-triangle.png" Width="30" Height="30"/>
+            </Button> 
+            <Button>
+                <Image Source="./Assets/right-triangle.png" Width="30" Height="30"/>
+            </Button> 
+            
+            
+        </StackPanel>
+
+        <Canvas Grid.Row="1" Name="Canvas" />
+        <Border Grid.Row="1"
                 Background="Transparent"
                 PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
                 PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
                 PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                PreviewMouseUp="Canvas_OnPreviewMouseUp"/>
+                PreviewMouseUp="Canvas_OnPreviewMouseUp">
+        </Border>
     </Grid>
 </Window>

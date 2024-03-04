@@ -8,4 +8,27 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Haley.WPF" Version="5.4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\circle.png" />
+      <Resource Include="Assets\circle.png" />
+      <None Remove="Assets\ellipse.png" />
+      <Resource Include="Assets\ellipse.png" />
+      <None Remove="Assets\isosceles-triangle.png" />
+      <Resource Include="Assets\isosceles-triangle.png" />
+      <None Remove="Assets\line.png" />
+      <Resource Include="Assets\line.png" />
+      <None Remove="Assets\rectangle.png" />
+      <Resource Include="Assets\rectangle.png" />
+      <None Remove="Assets\right-triangle.png" />
+      <Resource Include="Assets\right-triangle.png" />
+      <None Remove="Assets\square.png" />
+      <Resource Include="Assets\square.png" />
+      <None Remove="Assets\triangle.png" />
+      <Resource Include="Assets\triangle.png" />
+    </ItemGroup>
+
 </Project>

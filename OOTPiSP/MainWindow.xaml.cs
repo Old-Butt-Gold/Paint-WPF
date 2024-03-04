@@ -5,12 +5,12 @@ using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Ellipse;
 using OOTPiSP.GeometryFigures.Rectangle;
 using OOTPiSP.GeometryFigures.Shared;
-using OOTPiSP.GeometryFigures.Triangle;
 
 namespace OOTPiSP;
 
 public partial class MainWindow : Window
 {
+    
     MyPoint _downMyPoint;
     MyPoint _upMyPoint;
     bool _isHandledButton;
@@ -22,7 +22,6 @@ public partial class MainWindow : Window
         InitializeComponent();
         
         ShapeList shapes = new ShapeList();
-
         
         for (int i = 0; i < 5; i++)
         {
@@ -69,8 +68,8 @@ public partial class MainWindow : Window
             else
                 _isHandledButton = true;
             
-            EquilateralMyTriangle tempCircle = new(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
-                new MyPoint(mousePosition.X, mousePosition.Y),  Canvas.Background, GetRandomBrush());
+            MySquare tempCircle = new(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
+                new MyPoint(mousePosition.X, mousePosition.Y),  Canvas.Background, PenColorPicker.SelectedBrush);
                 
             tempCircle.Draw(Canvas);
         }
@@ -89,7 +88,7 @@ public partial class MainWindow : Window
                 _isHandledButton = false;
                 MyEllipse myCircle =
                     new(new MyPoint(_downMyPoint.X, _downMyPoint.Y),
-                        new MyPoint(_upMyPoint.X, _upMyPoint.Y), GetRandomBrush(), GetRandomBrush());
+                        new MyPoint(_upMyPoint.X, _upMyPoint.Y), FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush);
                 myCircle.Draw(Canvas);
             }
         }
