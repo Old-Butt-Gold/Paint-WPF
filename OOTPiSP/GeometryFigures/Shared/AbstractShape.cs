@@ -3,26 +3,32 @@ using System.Windows.Media;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
-public abstract class AbstractShape
+public abstract class AbstractShape(Brush bgColor, Brush penColor)
 {
     //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
     //int Corner; //плоскость OXY
     //double Angle; //угол поворота
     //Point TopLeft; //Точка отрисовки
-    protected AbstractShape(Brush bgColor, Brush penColor)
+
+    public int CornerOXY { get; set; }
+
+    public void RecalculateCornerOXY(MyPoint start, MyPoint end)
     {
-        BackgroundColor = bgColor;
-        PenColor = penColor;
+        //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
+        if (end.X > start.X)
+        {
+            CornerOXY = end.Y > start.Y ? 4 : 1; 
+        }
+        else
+        {
+            CornerOXY = end.Y > start.Y ? 3 : 2;
+        }
     }
 
-    protected AbstractShape()
-    {
-        BackgroundColor = Brushes.Black;
-        PenColor = Brushes.Black;
-    }
+    protected AbstractShape() : this(Brushes.Black, Brushes.Black) { }
 
     public abstract void Draw(Canvas canvas);
 
-    public Brush BackgroundColor { get; }
-    public Brush PenColor { get; }
+    public Brush BackgroundColor { get; } = bgColor;
+    public Brush PenColor { get; } = penColor;
 }

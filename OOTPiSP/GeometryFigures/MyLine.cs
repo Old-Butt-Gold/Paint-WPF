@@ -30,11 +30,8 @@ public class MyLine : AbstractShape
             X2 = End.X,
             Y1 = Start.Y,
             Y2 = End.Y,
-            
         };
         
-        Canvas.SetLeft(line, Start.X);
-        Canvas.SetTop(line, Start.Y);
         canvas.Children.Add(line);
     }
     

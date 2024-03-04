@@ -1,14 +1,13 @@
 ﻿using System.Windows.Controls;
 using OOTPiSP.GeometryFigures.Shared;
 
-namespace OOTPiSP.GeometryFigures
+namespace OOTPiSP.GeometryFigures;
+
+public class ShapeList
 {
-    public class ShapeList
-    {
-        readonly List<AbstractShape> _shapes = new();
+    readonly List<AbstractShape> _shapes = new();
 
-        public void Add(AbstractShape shape) => _shapes.Add(shape);
+    public void Add(AbstractShape shape) => _shapes.Add(shape);
 
-        public void DrawAll(Canvas canvas) => _shapes.ForEach(shape => shape.Draw(canvas));
-    }
+    public void DrawAll(Canvas canvas) => _shapes.ForEach(shape => shape.Draw(canvas));
 }
