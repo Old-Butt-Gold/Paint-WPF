@@ -9,7 +9,7 @@ public abstract class AbstractShape(Brush bgColor, Brush penColor)
 
     public int CornerOXY { get; set; }
 
-    public void RecalculateCornerOXY(MyPoint start, MyPoint end)
+    public void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
         //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
         if (end.X > start.X)
@@ -21,8 +21,6 @@ public abstract class AbstractShape(Brush bgColor, Brush penColor)
             CornerOXY = end.Y > start.Y ? 3 : 2;
         }
     }
-
-    public abstract void Draw(Canvas canvas);
 
     public Brush BackgroundColor { get; } = bgColor;
     public Brush PenColor { get; } = penColor;

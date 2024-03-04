@@ -6,30 +6,15 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyLine : AbstractShape
 {
-    public MyPoint Start { get; set; }
-    public MyPoint End { get; set; }
-    public MyLine(MyPoint start, MyPoint end, Brush bgColor, Brush borderColor) : base(bgColor, borderColor)
+    public MyPoint TopLeft { get; set; }
+    public MyPoint DownRight { get; set; }
+    public MyLine(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor) : base(bgColor, borderColor)
     {
-        Start = start;
-        End = end;
+        TopLeft = topLeft;
+        DownRight = downRight;
     }
 
-    public override void Draw(Canvas canvas)
-    {
-        System.Windows.Shapes.Line line = new()
-        {
-            Fill = BackgroundColor,
-            Stroke = PenColor,
-            X1 = Start.X,
-            X2 = End.X,
-            Y1 = Start.Y,
-            Y2 = End.Y,
-        };
-        
-        canvas.Children.Add(line);
-    }
-    
     public override string ToString() =>
-        $"{nameof(MyLine)}: Start:({Start.X}-{Start.Y}; End:({End.X}-{End.Y})";
+        $"{nameof(MyLine)}: Start:({TopLeft.X}-{TopLeft.Y}; End:({DownRight.X}-{DownRight.Y})";
 
 }

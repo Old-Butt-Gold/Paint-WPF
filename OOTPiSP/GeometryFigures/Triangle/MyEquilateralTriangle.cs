@@ -9,12 +9,12 @@ public class EquilateralMyTriangle : MyTriangle
         : base(vertex, endPoint, bgColor, penColor)
     { }
 
-    protected override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
+    public override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(vertex.X - endPoint.X), vertex.Y);
     }
 
-    protected override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
+    public override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
     {
         double side = Math.Abs(vertex.X - endPoint.X);
         double height = side * Math.Sqrt(3) / 2;

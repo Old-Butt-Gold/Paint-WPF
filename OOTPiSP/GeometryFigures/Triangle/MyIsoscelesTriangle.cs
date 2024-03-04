@@ -9,12 +9,12 @@ public class MyIsoscelesTriangle : MyTriangle
         : base(vertex, endPoint, bgColor, penColor)
     { }
     
-    protected override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
+    public override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(endPoint.X - vertex.X), vertex.Y);
     }
 
-    protected override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
+    public override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
     {
         double sideX = Math.Abs(vertex.X - endPoint.X);
         double sideY = Math.Abs(vertex.Y - endPoint.Y);

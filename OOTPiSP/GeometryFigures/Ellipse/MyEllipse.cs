@@ -18,48 +18,6 @@ public class MyEllipse : AbstractShape
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y);
 
-    public override void Draw(Canvas canvas)
-    {
-        double width = GetWidth();
-        double height = GetHeight();
-        
-        System.Windows.Shapes.Ellipse ellipse = new System.Windows.Shapes.Ellipse
-        {
-            Fill = BackgroundColor,
-            Stroke = PenColor,
-            Width =  width,
-            Height = height
-        };
-        
-        Canvas.SetLeft(ellipse, TopLeft.X);
-        Canvas.SetTop(ellipse, TopLeft.Y);
-        
-        
-        RecalculateCornerOXY(TopLeft, DownRight);
-        
-        if (CornerOXY == 2)
-        {
-            ellipse.RenderTransform = new RotateTransform(180);
-        }
-        
-        if (CornerOXY == 3)
-        {
-            ellipse.RenderTransform = new RotateTransform(90);
-        }
-
-        if (CornerOXY == 1)
-        {
-            ellipse.RenderTransform = new RotateTransform(270);
-        }
-
-        if (CornerOXY is 3 or 1)
-        {
-            (ellipse.Width, ellipse.Height) = (ellipse.Height, ellipse.Width);
-        }
-        
-        canvas.Children.Add(ellipse);
-    }
-    
     public override string ToString() =>
         $"{nameof(MyEllipse)}:({TopLeft.X}-{TopLeft.Y}; RadiusX={GetWidth() / 2}; Height={GetHeight() / 2}";
 
