@@ -1,12 +1,17 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
-public abstract class AbstractShape(Brush bgColor, Brush penColor)
+public abstract class AbstractShape
 {
     //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
 
+    public AbstractShape(Brush bgColor, Brush penColor)
+    {
+        BackgroundColor = bgColor;
+        PenColor = penColor;
+    }
+    
     public int CornerOXY { get; set; }
 
     public void RecalculateCornerOxy(MyPoint start, MyPoint end)
@@ -22,6 +27,6 @@ public abstract class AbstractShape(Brush bgColor, Brush penColor)
         }
     }
 
-    public Brush BackgroundColor { get; } = bgColor;
-    public Brush PenColor { get; } = penColor;
+    public Brush BackgroundColor { get; }
+    public Brush PenColor { get; }
 }

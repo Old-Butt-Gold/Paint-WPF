@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
@@ -9,13 +11,27 @@ namespace OOTPiSP;
 
 public partial class MainWindow : Window
 {
+    
+    readonly Dictionary<string, (AbstractFactory Factory, IAbstractDrawStrategy Strategy, string text)> _buttonActions = new Dictionary<string, (AbstractFactory, IAbstractDrawStrategy, string)>
+    {
+        { "CircleButton", (new CircleFactory(), new EllipseDrawStrategy(), "Выбранный компонент: круг") },
+        { "EllipseButton", (new EllipseFactory(), new EllipseDrawStrategy(), "Выбранный компонент: эллипс") },
+        { "SquareButton", (new SquareFactory(), new RectangleDrawStrategy(), "Выбранный компонент: квадрат") },
+        { "RectangleButton", (new RectangleFactory(), new RectangleDrawStrategy(), "Выбранный компонент: прямоугольник") },
+        { "LineButton", (new LineFactory(), new LineDrawStrategy(), "Выбранный компонент: линия") },
+        { "EquilateralTriangleButton", (new EquilateralTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: равносторонний треугольник") },
+        { "IsoscelesTriangleButton", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: равнобедренный треугольник") },
+        { "RightTriangleButton", (new RightTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: прямоугольный треугольник") },
+        { "ArcButton", (new ArcFactory(), new ArcDrawStrategy(), "Выбранный компонент: дуга") }
+    };
+    
     bool _isHandledButton;
     MyPoint _downMyPoint;
     MyPoint _upMyPoint;
 
     AbstractFactory Factory { get; set; } = new CircleFactory();
 
-    private IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
+    IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
 
     public MainWindow() => InitializeComponent();
 
@@ -25,7 +41,7 @@ public partial class MainWindow : Window
         if (count > 0)
             Canvas.Children.RemoveAt(count - 1);
     }
-
+    
     void Canvas_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         _isHandledButton = false;
@@ -70,66 +86,17 @@ public partial class MainWindow : Window
         }
     }
 
-    void CircleButton_OnClick(object sender, RoutedEventArgs e)
+    void Button_Click(object sender, RoutedEventArgs e)
     {
-        Info.Text = "Выбранный компонент: Круг";
-        Factory = new CircleFactory();
-        DrawStrategy = new EllipseDrawStrategy();
-    }
-
-    void EllipseButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Эллипс";
-        Factory = new EllipseFactory();
-        DrawStrategy = new EllipseDrawStrategy();
-    }
-
-    void SquareButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Квадрат";
-        Factory = new SquareFactory();
-        DrawStrategy = new RectangleDrawStrategy();
-    }
-
-    void RectangleButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Прямоугольник";
-        Factory = new RectangleFactory();
-        DrawStrategy = new RectangleDrawStrategy();
-    }
-
-    void LineButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Линия";
-        Factory = new LineFactory();
-        DrawStrategy = new LineDrawStrategy();
-    }
-
-    void EquilateralTriangleButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Равносторонний треугольник";
-        Factory = new EquilateralTriangleFactory();
-        DrawStrategy = new TriangleDrawStrategy();
-    }
-
-    void IsoscelesTriangleButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Равнобедренный треугольник";
-        Factory = new IsoscelesTriangleFactory();
-        DrawStrategy = new TriangleDrawStrategy();
-    }
-
-    void RightTriangleButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Прямоугольный треугольник";
-        Factory = new RightTriangleFactory();
-        DrawStrategy = new TriangleDrawStrategy();
-    }
-
-    private void ArcButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        Info.Text = "Выбранный компонент: Арка";
-        Factory = new ArcFactory();
-        DrawStrategy = new ArcDrawStrategy();
+        if (sender is Button button)
+        {
+            string buttonName = button.Name;
+            if (_buttonActions.TryGetValue(buttonName, out var action))
+            {
+                Factory = action.Factory;
+                DrawStrategy = action.Strategy;
+            }
+        }
     }
 }
+
