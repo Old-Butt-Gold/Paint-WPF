@@ -6,22 +6,32 @@
         xmlns:local="clr-namespace:OOTPiSP"
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
-        Title="Paint" Height="450" Width="800">
+        Title="Paint" Height="450" Width="800" >
         
     <Window.InputBindings>
             <KeyBinding Command="Close" Key="Esc" />
-            <KeyBinding Command="local:WindowCommands.RotateLeft" Key="A" />
             <KeyBinding Command="local:WindowCommands.RotateLeft" Key="LeftShift" Modifiers="Shift" />
-            <KeyBinding Command="local:WindowCommands.RotateRight" Key="D" />
             <KeyBinding Command="local:WindowCommands.RotateRight" Key="RightShift" Modifiers="Shift" />
             <KeyBinding Command="local:WindowCommands.RotateReset" Key="LeftCtrl" Modifiers="Control" />
             <KeyBinding Command="local:WindowCommands.RotateReset" Key="RightCtrl" Modifiers="Control" />
+            <KeyBinding Command="local:WindowCommands.MoveDown" Key="Down" />
+            <KeyBinding Command="local:WindowCommands.MoveDown" Key="S" />
+            <KeyBinding Command="local:WindowCommands.MoveUp" Key="Up" />
+            <KeyBinding Command="local:WindowCommands.MoveUp" Key="W" />
+            <KeyBinding Command="local:WindowCommands.MoveLeft" Key="Left" />
+            <KeyBinding Command="local:WindowCommands.MoveLeft" Key="A" />
+            <KeyBinding Command="local:WindowCommands.MoveRight" Key="Right" />
+            <KeyBinding Command="local:WindowCommands.MoveRight" Key="D" />
     </Window.InputBindings>
         
     <Window.CommandBindings>
         <CommandBinding Command="local:WindowCommands.RotateLeft" Executed="RotateLeft_OnExecuted" />            
         <CommandBinding Command="local:WindowCommands.RotateRight" Executed="RotateRight_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.RotateReset" Executed="CommandBinding_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.RotateReset" Executed="RotateReset_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.MoveUp" Executed="MoveUp_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.MoveDown" Executed="MoveDown_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.MoveRight" Executed="MoveRight_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.MoveLeft" Executed="MoveLeft_OnExecuted" />            
     </Window.CommandBindings>
     
     <Window.Resources>

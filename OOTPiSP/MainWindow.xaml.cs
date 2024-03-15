@@ -10,6 +10,7 @@ namespace OOTPiSP;
 public partial class MainWindow
 {
     const int DefaultAngleRotation = 3;
+    const int DefaultMoveCoordinate = 3;
     
     readonly Dictionary<string, (AbstractFactory Factory, IAbstractDrawStrategy Strategy)> _buttonActions = new()
     {
@@ -50,17 +51,19 @@ public partial class MainWindow
     int _arrowsY;
     
     MouseEventArgs? _mouseArgs;
-    
+
     public MainWindow()
     {
         InitializeComponent();
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (_, _) =>
         {
-            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) ==
+                MessageBoxResult.Yes)
                 Close();
         }));
+
     }
-    
+
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         int count = Canvas.Children.Count; 
@@ -93,8 +96,8 @@ public partial class MainWindow
             else
                 _isHandledButton = true;
             
-            AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
-                new MyPoint(mousePosition.X, mousePosition.Y),  Canvas.Background, PenColorPicker.SelectedBrush);
+            AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X + _arrowsX, _downMyPoint.Y + _arrowsY), 
+                new MyPoint(mousePosition.X + _arrowsX, mousePosition.Y + _arrowsY),  Canvas.Background, PenColorPicker.SelectedBrush);
             DrawStrategy.Draw(shape, Canvas, _angle);
         }
     }
@@ -110,8 +113,8 @@ public partial class MainWindow
             {
                 Canvas.Children.RemoveAt(Canvas.Children.Count - 1);
                 _isHandledButton = false;
-                AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y),
-                        new MyPoint(_upMyPoint.X, _upMyPoint.Y), FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush);
+                AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X + _arrowsX, _downMyPoint.Y + _arrowsY),
+                        new MyPoint(_upMyPoint.X + _arrowsX, _upMyPoint.Y + _arrowsY), FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush);
                 DrawStrategy.Draw(shape, Canvas, _angle);
             }
         }
@@ -136,7 +139,7 @@ public partial class MainWindow
         ChangeAngleShape(sender);
     }
     
-    void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    void RotateReset_OnExecuted(object sender, ExecutedRoutedEventArgs e)
     {
         _angle = 0;
         ChangeAngleShape(sender);
@@ -152,5 +155,29 @@ public partial class MainWindow
         {
             Canvas_OnPreviewMouseMove(sender, _mouseArgs);
         }
+    }
+
+    void MoveUp_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _arrowsY -= DefaultMoveCoordinate;
+        ChangeAngleShape(sender);
+    }
+
+    void MoveDown_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _arrowsY += DefaultMoveCoordinate;
+        ChangeAngleShape(sender);
+    }
+
+    void MoveRight_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _arrowsX += DefaultMoveCoordinate;
+        ChangeAngleShape(sender);
+    }
+
+    void MoveLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _arrowsX -= DefaultMoveCoordinate;
+        ChangeAngleShape(sender);
     }
 }
