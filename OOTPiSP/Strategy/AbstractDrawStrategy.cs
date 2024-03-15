@@ -5,5 +5,5 @@ namespace OOTPiSP.Strategy;
 
 public interface IAbstractDrawStrategy
 {
-    void Draw(AbstractShape shape, Canvas canvas);
+    void Draw(AbstractShape shape, Canvas canvas, int Angle = 0);
 }

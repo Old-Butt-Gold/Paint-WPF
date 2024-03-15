@@ -7,7 +7,7 @@ namespace OOTPiSP.Strategy;
 
 public class RectangleDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
     {
         if (shape is MyRectangle myRectangle)
         {
@@ -23,24 +23,30 @@ public class RectangleDrawStrategy : IAbstractDrawStrategy
             Canvas.SetTop(rectangle, myRectangle.TopLeft.Y);
         
             myRectangle.RecalculateCornerOxy(myRectangle.TopLeft, myRectangle.DownRight);
+            myRectangle.Angle = angle;
 
             var CornerOXY = myRectangle.CornerOXY;
             
             if (CornerOXY == 2)
             {
-                rectangle.RenderTransform = new RotateTransform(180);
+                rectangle.RenderTransform = new RotateTransform(180 + myRectangle.Angle);
             }
         
             if (CornerOXY == 3)
             {
-                rectangle.RenderTransform = new RotateTransform(90);
+                rectangle.RenderTransform = new RotateTransform(90 + myRectangle.Angle);
             }
 
             if (CornerOXY == 1)
             {
-                rectangle.RenderTransform = new RotateTransform(270);
+                rectangle.RenderTransform = new RotateTransform(270 + myRectangle.Angle);
             }
 
+            if (CornerOXY == 4)
+            {
+                rectangle.RenderTransform = new RotateTransform(myRectangle.Angle);
+            }
+            
             if (CornerOXY is 3 or 1)
             {
                 (rectangle.Width, rectangle.Height) = (rectangle.Height, rectangle.Width);

@@ -7,7 +7,7 @@ namespace OOTPiSP.Strategy;
 
 public class EllipseDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
     {
         if (shape is MyEllipse myEllipse)
         {
@@ -19,29 +19,36 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
                 Fill = myEllipse.BackgroundColor,
                 Stroke = myEllipse.PenColor,
                 Width =  width,
-                Height = height
+                Height = height,
             };
         
             Canvas.SetLeft(ellipse, myEllipse.TopLeft.X);
             Canvas.SetTop(ellipse, myEllipse.TopLeft.Y);
         
             myEllipse.RecalculateCornerOxy(myEllipse.TopLeft, myEllipse.DownRight);
+            
+            myEllipse.Angle = angle;
 
             var CornerOXY = myEllipse.CornerOXY;
             
             if (CornerOXY == 2)
             {
-                ellipse.RenderTransform = new RotateTransform(180);
+                ellipse.RenderTransform = new RotateTransform(180 + myEllipse.Angle);
             }
         
             if (CornerOXY == 3)
             {
-                ellipse.RenderTransform = new RotateTransform(90);
+                ellipse.RenderTransform = new RotateTransform(90 + myEllipse.Angle);
             }
 
             if (CornerOXY == 1)
             {
-                ellipse.RenderTransform = new RotateTransform(270);
+                ellipse.RenderTransform = new RotateTransform(270 + myEllipse.Angle);
+            }
+
+            if (CornerOXY == 4)
+            {
+                ellipse.RenderTransform = new RotateTransform(myEllipse.Angle);
             }
 
             if (CornerOXY is 3 or 1)

@@ -7,6 +7,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
         <LangVersion>preview</LangVersion>
+        <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,6 +38,9 @@
       <None Remove="Assets\Pen.png" />
       <None Remove="Assets\Pen (2).png" />
       <Resource Include="Assets\Pen.png" />
+      <None Remove="Assets\icon.png" />
+      <None Remove="Assets\icon.ico" />
+      <Resource Include="Assets\icon.ico" />
     </ItemGroup>
 
 </Project>

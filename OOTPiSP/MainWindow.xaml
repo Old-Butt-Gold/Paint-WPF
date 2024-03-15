@@ -7,15 +7,55 @@
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
         Title="Paint" Height="450" Width="800">
+        
+    <Window.InputBindings>
+            <KeyBinding Command="Close" Key="Esc" />
+            <KeyBinding Command="local:WindowCommands.RotateLeft" Key="A" />
+            <KeyBinding Command="local:WindowCommands.RotateLeft" Key="LeftShift" Modifiers="Shift" />
+            <KeyBinding Command="local:WindowCommands.RotateRight" Key="D" />
+            <KeyBinding Command="local:WindowCommands.RotateRight" Key="RightShift" Modifiers="Shift" />
+            <KeyBinding Command="local:WindowCommands.RotateReset" Key="LeftCtrl" Modifiers="Control" />
+            <KeyBinding Command="local:WindowCommands.RotateReset" Key="RightCtrl" Modifiers="Control" />
+    </Window.InputBindings>
+        
+    <Window.CommandBindings>
+        <CommandBinding Command="local:WindowCommands.RotateLeft" Executed="RotateLeft_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.RotateRight" Executed="RotateRight_OnExecuted" />            
+        <CommandBinding Command="local:WindowCommands.RotateReset" Executed="CommandBinding_OnExecuted" />            
+    </Window.CommandBindings>
+    
     <Window.Resources>
-        <LinearGradientBrush x:Key="GradientStyle" StartPoint="0.5,1" EndPoint="0.5,0">
-            <GradientStop Color="Yellow" Offset="0" />
-            <GradientStop Color="GreenYellow" Offset="0.5" />
-            <GradientStop Color="Aqua" Offset="1" />
-        </LinearGradientBrush>
+        <!--Стили-->
+        <Style x:Key="ButtonStyle">
+                <Style.Resources>
+                        <LinearGradientBrush x:Key="GradientBrushOnButton" StartPoint="0.5,1" EndPoint="0.5,0">
+                                <GradientStop Color="OrangeRed" Offset="0" />
+                                <GradientStop Color="BlanchedAlmond" Offset="0.5" />
+                                <GradientStop Color="RosyBrown" Offset="1" />
+                        </LinearGradientBrush> 
+                        
+                        <LinearGradientBrush x:Key="GradientBrush" StartPoint="0.5,1" EndPoint="0.5,0">
+                                <GradientStop Color="Yellow" Offset="0" />
+                                <GradientStop Color="GreenYellow" Offset="0.5" />
+                                <GradientStop Color="Aqua" Offset="1" />
+                        </LinearGradientBrush> 
+                </Style.Resources>
+                
+                <Style.Setters>
+                        <Setter Property="Button.Margin" Value="2" />
+                        <Setter Property="Button.Background" Value="{StaticResource GradientBrush}"/>
+                        <EventSetter Event="Button.Click" Handler="Button_Click"/>
+                </Style.Setters>
+                
+                <Style.Triggers>
+                       <Trigger Property="Button.IsFocused" Value="True">
+                               <Setter Property="Button.BorderBrush" Value="{StaticResource GradientBrushOnButton}" />
+                               <Setter Property="Button.BorderThickness" Value="2.5" />
+                       </Trigger> 
+                </Style.Triggers>
+        </Style>
         
-        <Thickness x:Key="ButtonMargin">1</Thickness>
-        
+        <!--Статические ресурсы-->
         <Image x:Key="Circle" Source="./Assets/circle.png"/>
         <Image x:Key="Ellipse" Source="./Assets/ellipse.png"/>
         <Image x:Key="Square" Source="./Assets/square.png"/>
@@ -28,60 +68,63 @@
         <Image x:Key="Pen" Source="./Assets/Pen.png"/>
         <Image x:Key="Fill" Source="./Assets/Fill.png"/>
     </Window.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1.05*" />
-            <RowDefinition Height="11*" />
-        </Grid.RowDefinitions>
-        <!-- Панель инструментов -->
-        <Grid Grid.Row="0" Margin="2 2 2 0" ZIndex="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <hw:ColorPickerButton Grid.Column="0" Margin="{StaticResource ButtonMargin}" 
-                                  Content="{StaticResource Fill}" Name="FillColorPicker" Background="{StaticResource GradientStyle}" SelectedBrush="Black"/>
-            <hw:ColorPickerButton Grid.Column="1" Margin="{StaticResource ButtonMargin}" 
-                                  Content="{StaticResource Pen}" Name="PenColorPicker" Background="{StaticResource GradientStyle}" SelectedBrush="Black" />
-            
-            <Button Grid.Column="2" Name="CircleButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Circle}"/>
-            <Button Grid.Column="3" Name="EllipseButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Ellipse}" />
-            <Button Grid.Column="4" Background="{StaticResource GradientStyle}" Name="SquareButton" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Square}" />
-            <Button Grid.Column="5" Name="RectangleButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Rectangle}"/>
-            <Button Grid.Column="6" Name="LineButton" Background="{StaticResource GradientStyle}"
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Line}" />
-            <Button Grid.Column="7" Name="EquilateralTriangleButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource EquilateralTriangle}"/>
-            <Button Grid.Column="8" Name="IsoscelesTriangleButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource IsoscelesTriangle}"/>
-            <Button Grid.Column="9" Name="RightTriangleButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource RightTriangle}"/>
-            <Button Grid.Column="10" Name="ArcButton" Background="{StaticResource GradientStyle}" 
-                    Margin="{StaticResource ButtonMargin}" Click="Button_Click" Content="{StaticResource Arc}"/>
-            
-        </Grid>
         
-        <Canvas Grid.Row="1" Name="Canvas" />
-        <Border Grid.Row="1"
-                Background="Transparent"
-                PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
-                PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
-                PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                MouseUp="Canvas_OnMouseUp">
-        </Border>
-    </Grid>
+        <Grid>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.05*" />
+                    <RowDefinition Height="11*" />
+                </Grid.RowDefinitions>
+                
+                <!-- Панель инструментов -->
+                <Grid Grid.Row="0" ZIndex="1" Background="Aquamarine">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}" Name="FillColorPicker" 
+                                          Style="{StaticResource ButtonStyle}" SelectedBrush="Black"/>
+                    <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="PenColorPicker" 
+                                          Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
+                    
+                    <Button Grid.Column="2" Name="CircleButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Circle}"/>
+                    <Button Grid.Column="3" Name="EllipseButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Ellipse}" />
+                    <Button Grid.Column="4" Name="SquareButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Square}" />
+                    <Button Grid.Column="5" Name="RectangleButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Rectangle}"/>
+                    <Button Grid.Column="6" Name="LineButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Line}" />
+                    <Button Grid.Column="7" Name="EquilateralTriangleButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource EquilateralTriangle}"/>
+                    <Button Grid.Column="8" Name="IsoscelesTriangleButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource IsoscelesTriangle}"/>
+                    <Button Grid.Column="9" Name="RightTriangleButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource RightTriangle}"/>
+                    <Button Grid.Column="10" Name="ArcButton" Style="{StaticResource ButtonStyle}"
+                            Content="{StaticResource Arc}"/>
+                    
+                </Grid>
+                
+                <Canvas Grid.Row="1" Name="Canvas"/>
+                <Border Grid.Row="1"
+                        Background ="Transparent"
+                        PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
+                        PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
+                        PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
+                        PreviewMouseMove="Canvas_OnPreviewMouseMove"
+                        MouseUp="Canvas_OnMouseUp">
+                </Border>
+        </Grid>
 </Window>

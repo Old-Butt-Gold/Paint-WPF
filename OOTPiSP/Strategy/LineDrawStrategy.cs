@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Media;
 using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -6,7 +7,7 @@ namespace OOTPiSP.Strategy;
 
 public class LineDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
     {
         if (shape is MyLine myLine)
         {

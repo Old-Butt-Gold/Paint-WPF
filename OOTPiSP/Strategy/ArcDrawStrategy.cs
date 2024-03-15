@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -7,7 +8,7 @@ namespace OOTPiSP.Strategy;
 
 public class ArcDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
     {
         if (shape is MyArc myArc)
         {
@@ -18,6 +19,8 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
 
             double startAngle = Math.Atan2(myArc.StartPoint.Y - centerY, myArc.StartPoint.X - centerX) * 180 / Math.PI;
             double endAngle = Math.Atan2(myArc.EndPoint.Y - centerY, myArc.EndPoint.X - centerX) * 180 / Math.PI;
+
+            myArc.Angle = angle;
 
             PathGeometry pathGeometry = new PathGeometry();
             PathFigure pathFigure = new PathFigure
@@ -41,7 +44,8 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
             {
                 Stroke = myArc.PenColor,
                 Fill = myArc.BackgroundColor,
-                Data = pathGeometry
+                Data = pathGeometry,
+                RenderTransform = new RotateTransform(myArc.Angle, centerX, centerY),
             };
 
             canvas.Children.Add(path);

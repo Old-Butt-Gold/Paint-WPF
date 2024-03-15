@@ -6,6 +6,8 @@ public abstract class AbstractShape
 {
     //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
 
+    public int Angle { get; set; }
+    
     public AbstractShape(Brush bgColor, Brush penColor)
     {
         BackgroundColor = bgColor;

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using OOTPiSP.Factory;
@@ -9,21 +7,35 @@ using OOTPiSP.Strategy;
 
 namespace OOTPiSP;
 
-public partial class MainWindow : Window
+public partial class MainWindow
 {
+    const int DefaultAngleRotation = 3;
     
-    readonly Dictionary<string, (AbstractFactory Factory, IAbstractDrawStrategy Strategy, string text)> _buttonActions = new Dictionary<string, (AbstractFactory, IAbstractDrawStrategy, string)>
+    readonly Dictionary<string, (AbstractFactory Factory, IAbstractDrawStrategy Strategy)> _buttonActions = new()
     {
-        { "CircleButton", (new CircleFactory(), new EllipseDrawStrategy(), "Выбранный компонент: круг") },
-        { "EllipseButton", (new EllipseFactory(), new EllipseDrawStrategy(), "Выбранный компонент: эллипс") },
-        { "SquareButton", (new SquareFactory(), new RectangleDrawStrategy(), "Выбранный компонент: квадрат") },
-        { "RectangleButton", (new RectangleFactory(), new RectangleDrawStrategy(), "Выбранный компонент: прямоугольник") },
-        { "LineButton", (new LineFactory(), new LineDrawStrategy(), "Выбранный компонент: линия") },
-        { "EquilateralTriangleButton", (new EquilateralTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: равносторонний треугольник") },
-        { "IsoscelesTriangleButton", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: равнобедренный треугольник") },
-        { "RightTriangleButton", (new RightTriangleFactory(), new TriangleDrawStrategy(), "Выбранный компонент: прямоугольный треугольник") },
-        { "ArcButton", (new ArcFactory(), new ArcDrawStrategy(), "Выбранный компонент: дуга") }
+        { "CircleButton", (new CircleFactory(), new EllipseDrawStrategy()) },
+        { "EllipseButton", (new EllipseFactory(), new EllipseDrawStrategy()) },
+        { "SquareButton", (new SquareFactory(), new RectangleDrawStrategy()) },
+        { "RectangleButton", (new RectangleFactory(), new RectangleDrawStrategy()) },
+        { "LineButton", (new LineFactory(), new LineDrawStrategy()) },
+        { "EquilateralTriangleButton", (new EquilateralTriangleFactory(), new TriangleDrawStrategy()) },
+        { "IsoscelesTriangleButton", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy()) },
+        { "RightTriangleButton", (new RightTriangleFactory(), new TriangleDrawStrategy()) },
+        { "ArcButton", (new ArcFactory(), new ArcDrawStrategy()) }
     };
+    
+    void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            string buttonName = button.Name;
+            if (_buttonActions.TryGetValue(buttonName, out var action))
+            {
+                Factory = action.Factory;
+                DrawStrategy = action.Strategy;
+            }
+        }
+    }
     
     bool _isHandledButton;
     MyPoint _downMyPoint;
@@ -33,8 +45,22 @@ public partial class MainWindow : Window
 
     IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
 
-    public MainWindow() => InitializeComponent();
-
+    int _angle;
+    int _arrowsX;
+    int _arrowsY;
+    
+    MouseEventArgs? _mouseArgs;
+    
+    public MainWindow()
+    {
+        InitializeComponent();
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (_, _) =>
+        {
+            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                Close();
+        }));
+    }
+    
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         int count = Canvas.Children.Count; 
@@ -44,6 +70,9 @@ public partial class MainWindow : Window
     
     void Canvas_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        _angle = 0;
+        _arrowsX = 0;
+        _arrowsY = 0;
         _isHandledButton = false;
         var mousePosition = e.GetPosition(Canvas);
         _downMyPoint = new MyPoint(mousePosition.X, mousePosition.Y);
@@ -51,6 +80,8 @@ public partial class MainWindow : Window
 
     void Canvas_OnPreviewMouseMove(object sender, MouseEventArgs e)
     {
+        _mouseArgs = e;
+        
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             var mousePosition = e.GetPosition(Canvas);
@@ -64,7 +95,7 @@ public partial class MainWindow : Window
             
             AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y), 
                 new MyPoint(mousePosition.X, mousePosition.Y),  Canvas.Background, PenColorPicker.SelectedBrush);
-            DrawStrategy.Draw(shape, Canvas);
+            DrawStrategy.Draw(shape, Canvas, _angle);
         }
     }
 
@@ -81,22 +112,45 @@ public partial class MainWindow : Window
                 _isHandledButton = false;
                 AbstractShape shape = Factory.CreateShape(new MyPoint(_downMyPoint.X, _downMyPoint.Y),
                         new MyPoint(_upMyPoint.X, _upMyPoint.Y), FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush);
-                DrawStrategy.Draw(shape, Canvas);
+                DrawStrategy.Draw(shape, Canvas, _angle);
             }
         }
+        _mouseArgs = null;
+    }
+    
+    void Canvas_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        _angle = e.Delta > 0 ? _angle + DefaultAngleRotation : _angle - DefaultAngleRotation;
+        ChangeAngleShape(sender);
     }
 
-    void Button_Click(object sender, RoutedEventArgs e)
+    void RotateLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e)
     {
-        if (sender is Button button)
+        _angle -= DefaultAngleRotation;
+        ChangeAngleShape(sender);
+    }
+    
+    void RotateRight_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _angle += DefaultAngleRotation;
+        ChangeAngleShape(sender);
+    }
+    
+    void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+        _angle = 0;
+        ChangeAngleShape(sender);
+    }
+
+    void ChangeAngleShape(object sender)
+    {
+        if (_angle < 0)
+            _angle += 360;
+        _angle %= 360;
+        
+        if (_mouseArgs != null)
         {
-            string buttonName = button.Name;
-            if (_buttonActions.TryGetValue(buttonName, out var action))
-            {
-                Factory = action.Factory;
-                DrawStrategy = action.Strategy;
-            }
+            Canvas_OnPreviewMouseMove(sender, _mouseArgs);
         }
     }
 }
-
