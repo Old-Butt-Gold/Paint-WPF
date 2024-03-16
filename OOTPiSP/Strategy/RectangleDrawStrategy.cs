@@ -1,7 +1,10 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using Accessibility;
 using OOTPiSP.GeometryFigures.Rectangle;
 using OOTPiSP.GeometryFigures.Shared;
+using static OOTPiSP.Strategy.IAbstractDrawStrategy;
 
 namespace OOTPiSP.Strategy;
 
@@ -53,7 +56,7 @@ public class RectangleDrawStrategy : IAbstractDrawStrategy
             {
                 (rectangle.Width, rectangle.Height) = (rectangle.Height, rectangle.Width);
             }
-        
+
             canvas.Children.Add(rectangle);
         }
     }

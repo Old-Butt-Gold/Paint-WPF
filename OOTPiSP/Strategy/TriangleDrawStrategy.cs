@@ -34,7 +34,7 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
                 RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY),
                 Tag = canvas.Children.Count,
             };
-        
+
             canvas.Children.Add(polygon);
         } 
     }

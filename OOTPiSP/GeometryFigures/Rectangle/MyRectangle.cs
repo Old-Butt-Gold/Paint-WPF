@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.GeometryFigures.Rectangle;

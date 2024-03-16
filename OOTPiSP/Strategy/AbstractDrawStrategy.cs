@@ -1,9 +1,10 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Strategy;
 
 public interface IAbstractDrawStrategy
 {
-    void Draw(AbstractShape shape, Canvas canvas, int Angle = 0);
+    void Draw(AbstractShape shape, Canvas canvas, int angle = 0);
 }

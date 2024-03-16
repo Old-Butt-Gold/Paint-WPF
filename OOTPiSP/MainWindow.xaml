@@ -137,11 +137,11 @@
                         MouseUp="Canvas_OnMouseUp">
                 </Border>-->
                 
-                <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent"
+                <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" 
                         PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
                         PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
                         PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
                         PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                        MouseUp="Canvas_OnMouseUp" />
+                        PreviewMouseUp="Canvas_OnPreviewMouseUp" />
         </Grid>
 </Window>

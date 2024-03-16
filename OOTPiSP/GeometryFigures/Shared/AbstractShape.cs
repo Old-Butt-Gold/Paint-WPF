@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
@@ -7,7 +8,7 @@ public abstract class AbstractShape
     public int CanvasIndex { get; set; }
 
     public int Angle { get; set; }
-    
+
     public MyPoint TopLeft { get; set; }
     
     public MyPoint DownRight { get; set; }

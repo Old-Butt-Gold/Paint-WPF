@@ -2,7 +2,7 @@
 
 namespace OOTPiSP;
 
-public class WindowCommands
+public static class WindowCommands
 {
     public static RoutedCommand RotateLeft { get; set; }
     public static RoutedCommand RotateRight { get; set; }
@@ -11,7 +11,6 @@ public class WindowCommands
     public static RoutedCommand MoveLeft { get; set; }
     public static RoutedCommand MoveRight { get; set; }
     public static RoutedCommand MoveDown { get; set; }
-    
     
     static WindowCommands()
     {
