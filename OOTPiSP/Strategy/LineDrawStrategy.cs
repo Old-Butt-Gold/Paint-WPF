@@ -19,7 +19,10 @@ public class LineDrawStrategy : IAbstractDrawStrategy
                 X2 = myLine.DownRight.X,
                 Y1 = myLine.TopLeft.Y,
                 Y2 = myLine.DownRight.Y,
+                Tag = canvas.Children.Count,
             };
+
+            myLine.CanvasIndex = canvas.Children.Count;
         
             canvas.Children.Add(line);
         }

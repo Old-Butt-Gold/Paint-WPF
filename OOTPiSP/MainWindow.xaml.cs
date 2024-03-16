@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
@@ -65,13 +66,40 @@ public partial class MainWindow
 
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
-        int count = Canvas.Children.Count; 
-        if (count > 0)
-            Canvas.Children.RemoveAt(count - 1);
+        if (e.ClickCount == 2)
+        {
+            int count = Canvas.Children.Count;
+            if (count > 0)
+                Canvas.Children.RemoveAt(count - 1);
+            return;
+        }
+
+        if (e is { ClickCount: 1, OriginalSource: Shape shape })
+        {
+            int tag = (int)shape.Tag;
+            for (int i = tag + 1; i < Canvas.Children.Count; i++)
+            {
+                if (Canvas.Children[i] is Shape item)
+                {
+                    int tagTemp = (int)item.Tag;
+                    item.Tag = --tagTemp;
+                }
+            }
+            Canvas.Children.RemoveAt(tag);
+        }
     }
     
     void Canvas_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (e.ClickCount == 2)
+        {
+            if (e.Source is Shape frameworkElement)
+            {
+                MessageBox.Show(frameworkElement.Tag.ToString());
+            }
+            return;
+        }
+        
         _angle = 0;
         _arrowsX = 0;
         _arrowsY = 0;

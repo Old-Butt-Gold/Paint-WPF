@@ -81,7 +81,6 @@
     </Window.Resources>
         
         <Grid>
-                
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1.05*" />
                     <RowDefinition Height="11*" />
@@ -128,7 +127,7 @@
                     
                 </Grid>
                 
-                <Canvas Grid.Row="1" Name="Canvas"/>
+                <!--<Canvas Grid.Row="1" Name="Canvas"/>
                 <Border Grid.Row="1"
                         Background ="Transparent"
                         PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
@@ -136,6 +135,13 @@
                         PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
                         PreviewMouseMove="Canvas_OnPreviewMouseMove"
                         MouseUp="Canvas_OnMouseUp">
-                </Border>
+                </Border>-->
+                
+                <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent"
+                        PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
+                        PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
+                        PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
+                        PreviewMouseMove="Canvas_OnPreviewMouseMove"
+                        MouseUp="Canvas_OnMouseUp" />
         </Grid>
 </Window>

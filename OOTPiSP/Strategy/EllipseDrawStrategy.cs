@@ -20,6 +20,7 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
                 Stroke = myEllipse.PenColor,
                 Width =  width,
                 Height = height,
+                Tag = canvas.Children.Count,
             };
         
             Canvas.SetLeft(ellipse, myEllipse.TopLeft.X);
@@ -52,6 +53,8 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
             {
                 (ellipse.Width, ellipse.Height) = (ellipse.Height, ellipse.Width);
             }
+
+            myEllipse.CanvasIndex = canvas.Children.Count;
         
             canvas.Children.Add(ellipse);
         }

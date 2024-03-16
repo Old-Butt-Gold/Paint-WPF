@@ -17,12 +17,15 @@ public class RectangleDrawStrategy : IAbstractDrawStrategy
                 Stroke = myRectangle.PenColor,
                 Width = myRectangle.GetWidth(),
                 Height = myRectangle.GetHeight(),
+                Tag = canvas.Children.Count,
             };
         
             Canvas.SetLeft(rectangle, myRectangle.TopLeft.X);
             Canvas.SetTop(rectangle, myRectangle.TopLeft.Y);
         
             myRectangle.Angle = angle;
+
+            myRectangle.CanvasIndex = canvas.Children.Count;
 
             var CornerOXY = myRectangle.CornerOXY;
             

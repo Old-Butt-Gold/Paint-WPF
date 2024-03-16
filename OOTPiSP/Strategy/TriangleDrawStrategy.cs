@@ -18,6 +18,8 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
             
             double centerX = (myTriangle.TopLeft.X + myTriangle.VertexOX.X + myTriangle.VertexOY.X) / 3;
             double centerY = (myTriangle.TopLeft.Y + myTriangle.VertexOX.Y + myTriangle.VertexOY.Y) / 3;
+
+            myTriangle.CanvasIndex = canvas.Children.Count;
             
             System.Windows.Shapes.Polygon polygon = new()
             {
@@ -29,7 +31,8 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
                     new System.Windows.Point(myTriangle.VertexOX.X, myTriangle.VertexOX.Y),
                     new System.Windows.Point(myTriangle.VertexOY.X, myTriangle.VertexOY.Y),
                 },
-                RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY)
+                RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY),
+                Tag = canvas.Children.Count,
             };
         
             canvas.Children.Add(polygon);

@@ -46,7 +46,10 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
                 Fill = myArc.BackgroundColor,
                 Data = pathGeometry,
                 RenderTransform = new RotateTransform(myArc.Angle, centerX, centerY),
+                Tag = canvas.Children.Count,
             };
+
+            myArc.CanvasIndex = canvas.Children.Count;
 
             canvas.Children.Add(path);
         }

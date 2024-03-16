@@ -4,7 +4,7 @@ namespace OOTPiSP.GeometryFigures.Shared;
 
 public abstract class AbstractShape
 {
-    //public int CanvasIndex { get; set; } чтобы по индексу получать доступ к фигуре
+    public int CanvasIndex { get; set; }
 
     public int Angle { get; set; }
     
