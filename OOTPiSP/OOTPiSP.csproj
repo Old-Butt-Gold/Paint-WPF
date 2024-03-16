@@ -41,6 +41,17 @@
       <None Remove="Assets\icon.png" />
       <None Remove="Assets\icon.ico" />
       <Resource Include="Assets\icon.ico" />
+      <None Remove="Assets\logout.png" />
+      <Resource Include="Assets\exit.png" />
+      <None Remove="Assets\maximize.png" />
+      <Resource Include="Assets\maximize.png" />
+      <None Remove="Assets\minimize.png" />
+      <Resource Include="Assets\minimize.png" />
+      <None Remove="Assets\file.png" />
+      <Resource Include="Assets\file.png" />
+      <None Remove="Assets\xml.png" />
+      <None Remove="Assets\bracket-curly.png" />
+      <None Remove="Assets\json (2).png" />
     </ItemGroup>
 
 </Project>

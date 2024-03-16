@@ -1,12 +1,10 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
-using System.Xml.Serialization;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
@@ -111,6 +109,9 @@ public partial class MainWindow
 
     void Canvas_OnPreviewMouseMove(object sender, MouseEventArgs e)
     {
+        if (_downMyPoint is null) //Поскольку если начать вести от другого элемента, то будет Exception
+            return;
+        
         _mouseArgs = e;
         if (e.LeftButton == MouseButtonState.Pressed)
         {
@@ -151,6 +152,10 @@ public partial class MainWindow
                 DrawShape(topLeftX, topLeftY, downRightX, downRightY, FillColorPicker.SelectedBrush);
             }
         }
+
+        _downMyPoint = null;
+        _upMyPoint = null;
+        //Добавлены для очищения после отрисовки
         _mouseArgs = null;
     }
     
@@ -216,7 +221,7 @@ public partial class MainWindow
 
             var blurAnimation = new DoubleAnimation
             {
-                To = 100,
+                To = 70,
                 Duration = TimeSpan.FromSeconds(0.5),
                 AutoReverse = true,
                 RepeatBehavior = RepeatBehavior.Forever,
@@ -273,5 +278,20 @@ public partial class MainWindow
         {
             Canvas_OnPreviewMouseMove(sender, _mouseArgs);
         }
+    }
+
+    void Maximize_OnClick(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+    
+    void Minimize_OnClick(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    void JSONSave_OnClick(object sender, RoutedEventArgs e)
+    {
+        
     }
 }

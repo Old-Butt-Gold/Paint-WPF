@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:OOTPiSP"
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
-        Title="Paint" Height="450" Width="800" >
+        Title="Paint" Height="450" Width="800" 
+        WindowStyle="None" AllowsTransparency="True">
+    <WindowChrome.WindowChrome>
+            <WindowChrome CaptionHeight="1"/>
+    </WindowChrome.WindowChrome>    
         
     <Window.InputBindings>
             <KeyBinding Command="Close" Key="Esc" />
@@ -66,6 +70,15 @@
                 </Style.Triggers>
         </Style>
         
+        <Style x:Key="WindowsButtonStyle">
+                <Style.Setters>
+                        <Setter Property="Button.Margin" Value="0 5 10 2.5" />
+                        <Setter Property="Button.MinWidth" Value="30" />
+                        <Setter Property="Button.BorderThickness" Value="0" />
+                        <Setter Property="Button.Background" Value="Aquamarine"/>
+                </Style.Setters>
+        </Style>
+        
         <!--Статические ресурсы-->
         <Image x:Key="Circle" Source="./Assets/circle.png"/>
         <Image x:Key="Ellipse" Source="./Assets/ellipse.png"/>
@@ -78,70 +91,91 @@
         <Image x:Key="Arc" Source="./Assets/arc.png"/>
         <Image x:Key="Pen" Source="./Assets/Pen.png"/>
         <Image x:Key="Fill" Source="./Assets/Fill.png"/>
+        <Image x:Key="Exit" Source="./Assets/exit.png"/>
+        <Image x:Key="Minimize" Source="./Assets/minimize.png"/>
+        <Image x:Key="Maximize" Source="./Assets/maximize.png"/>
+        <Image x:Key="File" Source="./Assets/file.png"/>
     </Window.Resources>
         
-        <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1.05*" />
-                    <RowDefinition Height="11*" />
-                </Grid.RowDefinitions>
+        <DockPanel>
                 
-                <!-- Панель инструментов -->
-                <Grid Grid.Row="0" ZIndex="1" Background="Aquamarine">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}" Name="FillColorPicker" 
-                                          Style="{StaticResource ButtonStyle}" SelectedBrush="Black"/>
-                    <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="PenColorPicker" 
-                                          Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
-                    
-                    <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Circle}"/>
-                    <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Ellipse}" />
-                    <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Square}" />
-                    <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Rectangle}"/>
-                    <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Line}" />
-                    <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource EquilateralTriangle}"/>
-                    <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource IsoscelesTriangle}"/>
-                    <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource RightTriangle}"/>
-                    <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
-                            Content="{StaticResource Arc}"/>
-                    
+                <!--Меню-->
+                <DockPanel DockPanel.Dock="Top" Background="Aquamarine" Height="40" ZIndex="1">
+                        <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center">
+                                <MenuItem Header="Файл" Icon="{DynamicResource File}" Margin="10">
+                                        <MenuItem Header="Сохранить">
+                                                <MenuItem Header="JSON" Click="JSONSave_OnClick"/>
+                                                <MenuItem Header="XML" />
+                                        </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="Загрузить" >
+                                                <MenuItem Header="JSON" />
+                                                <MenuItem Header="XML" />
+                                        </MenuItem>
+                                </MenuItem>
+                        </Menu>
+                        
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Minimize}" Click="Minimize_OnClick"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Maximize}" Click="Maximize_OnClick"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Exit}" Command="Close"/>
+                        </StackPanel>
+                </DockPanel>
+                
+                
+                <Grid>
+                        <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="11*" />
+                        </Grid.RowDefinitions>
+                        <!-- Панель инструментов -->
+                        <Grid Grid.Row="0" ZIndex="1" Background="Aquamarine">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}" Name="FillColorPicker" 
+                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="Black"/>
+                            <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="PenColorPicker" 
+                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
+                            
+                            <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Circle}"/>
+                            <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Ellipse}" />
+                            <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Square}" />
+                            <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Rectangle}"/>
+                            <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Line}" />
+                            <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource EquilateralTriangle}"/>
+                            <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource IsoscelesTriangle}"/>
+                            <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource RightTriangle}"/>
+                            <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
+                                    Content="{StaticResource Arc}"/>
+                            
+                        </Grid>
+                        
+                        <!--Отрисовка-->
+                        <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" 
+                                PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
+                                PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
+                                PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
+                                PreviewMouseMove="Canvas_OnPreviewMouseMove"
+                                PreviewMouseUp="Canvas_OnPreviewMouseUp" />
                 </Grid>
-                
-                <!--<Canvas Grid.Row="1" Name="Canvas"/>
-                <Border Grid.Row="1"
-                        Background ="Transparent"
-                        PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
-                        PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
-                        PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
-                        PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                        MouseUp="Canvas_OnMouseUp">
-                </Border>-->
-                
-                <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" 
-                        PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
-                        PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
-                        PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
-                        PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                        PreviewMouseUp="Canvas_OnPreviewMouseUp" />
-        </Grid>
+        </DockPanel>
 </Window>
