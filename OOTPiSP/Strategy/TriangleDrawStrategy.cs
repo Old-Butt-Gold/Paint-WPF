@@ -11,11 +11,8 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
     {
         if (shape is MyTriangle myTriangle)
         {
-            myTriangle.RecalculateCornerOxy(myTriangle.TopLeft, myTriangle.DownRight);
-        
-            myTriangle.CalculateVertexByX(myTriangle.TopLeft, myTriangle.DownRight);
-            
-            myTriangle.CalculateVertexByY(myTriangle.TopLeft, myTriangle.DownRight);
+            //myTriangle.CalculateVertexByX(myTriangle.TopLeft, myTriangle.DownRight);
+            //myTriangle.CalculateVertexByY(myTriangle.TopLeft, myTriangle.DownRight);
 
             myTriangle.Angle = angle;
             

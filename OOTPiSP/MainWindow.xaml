@@ -55,6 +55,7 @@
                         <Setter Property="Button.Margin" Value="2" />
                         <Setter Property="Button.Background" Value="{StaticResource GradientBrush}"/>
                         <EventSetter Event="Button.Click" Handler="Button_Click"/>
+                        <Setter Property="Button.IsDefault" Value="True" />
                 </Style.Setters>
                 
                 <Style.Triggers>

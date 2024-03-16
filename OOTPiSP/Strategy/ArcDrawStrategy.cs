@@ -12,13 +12,13 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
     {
         if (shape is MyArc myArc)
         {
-            double radiusX = Math.Abs(myArc.StartPoint.X - myArc.EndPoint.X) / 2;
-            double radiusY = Math.Abs(myArc.StartPoint.Y - myArc.EndPoint.Y) / 2;
-            double centerX = (myArc.StartPoint.X + myArc.EndPoint.X) / 2;
-            double centerY = (myArc.StartPoint.Y + myArc.EndPoint.Y) / 2;
+            double radiusX = Math.Abs(myArc.TopLeft.X - myArc.DownRight.X) / 2;
+            double radiusY = Math.Abs(myArc.TopLeft.Y - myArc.DownRight.Y) / 2;
+            double centerX = (myArc.TopLeft.X + myArc.DownRight.X) / 2;
+            double centerY = (myArc.TopLeft.Y + myArc.DownRight.Y) / 2;
 
-            double startAngle = Math.Atan2(myArc.StartPoint.Y - centerY, myArc.StartPoint.X - centerX) * 180 / Math.PI;
-            double endAngle = Math.Atan2(myArc.EndPoint.Y - centerY, myArc.EndPoint.X - centerX) * 180 / Math.PI;
+            double startAngle = Math.Atan2(myArc.TopLeft.Y - centerY, myArc.TopLeft.X - centerX) * 180 / Math.PI;
+            double endAngle = Math.Atan2(myArc.DownRight.Y - centerY, myArc.DownRight.X - centerX) * 180 / Math.PI;
 
             myArc.Angle = angle;
 

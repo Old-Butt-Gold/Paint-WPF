@@ -25,6 +25,9 @@ public partial class MainWindow
         { "ArcButton", (new ArcFactory(), new ArcDrawStrategy()) }
     };
     
+    AbstractFactory Factory { get; set; } = new CircleFactory();
+    IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
+    
     void Button_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button)
@@ -41,10 +44,6 @@ public partial class MainWindow
     bool _isHandledButton;
     MyPoint _downMyPoint;
     MyPoint _upMyPoint;
-
-    AbstractFactory Factory { get; set; } = new CircleFactory();
-
-    IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
 
     int _angle;
     int _arrowsX;

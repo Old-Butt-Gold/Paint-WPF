@@ -7,14 +7,17 @@ public class MyRightTriangle : MyTriangle
 {
     public MyRightTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor)
         : base(vertex, endPoint, bgColor, penColor)
-    { }
+    {
+        CalculateVertexByX(TopLeft, DownRight);
+        CalculateVertexByY(TopLeft, DownRight);
+    }
     
-    public override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(vertex.X - endPoint.X), vertex.Y);
     }
 
-    public override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
     {
         VertexOY = new(vertex.X, vertex.Y - Math.Abs(vertex.Y - endPoint.Y));
     }

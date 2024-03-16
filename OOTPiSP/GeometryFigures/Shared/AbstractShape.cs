@@ -8,15 +8,24 @@ public abstract class AbstractShape
 
     public int Angle { get; set; }
     
-    public AbstractShape(Brush bgColor, Brush penColor)
+    public MyPoint TopLeft { get; set; }
+    
+    public MyPoint DownRight { get; set; }
+    
+    public AbstractShape(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
+        
+        TopLeft = startPoint;
+        DownRight = endPoint;
+        
+        RecalculateCornerOxy(startPoint, endPoint);
     }
     
     public int CornerOXY { get; set; }
 
-    public void RecalculateCornerOxy(MyPoint start, MyPoint end)
+    private void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
         //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
         if (end.X > start.X)

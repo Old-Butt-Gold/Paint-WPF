@@ -1,22 +1,16 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.GeometryFigures.Triangle;
 
 public abstract class MyTriangle : AbstractShape
 {
-    public MyPoint TopLeft { get; set; } 
-    public MyPoint DownRight { get; set; } 
     public MyPoint VertexOX { get; set; } 
-    public MyPoint VertexOY { get; set; } 
+    public MyPoint VertexOY { get; set; }
 
     protected MyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor)
-        : base(bgColor, penColor)
-    {
-        TopLeft = topLeft;
-        DownRight = downRight;
-    }
+        : base(topLeft, downRight, bgColor, penColor)
+    { }
 
     public abstract void CalculateVertexByX(MyPoint vertex, MyPoint endPoint);
     public abstract void CalculateVertexByY(MyPoint vertex, MyPoint endPoint);

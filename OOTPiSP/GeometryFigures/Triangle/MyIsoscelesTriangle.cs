@@ -7,14 +7,17 @@ public class MyIsoscelesTriangle : MyTriangle
 {
     public MyIsoscelesTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor)
         : base(vertex, endPoint, bgColor, penColor)
-    { }
+    {
+        CalculateVertexByX(TopLeft, DownRight);
+        CalculateVertexByY(TopLeft, DownRight);
+    }
     
-    public override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(endPoint.X - vertex.X), vertex.Y);
     }
 
-    public override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
     {
         double sideX = Math.Abs(vertex.X - endPoint.X);
         double sideY = Math.Abs(vertex.Y - endPoint.Y);

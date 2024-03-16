@@ -25,10 +25,7 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
             Canvas.SetLeft(ellipse, myEllipse.TopLeft.X);
             Canvas.SetTop(ellipse, myEllipse.TopLeft.Y);
         
-            myEllipse.RecalculateCornerOxy(myEllipse.TopLeft, myEllipse.DownRight);
-            
             myEllipse.Angle = angle;
-
             var CornerOXY = myEllipse.CornerOXY;
             
             if (CornerOXY == 2)

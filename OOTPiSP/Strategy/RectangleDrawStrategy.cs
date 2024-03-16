@@ -22,7 +22,6 @@ public class RectangleDrawStrategy : IAbstractDrawStrategy
             Canvas.SetLeft(rectangle, myRectangle.TopLeft.X);
             Canvas.SetTop(rectangle, myRectangle.TopLeft.Y);
         
-            myRectangle.RecalculateCornerOxy(myRectangle.TopLeft, myRectangle.DownRight);
             myRectangle.Angle = angle;
 
             var CornerOXY = myRectangle.CornerOXY;

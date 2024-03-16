@@ -7,14 +7,17 @@ public class EquilateralMyTriangle : MyTriangle
 {
     public EquilateralMyTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor)
         : base(vertex, endPoint, bgColor, penColor)
-    { }
+    {
+        CalculateVertexByX(TopLeft, DownRight);
+        CalculateVertexByY(TopLeft, DownRight);
+    }
 
-    public override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByX(MyPoint vertex, MyPoint endPoint)
     {
         VertexOX = new(vertex.X + Math.Abs(vertex.X - endPoint.X), vertex.Y);
     }
 
-    public override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
+    public sealed override void CalculateVertexByY(MyPoint vertex, MyPoint endPoint)
     {
         double side = Math.Abs(vertex.X - endPoint.X);
         double height = side * Math.Sqrt(3) / 2;
