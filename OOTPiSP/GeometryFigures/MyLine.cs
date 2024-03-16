@@ -6,6 +6,8 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyLine : AbstractShape
 {
+    public override object TagShape => "4";
+
     public MyLine(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor, int angle) 
         : base(topLeft, downRight, bgColor, borderColor, angle)
     { }

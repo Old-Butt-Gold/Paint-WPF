@@ -5,7 +5,8 @@ namespace OOTPiSP.GeometryFigures.Rectangle;
 
 public class MyRectangle : AbstractShape
 {
-
+    public override object TagShape => "3";
+    
     public MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, int angle)
         : base(topLeft, downRight, backgroundColor, penColor, angle)
     { }

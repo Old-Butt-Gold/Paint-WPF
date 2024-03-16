@@ -1,10 +1,12 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
@@ -31,6 +33,7 @@ public partial class MainWindow
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
     IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
+    List<AbstractShape> AbstractShapes { get; set; } = new();
     
     void Button_Click(object sender, RoutedEventArgs e)
     {
@@ -52,6 +55,7 @@ public partial class MainWindow
 
     public MainWindow()
     {
+        
         InitializeComponent();
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (_, _) =>
         {
@@ -59,6 +63,7 @@ public partial class MainWindow
                 MessageBoxResult.Yes)
                 Close();
         }));
+        
     }
 
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -81,6 +86,13 @@ public partial class MainWindow
                 }
             }
             Canvas.Children.RemoveAt(tag);
+
+            for (int i = tag + 1; i < AbstractShapes.Count; i++)
+            {
+                AbstractShapes[i].CanvasIndex--;
+            }
+
+            AbstractShapes.RemoveAt(tag);
         }
     }
     
@@ -89,6 +101,7 @@ public partial class MainWindow
         if (e is { ClickCount: 2, Source: Shape frameworkElement })
         {
             MessageBox.Show(frameworkElement.Tag.ToString());
+            MessageBox.Show(AbstractShapes[(int) frameworkElement.Tag].CanvasIndex.ToString());
             return;
         }
         
@@ -145,7 +158,11 @@ public partial class MainWindow
     {
         int count = Canvas.Children.Count;
         if (count > 0)
+        {
             Canvas.Children.RemoveAt(count - 1);
+            AbstractShapes.RemoveAt(count - 1);
+        }
+
     }
     
     void ResetManipulationParams()
@@ -165,9 +182,10 @@ public partial class MainWindow
     void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush? bg = null)
     {
         AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
-            bg ?? Canvas.Background, PenColorPicker.SelectedBrush, _angle);
-
+            bg ?? Brushes.Transparent, PenColorPicker.SelectedBrush, _angle);
         DrawStrategy.Draw(shape, Canvas);
+        //Именно так, поскольку в Draw задается CanvasIndex для shape!
+        AbstractShapes.Add(shape);
 
         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
@@ -221,7 +239,7 @@ public partial class MainWindow
             s.StrokeThickness -= 3;
         }
     }
-
+    
     
     
     void Canvas_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) => Rotate(sender, e.Delta > 0 ? DefaultAngleRotation : -DefaultAngleRotation);
@@ -240,7 +258,7 @@ public partial class MainWindow
         if (_angle < 0)
             _angle += 360;
         _angle %= 360;
-     
+        
         if (_mouseArgs != null)
         {
             Canvas_OnPreviewMouseMove(sender, _mouseArgs);

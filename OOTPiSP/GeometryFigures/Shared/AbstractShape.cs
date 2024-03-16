@@ -1,11 +1,12 @@
-﻿using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
 public abstract class AbstractShape
 {
     public int CanvasIndex { get; set; }
+    
+    public virtual object TagShape { get; }
 
     public int Angle { get; set; }
 
@@ -42,6 +43,7 @@ public abstract class AbstractShape
     }
 
     public Brush BackgroundColor { get; set; }
+    
     public Brush PenColor { get; set; }
 
     public double StrokeThickness { get; set; } = 1;

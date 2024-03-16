@@ -6,6 +6,9 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyArc : AbstractShape
 {
+    public override object TagShape => "8";
+
+    
     public MyArc(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor, int angle) 
         : base(startPoint, endPoint, bgColor, penColor, angle) { }
 

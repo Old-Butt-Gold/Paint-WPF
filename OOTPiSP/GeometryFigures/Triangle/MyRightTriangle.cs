@@ -5,6 +5,8 @@ namespace OOTPiSP.GeometryFigures.Triangle;
 
 public class MyRightTriangle : MyTriangle
 {
+    public override object TagShape => "7";
+    
     public MyRightTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor, int angle)
         : base(vertex, endPoint, bgColor, penColor, angle)
     {
