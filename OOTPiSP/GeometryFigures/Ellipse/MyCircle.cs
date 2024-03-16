@@ -6,8 +6,8 @@ namespace OOTPiSP.GeometryFigures.Ellipse;
 public class MyCircle : MyEllipse
 {
     //int Corner;
-    public MyCircle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor) 
-        : base(topLeft, downRight, bgColor, borderColor)
+    public MyCircle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor, int angle) 
+        : base(topLeft, downRight, bgColor, borderColor, angle)
     { }
 
     public override double GetHeight() => Math.Abs(TopLeft.X - DownRight.X);

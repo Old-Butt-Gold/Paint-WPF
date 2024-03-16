@@ -6,7 +6,8 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyLine : AbstractShape
 {
-    public MyLine(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor) : base(topLeft, downRight, bgColor, borderColor)
+    public MyLine(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor, int angle) 
+        : base(topLeft, downRight, bgColor, borderColor, angle)
     { }
 
     public override string ToString() =>

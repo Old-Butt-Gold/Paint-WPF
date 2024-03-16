@@ -5,8 +5,8 @@ namespace OOTPiSP.GeometryFigures.Triangle;
 
 public class MyIsoscelesTriangle : MyTriangle
 {
-    public MyIsoscelesTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor)
-        : base(vertex, endPoint, bgColor, penColor)
+    public MyIsoscelesTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor, int angle)
+        : base(vertex, endPoint, bgColor, penColor, angle)
     {
         CalculateVertexByX(TopLeft, DownRight);
         CalculateVertexByY(TopLeft, DownRight);

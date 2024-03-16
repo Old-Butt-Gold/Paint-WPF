@@ -7,14 +7,10 @@ namespace OOTPiSP.Strategy;
 
 public class TriangleDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
+    public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyTriangle myTriangle)
         {
-            //myTriangle.CalculateVertexByX(myTriangle.TopLeft, myTriangle.DownRight);
-            //myTriangle.CalculateVertexByY(myTriangle.TopLeft, myTriangle.DownRight);
-
-            myTriangle.Angle = angle;
             
             double centerX = (myTriangle.TopLeft.X + myTriangle.VertexOX.X + myTriangle.VertexOY.X) / 3;
             double centerY = (myTriangle.TopLeft.Y + myTriangle.VertexOX.Y + myTriangle.VertexOY.Y) / 3;
@@ -32,7 +28,7 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
                     new System.Windows.Point(myTriangle.VertexOY.X, myTriangle.VertexOY.Y),
                 },
                 RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY),
-                Tag = canvas.Children.Count,
+                Tag = myTriangle.CanvasIndex,
             };
 
             canvas.Children.Add(polygon);

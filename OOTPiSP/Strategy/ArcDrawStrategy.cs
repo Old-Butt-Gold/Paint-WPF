@@ -8,7 +8,7 @@ namespace OOTPiSP.Strategy;
 
 public class ArcDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
+    public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyArc myArc)
         {
@@ -19,8 +19,6 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
 
             double startAngle = Math.Atan2(myArc.TopLeft.Y - centerY, myArc.TopLeft.X - centerX) * 180 / Math.PI;
             double endAngle = Math.Atan2(myArc.DownRight.Y - centerY, myArc.DownRight.X - centerX) * 180 / Math.PI;
-
-            myArc.Angle = angle;
 
             PathGeometry pathGeometry = new PathGeometry();
             PathFigure pathFigure = new PathFigure
@@ -39,6 +37,8 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
             };
             pathFigure.Segments.Add(arcSegment);
             pathGeometry.Figures.Add(pathFigure);
+            
+            myArc.CanvasIndex = canvas.Children.Count;
 
             System.Windows.Shapes.Path path = new System.Windows.Shapes.Path
             {
@@ -46,10 +46,10 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
                 Fill = myArc.BackgroundColor,
                 Data = pathGeometry,
                 RenderTransform = new RotateTransform(myArc.Angle, centerX, centerY),
-                Tag = canvas.Children.Count,
+                Tag = myArc.CanvasIndex,
             };
 
-            myArc.CanvasIndex = canvas.Children.Count;
+            
 
             canvas.Children.Add(path);
         }

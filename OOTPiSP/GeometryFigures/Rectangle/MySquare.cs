@@ -5,8 +5,8 @@ namespace OOTPiSP.GeometryFigures.Rectangle;
 
 public class MySquare : MyRectangle
 {
-    public MySquare(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor)
-        : base(topLeft, downRight, backgroundColor, penColor) 
+    public MySquare(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, int angle)
+        : base(topLeft, downRight, backgroundColor, penColor, angle) 
     { }
 
     public override string ToString() =>

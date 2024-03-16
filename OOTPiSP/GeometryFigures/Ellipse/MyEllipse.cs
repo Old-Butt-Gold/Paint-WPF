@@ -6,7 +6,8 @@ namespace OOTPiSP.GeometryFigures.Ellipse;
 
 public class MyEllipse : AbstractShape
 {
-    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor) : base(topLeft, downRight, bgColor, penColor)
+    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle) 
+        : base(topLeft, downRight, bgColor, penColor, angle)
     { }
 
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);

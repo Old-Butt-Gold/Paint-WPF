@@ -13,18 +13,20 @@ public abstract class AbstractShape
     
     public MyPoint DownRight { get; set; }
     
-    public AbstractShape(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor)
+    public AbstractShape(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor, int angle)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
         
         TopLeft = startPoint;
         DownRight = endPoint;
+
+        Angle = angle;
         
         RecalculateCornerOxy(startPoint, endPoint);
     }
     
-    public int CornerOXY { get; set; }
+    public int CornerOXY { get; private set; }
 
     private void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
@@ -39,6 +41,8 @@ public abstract class AbstractShape
         }
     }
 
-    public Brush BackgroundColor { get; }
-    public Brush PenColor { get; }
+    public Brush BackgroundColor { get; set; }
+    public Brush PenColor { get; set; }
+
+    public double StrokeThickness { get; set; } = 1;
 }

@@ -7,10 +7,11 @@ namespace OOTPiSP.Strategy;
 
 public class LineDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
+    public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyLine myLine)
         {
+            myLine.CanvasIndex = canvas.Children.Count;
             System.Windows.Shapes.Line line = new()
             {
                 Fill = myLine.BackgroundColor,
@@ -19,11 +20,9 @@ public class LineDrawStrategy : IAbstractDrawStrategy
                 X2 = myLine.DownRight.X,
                 Y1 = myLine.TopLeft.Y,
                 Y2 = myLine.DownRight.Y,
-                Tag = canvas.Children.Count,
+                Tag = myLine.CanvasIndex,
             };
-
-            myLine.CanvasIndex = canvas.Children.Count;
-        
+            
             canvas.Children.Add(line);
         }
     }

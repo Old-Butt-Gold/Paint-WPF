@@ -10,26 +10,23 @@ namespace OOTPiSP.Strategy;
 
 public class RectangleDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
+    public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyRectangle myRectangle)
         {
+            myRectangle.CanvasIndex = canvas.Children.Count;
             System.Windows.Shapes.Rectangle rectangle = new()
             {
                 Fill = myRectangle.BackgroundColor,
                 Stroke = myRectangle.PenColor,
                 Width = myRectangle.GetWidth(),
                 Height = myRectangle.GetHeight(),
-                Tag = canvas.Children.Count,
+                Tag = myRectangle.CanvasIndex,
             };
         
             Canvas.SetLeft(rectangle, myRectangle.TopLeft.X);
             Canvas.SetTop(rectangle, myRectangle.TopLeft.Y);
         
-            myRectangle.Angle = angle;
-
-            myRectangle.CanvasIndex = canvas.Children.Count;
-
             var CornerOXY = myRectangle.CornerOXY;
             
             if (CornerOXY == 2)

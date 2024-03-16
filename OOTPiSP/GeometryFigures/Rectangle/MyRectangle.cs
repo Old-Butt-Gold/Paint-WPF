@@ -6,8 +6,8 @@ namespace OOTPiSP.GeometryFigures.Rectangle;
 public class MyRectangle : AbstractShape
 {
 
-    public MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor)
-        : base(topLeft, downRight, backgroundColor, penColor)
+    public MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, int angle)
+        : base(topLeft, downRight, backgroundColor, penColor, angle)
     { }
     
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y); 

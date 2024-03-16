@@ -8,8 +8,8 @@ public abstract class MyTriangle : AbstractShape
     public MyPoint VertexOX { get; set; } 
     public MyPoint VertexOY { get; set; }
 
-    protected MyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor)
-        : base(topLeft, downRight, bgColor, penColor)
+    protected MyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
+        : base(topLeft, downRight, bgColor, penColor, angle)
     { }
 
     public abstract void CalculateVertexByX(MyPoint vertex, MyPoint endPoint);

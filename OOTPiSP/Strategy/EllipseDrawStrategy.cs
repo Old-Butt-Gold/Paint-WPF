@@ -7,12 +7,13 @@ namespace OOTPiSP.Strategy;
 
 public class EllipseDrawStrategy : IAbstractDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas, int angle = 0)
+    public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyEllipse myEllipse)
         {
             double width = myEllipse.GetWidth();
             double height = myEllipse.GetHeight();
+            myEllipse.CanvasIndex = canvas.Children.Count;
         
             System.Windows.Shapes.Ellipse ellipse = new System.Windows.Shapes.Ellipse
             {
@@ -20,13 +21,13 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
                 Stroke = myEllipse.PenColor,
                 Width =  width,
                 Height = height,
-                Tag = canvas.Children.Count,
+                Tag = myEllipse.CanvasIndex,
+                StrokeThickness = myEllipse.StrokeThickness,
             };
         
             Canvas.SetLeft(ellipse, myEllipse.TopLeft.X);
             Canvas.SetTop(ellipse, myEllipse.TopLeft.Y);
         
-            myEllipse.Angle = angle;
             var CornerOXY = myEllipse.CornerOXY;
             
             if (CornerOXY == 2)
@@ -53,8 +54,6 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
             {
                 (ellipse.Width, ellipse.Height) = (ellipse.Height, ellipse.Width);
             }
-
-            myEllipse.CanvasIndex = canvas.Children.Count;
         
             canvas.Children.Add(ellipse);
         }

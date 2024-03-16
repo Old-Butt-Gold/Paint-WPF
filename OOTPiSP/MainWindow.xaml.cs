@@ -13,20 +13,20 @@ namespace OOTPiSP;
 
 public partial class MainWindow
 {
-    const int DefaultAngleRotation = 3;
-    const int DefaultMoveCoordinate = 3;
+    const int DefaultAngleRotation = 2;
+    const int DefaultMoveCoordinate = 2;
     
-    readonly Dictionary<string, (AbstractFactory Factory, IAbstractDrawStrategy Strategy)> _buttonActions = new()
+    readonly Dictionary<object, (AbstractFactory Factory, IAbstractDrawStrategy Strategy)> _buttonActions = new()
     {
-        { "CircleButton", (new CircleFactory(), new EllipseDrawStrategy()) },
-        { "EllipseButton", (new EllipseFactory(), new EllipseDrawStrategy()) },
-        { "SquareButton", (new SquareFactory(), new RectangleDrawStrategy()) },
-        { "RectangleButton", (new RectangleFactory(), new RectangleDrawStrategy()) },
-        { "LineButton", (new LineFactory(), new LineDrawStrategy()) },
-        { "EquilateralTriangleButton", (new EquilateralTriangleFactory(), new TriangleDrawStrategy()) },
-        { "IsoscelesTriangleButton", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy()) },
-        { "RightTriangleButton", (new RightTriangleFactory(), new TriangleDrawStrategy()) },
-        { "ArcButton", (new ArcFactory(), new ArcDrawStrategy()) }
+        { "0", (new CircleFactory(), new EllipseDrawStrategy()) },
+        { "1", (new EllipseFactory(), new EllipseDrawStrategy()) },
+        { "2", (new SquareFactory(), new RectangleDrawStrategy()) },
+        { "3", (new RectangleFactory(), new RectangleDrawStrategy()) },
+        { "4", (new LineFactory(), new LineDrawStrategy()) },
+        { "5", (new EquilateralTriangleFactory(), new TriangleDrawStrategy()) },
+        { "6", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy()) },
+        { "7", (new RightTriangleFactory(), new TriangleDrawStrategy()) },
+        { "8", (new ArcFactory(), new ArcDrawStrategy()) }
     };
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
@@ -34,7 +34,7 @@ public partial class MainWindow
     
     void Button_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && _buttonActions.TryGetValue(button.Name, out var action))
+        if (sender is Button button && _buttonActions.TryGetValue(button.Tag, out var action))
         {
             (Factory, DrawStrategy) = action;
         }
@@ -165,63 +165,69 @@ public partial class MainWindow
     void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush? bg = null)
     {
         AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
-            bg ?? Canvas.Background, PenColorPicker.SelectedBrush);
+            bg ?? Canvas.Background, PenColorPicker.SelectedBrush, _angle);
 
-        DrawStrategy.Draw(shape, Canvas, _angle);
+        DrawStrategy.Draw(shape, Canvas);
 
         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
-        
-        Canvas.Children[^1].MouseEnter += (sender, _) => {
-            if (sender is Shape s)
+
+        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
+        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+    }
+
+    void Shape_MouseEnter(object sender, MouseEventArgs e)
+    {
+        if (sender is Shape s)
+        {
+            var effect = new DropShadowEffect
             {
-                var effect = new DropShadowEffect
-                {
-                    BlurRadius = 0,
-                    ShadowDepth = 0,
-                    RenderingBias = RenderingBias.Quality
-                };
+                BlurRadius = 0,
+                ShadowDepth = 0,
+                RenderingBias = RenderingBias.Quality
+            };
 
-                var colorAnimation = new ColorAnimation
-                {
-                    To = ((SolidColorBrush)s.Stroke).Color,
-                    Duration = TimeSpan.FromSeconds(0.5),
-                    AutoReverse = true,
-                    RepeatBehavior = RepeatBehavior.Forever,
-                    EasingFunction = new SineEase() { EasingMode = EasingMode.EaseOut },
-                };
+            var colorAnimation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)s.Stroke).Color,
+                Duration = TimeSpan.FromSeconds(0.5),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase() { EasingMode = EasingMode.EaseOut },
+            };
 
-                var blurAnimation = new DoubleAnimation
-                {
-                    To = 100,
-                    Duration = TimeSpan.FromSeconds(0.5),
-                    AutoReverse = true,
-                    RepeatBehavior = RepeatBehavior.Forever,
-                    EasingFunction = new SineEase() { EasingMode = EasingMode.EaseInOut }
-                };
+            var blurAnimation = new DoubleAnimation
+            {
+                To = 100,
+                Duration = TimeSpan.FromSeconds(0.5),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase() { EasingMode = EasingMode.EaseInOut }
+            };
                 
-                effect.BeginAnimation(DropShadowEffect.ColorProperty, colorAnimation);
-                effect.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blurAnimation);
-                s.Effect = effect;
+            effect.BeginAnimation(DropShadowEffect.ColorProperty, colorAnimation);
+            effect.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blurAnimation);
+            s.Effect = effect;
 
-                s.StrokeThickness += 3;
-            }
-        };
-        Canvas.Children[^1].MouseLeave += (sender, _) => {
-            if (sender is Shape s)
-            {
-                s.Effect = null;
-                s.StrokeThickness -= 3;
-            }
-        };
+            s.StrokeThickness += 3;
+        }
     }
     
-    
+    void Shape_MouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is Shape s)
+        {
+            s.Effect = null;
+            s.StrokeThickness -= 3;
+        }
+    }
 
+    
+    
     void Canvas_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) => Rotate(sender, e.Delta > 0 ? DefaultAngleRotation : -DefaultAngleRotation);
     void RotateLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, -DefaultAngleRotation);
     void RotateRight_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, DefaultAngleRotation);
-    void RotateReset_OnExecuted(object sender, ExecutedRoutedEventArgs e) => _angle = 0;
+    void RotateReset_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, 360 - _angle);
     void MoveUp_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, 0, -DefaultMoveCoordinate);
     void MoveDown_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, 0, DefaultMoveCoordinate);
     void MoveRight_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, DefaultMoveCoordinate, 0);

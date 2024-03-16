@@ -106,23 +106,23 @@
                     <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="PenColorPicker" 
                                           Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
                     
-                    <Button Grid.Column="2" Name="CircleButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Circle}"/>
-                    <Button Grid.Column="3" Name="EllipseButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Ellipse}" />
-                    <Button Grid.Column="4" Name="SquareButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Square}" />
-                    <Button Grid.Column="5" Name="RectangleButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Rectangle}"/>
-                    <Button Grid.Column="6" Name="LineButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Line}" />
-                    <Button Grid.Column="7" Name="EquilateralTriangleButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource EquilateralTriangle}"/>
-                    <Button Grid.Column="8" Name="IsoscelesTriangleButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource IsoscelesTriangle}"/>
-                    <Button Grid.Column="9" Name="RightTriangleButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource RightTriangle}"/>
-                    <Button Grid.Column="10" Name="ArcButton" Style="{StaticResource ButtonStyle}"
+                    <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
                             Content="{StaticResource Arc}"/>
                     
                 </Grid>
