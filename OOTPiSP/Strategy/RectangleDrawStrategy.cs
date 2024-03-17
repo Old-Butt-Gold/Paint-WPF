@@ -4,17 +4,15 @@ using System.Windows.Media;
 using Accessibility;
 using OOTPiSP.GeometryFigures.Rectangle;
 using OOTPiSP.GeometryFigures.Shared;
-using static OOTPiSP.Strategy.IAbstractDrawStrategy;
 
 namespace OOTPiSP.Strategy;
 
-public class RectangleDrawStrategy : IAbstractDrawStrategy
+public class RectangleDrawStrategy : IDrawStrategy
 {
     public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyRectangle myRectangle)
         {
-            myRectangle.CanvasIndex = canvas.Children.Count;
             System.Windows.Shapes.Rectangle rectangle = new()
             {
                 Fill = myRectangle.BackgroundColor,

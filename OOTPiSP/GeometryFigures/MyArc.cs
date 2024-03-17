@@ -6,11 +6,8 @@ namespace OOTPiSP.GeometryFigures;
 
 public class MyArc : AbstractShape
 {
-    public override object TagShape => "8";
-
-    
-    public MyArc(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor, int angle) 
-        : base(startPoint, endPoint, bgColor, penColor, angle) { }
+    public MyArc(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex) 
+        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, "8") { }
 
     public override string ToString() =>
         $"{nameof(MyArc)}: TopLeft=({TopLeft.X},{TopLeft.Y}), DownRight=({DownRight.X},{DownRight.Y})";

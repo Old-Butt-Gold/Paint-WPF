@@ -6,7 +6,7 @@ public abstract class AbstractShape
 {
     public int CanvasIndex { get; set; }
     
-    public virtual object TagShape { get; }
+    public object TagShape { get; }
 
     public int Angle { get; set; }
 
@@ -14,17 +14,20 @@ public abstract class AbstractShape
     
     public MyPoint DownRight { get; set; }
     
-    public AbstractShape(MyPoint startPoint, MyPoint endPoint, Brush bgColor, Brush penColor, int angle)
+    public AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, 
+        int angle, int canvasIndex, object tagShape)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
         
-        TopLeft = startPoint;
-        DownRight = endPoint;
+        TopLeft = topLeft;
+        DownRight = downRight;
 
         Angle = angle;
+        TagShape = tagShape;
+        CanvasIndex = canvasIndex;
         
-        RecalculateCornerOxy(startPoint, endPoint);
+        RecalculateCornerOxy(topLeft, downRight);
     }
     
     public int CornerOXY { get; private set; }

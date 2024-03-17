@@ -5,10 +5,13 @@ namespace OOTPiSP.GeometryFigures.Rectangle;
 
 public class MyRectangle : AbstractShape
 {
-    public override object TagShape => "3";
+    protected MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, 
+        int angle, int canvasIndex, object tagIndex)
+        : base(topLeft, downRight, backgroundColor, penColor, angle, canvasIndex, tagIndex)
+    { }
     
-    public MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, int angle)
-        : base(topLeft, downRight, backgroundColor, penColor, angle)
+    public MyRectangle(MyPoint topLeft, MyPoint downRight, Brush backgroundColor, Brush penColor, int angle, int canvasIndex)
+        : base(topLeft, downRight, backgroundColor, penColor, angle, canvasIndex,"3")
     { }
     
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y); 

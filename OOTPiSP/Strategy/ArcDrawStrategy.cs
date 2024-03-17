@@ -6,7 +6,7 @@ using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Strategy;
 
-public class ArcDrawStrategy : IAbstractDrawStrategy
+public class ArcDrawStrategy : IDrawStrategy
 {
     public void Draw(AbstractShape shape, Canvas canvas)
     {
@@ -38,8 +38,6 @@ public class ArcDrawStrategy : IAbstractDrawStrategy
             pathFigure.Segments.Add(arcSegment);
             pathGeometry.Figures.Add(pathFigure);
             
-            myArc.CanvasIndex = canvas.Children.Count;
-
             System.Windows.Shapes.Path path = new System.Windows.Shapes.Path
             {
                 Stroke = myArc.PenColor,

@@ -5,7 +5,7 @@ using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Strategy;
 
-public class EllipseDrawStrategy : IAbstractDrawStrategy
+public class EllipseDrawStrategy : IDrawStrategy
 {
     public void Draw(AbstractShape shape, Canvas canvas)
     {
@@ -13,7 +13,6 @@ public class EllipseDrawStrategy : IAbstractDrawStrategy
         {
             double width = myEllipse.GetWidth();
             double height = myEllipse.GetHeight();
-            myEllipse.CanvasIndex = canvas.Children.Count;
         
             System.Windows.Shapes.Ellipse ellipse = new System.Windows.Shapes.Ellipse
             {

@@ -5,7 +5,7 @@ using OOTPiSP.GeometryFigures.Triangle;
 
 namespace OOTPiSP.Strategy;
 
-public class TriangleDrawStrategy : IAbstractDrawStrategy
+public class TriangleDrawStrategy : IDrawStrategy
 {
     public void Draw(AbstractShape shape, Canvas canvas)
     {
@@ -15,8 +15,6 @@ public class TriangleDrawStrategy : IAbstractDrawStrategy
             double centerX = (myTriangle.TopLeft.X + myTriangle.VertexOX.X + myTriangle.VertexOY.X) / 3;
             double centerY = (myTriangle.TopLeft.Y + myTriangle.VertexOX.Y + myTriangle.VertexOY.Y) / 3;
 
-            myTriangle.CanvasIndex = canvas.Children.Count;
-            
             System.Windows.Shapes.Polygon polygon = new()
             {
                 Fill = myTriangle.BackgroundColor,

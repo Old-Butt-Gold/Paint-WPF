@@ -9,7 +9,7 @@
         Title="Paint" Height="450" Width="800" 
         WindowStyle="None" AllowsTransparency="True">
     <WindowChrome.WindowChrome>
-            <WindowChrome CaptionHeight="1"/>
+            <WindowChrome CaptionHeight="5"/>
     </WindowChrome.WindowChrome>    
         
     <Window.InputBindings>
@@ -109,10 +109,11 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Загрузить" >
-                                                <MenuItem Header="JSON" />
+                                                <MenuItem Header="JSON" Click="JSONOpen_Click" />
                                                 <MenuItem Header="XML" />
                                         </MenuItem>
                                 </MenuItem>
+                                <MenuItem Header="Очистить холст" Click="ClearCanvas_OnClick" Margin="10"/>
                         </Menu>
                         
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">

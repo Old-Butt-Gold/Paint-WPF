@@ -1,10 +1,14 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
@@ -16,7 +20,7 @@ public partial class MainWindow
     const int DefaultAngleRotation = 2;
     const int DefaultMoveCoordinate = 2;
     
-    readonly Dictionary<object, (AbstractFactory Factory, IAbstractDrawStrategy Strategy)> _buttonActions = new()
+    readonly Dictionary<object, (AbstractFactory Factory, IDrawStrategy Strategy)> _buttonActions = new()
     {
         { "0", (new CircleFactory(), new EllipseDrawStrategy()) },
         { "1", (new EllipseFactory(), new EllipseDrawStrategy()) },
@@ -30,7 +34,7 @@ public partial class MainWindow
     };
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
-    IAbstractDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
+    IDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
     List<AbstractShape> AbstractShapes { get; set; } = new();
     
     void Button_Click(object sender, RoutedEventArgs e)
@@ -187,10 +191,10 @@ public partial class MainWindow
     void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush? bg = null)
     {
         AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
-            bg ?? Brushes.Transparent, PenColorPicker.SelectedBrush, _angle);
-        DrawStrategy.Draw(shape, Canvas);
-        //Именно так, поскольку в Draw задается CanvasIndex для shape!
+            bg ?? Brushes.Transparent, PenColorPicker.SelectedBrush, _angle, Canvas.Children.Count);
+        
         AbstractShapes.Add(shape);
+        DrawStrategy.Draw(shape, Canvas);
 
         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
@@ -292,6 +296,76 @@ public partial class MainWindow
 
     void JSONSave_OnClick(object sender, RoutedEventArgs e)
     {
-        
+        SaveFileDialog saveFileDialog = new()
+        {
+            Filter = "JSON файлы (*.json)|*.json|Все файлы (*.*)|*.*"
+        };
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            if (!saveFileDialog.FileName.EndsWith(".json"))
+            {
+                saveFileDialog.FileName += ".json";
+            }
+            using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
+            
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                TypeNameHandling = TypeNameHandling.Objects
+            };
+            string json = JsonConvert.SerializeObject(AbstractShapes, settings);
+            byte[] bytes = Encoding.UTF8.GetBytes(json);
+            fs.Write(bytes, 0, bytes.Length);
+        }
+    }
+
+    void JSONOpen_Click(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog openFileDialog = new()
+        {
+            Filter = "JSON файлы (*.json)|*.json"
+        };
+        if (openFileDialog.ShowDialog() == true)
+        {
+            try
+            {
+                string json = File.ReadAllText(openFileDialog.FileName);
+
+                var settings = new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.Objects,
+                };
+                List<AbstractShape>? loadedShapes = JsonConvert.DeserializeObject<List<AbstractShape>>(json, settings);
+
+                if (loadedShapes != null)
+                {
+                    AbstractShapes = loadedShapes;
+                    Canvas.Children.Clear();
+                    foreach (var shape in AbstractShapes)
+                    {
+                        var action = _buttonActions[shape.TagShape];
+                        action.Strategy.Draw(shape, Canvas);
+                        
+                        Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
+                        Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
+
+                        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
+                        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+                    }
+                }
+
+                MessageBox.Show($"Список фигур успешно загружен!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии файла JSON: {ex.Message}");
+            }
+        }
+    }
+
+    void ClearCanvas_OnClick(object sender, RoutedEventArgs e)
+    {
+        AbstractShapes.Clear();
+        Canvas.Children.Clear();
     }
 }

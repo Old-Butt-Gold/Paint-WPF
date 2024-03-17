@@ -3,7 +3,7 @@ using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Strategy;
 
-public interface IAbstractDrawStrategy
+public interface IDrawStrategy
 {
     void Draw(AbstractShape shape, Canvas canvas);
 }

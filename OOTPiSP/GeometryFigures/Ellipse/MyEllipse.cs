@@ -6,10 +6,13 @@ namespace OOTPiSP.GeometryFigures.Ellipse;
 
 public class MyEllipse : AbstractShape
 {
-    public override object TagShape => "1";
-
-    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle) 
-        : base(topLeft, downRight, bgColor, penColor, angle)
+    protected MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, 
+        int angle, int canvasIndex, object tagIndex) 
+        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, tagIndex)
+    { }
+    
+    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex) 
+        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, "1")
     { }
 
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);

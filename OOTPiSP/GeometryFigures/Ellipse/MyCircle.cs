@@ -5,10 +5,8 @@ namespace OOTPiSP.GeometryFigures.Ellipse;
 
 public class MyCircle : MyEllipse
 {
-    public override object TagShape => "0";
-
-    public MyCircle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor, int angle) 
-        : base(topLeft, downRight, bgColor, borderColor, angle)
+    public MyCircle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush borderColor, int angle, int canvasIndex) 
+        : base(topLeft, downRight, bgColor, borderColor, angle, canvasIndex, "0")
     { }
 
     public override double GetHeight() => Math.Abs(TopLeft.X - DownRight.X);

@@ -5,10 +5,8 @@ namespace OOTPiSP.GeometryFigures.Triangle;
 
 public class MyIsoscelesTriangle : MyTriangle
 {
-    public override object TagShape => "6";
-    
-    public MyIsoscelesTriangle(MyPoint vertex, MyPoint endPoint, Brush bgColor, Brush penColor, int angle)
-        : base(vertex, endPoint, bgColor, penColor, angle)
+    public MyIsoscelesTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex)
+        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, "6")
     {
         CalculateVertexByX(TopLeft, DownRight);
         CalculateVertexByY(TopLeft, DownRight);

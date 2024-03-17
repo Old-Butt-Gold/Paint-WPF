@@ -5,13 +5,12 @@ using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP.Strategy;
 
-public class LineDrawStrategy : IAbstractDrawStrategy
+public class LineDrawStrategy : IDrawStrategy
 {
     public void Draw(AbstractShape shape, Canvas canvas)
     {
         if (shape is MyLine myLine)
         {
-            myLine.CanvasIndex = canvas.Children.Count;
             System.Windows.Shapes.Line line = new()
             {
                 Fill = myLine.BackgroundColor,
