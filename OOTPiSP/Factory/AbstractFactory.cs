@@ -5,5 +5,5 @@ namespace OOTPiSP.Factory;
 
 public abstract class AbstractFactory
 {
-    public abstract AbstractShape CreateShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex);
+    public abstract AbstractShape CreateShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle);
 }

@@ -1,19 +1,19 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
+using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Ellipse;
 
 public class MyEllipse : AbstractShape
 {
-    protected MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, 
-        int angle, int canvasIndex, object tagIndex) 
-        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, tagIndex)
-    { }
+    public override object TagShape => "1";
     
-    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex) 
-        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, "1")
-    { }
+    public MyEllipse(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
+        : base(topLeft, downRight, bgColor, penColor, angle)
+    {
+        DrawStrategy = new EllipseDrawStrategy();
+    }
 
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y);

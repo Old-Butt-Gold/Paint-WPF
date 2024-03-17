@@ -11,7 +11,6 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using OOTPiSP.Factory;
 using OOTPiSP.GeometryFigures.Shared;
-using OOTPiSP.Strategy;
 
 namespace OOTPiSP;
 
@@ -20,28 +19,27 @@ public partial class MainWindow
     const int DefaultAngleRotation = 2;
     const int DefaultMoveCoordinate = 2;
     
-    readonly Dictionary<object, (AbstractFactory Factory, IDrawStrategy Strategy)> _buttonActions = new()
+    readonly Dictionary<object, AbstractFactory> _buttonActions = new()
     {
-        { "0", (new CircleFactory(), new EllipseDrawStrategy()) },
-        { "1", (new EllipseFactory(), new EllipseDrawStrategy()) },
-        { "2", (new SquareFactory(), new RectangleDrawStrategy()) },
-        { "3", (new RectangleFactory(), new RectangleDrawStrategy()) },
-        { "4", (new LineFactory(), new LineDrawStrategy()) },
-        { "5", (new EquilateralTriangleFactory(), new TriangleDrawStrategy()) },
-        { "6", (new IsoscelesTriangleFactory(), new TriangleDrawStrategy()) },
-        { "7", (new RightTriangleFactory(), new TriangleDrawStrategy()) },
-        { "8", (new ArcFactory(), new ArcDrawStrategy()) }
+        { "0", new CircleFactory() },
+        { "1", new EllipseFactory() },
+        { "2", new SquareFactory() },
+        { "3", new RectangleFactory() },
+        { "4", new LineFactory() },
+        { "5", new EquilateralTriangleFactory() },
+        { "6", new IsoscelesTriangleFactory() },
+        { "7", new RightTriangleFactory() },
+        { "8", new ArcFactory() }
     };
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
-    IDrawStrategy DrawStrategy { get; set; } = new EllipseDrawStrategy();
     List<AbstractShape> AbstractShapes { get; set; } = new();
     
     void Button_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && _buttonActions.TryGetValue(button.Tag, out var action))
         {
-            (Factory, DrawStrategy) = action;
+             Factory = action;
         }
     }
     
@@ -133,7 +131,7 @@ public partial class MainWindow
             var topLeftY = _downMyPoint.Y + _arrowsY;
             var downRightX = mousePosition.X + _arrowsX;
             var downRightY = mousePosition.Y + _arrowsY;
-            DrawShape(topLeftX, topLeftY, downRightX, downRightY);
+            DrawShape(topLeftX, topLeftY, downRightX, downRightY, Brushes.Transparent);
         }
     }
 
@@ -159,7 +157,6 @@ public partial class MainWindow
 
         _downMyPoint = null;
         _upMyPoint = null;
-        //Добавлены для очищения после отрисовки
         _mouseArgs = null;
     }
     
@@ -188,13 +185,12 @@ public partial class MainWindow
         return new(mousePosition.X, mousePosition.Y);
     }
 
-    void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush? bg = null)
+    void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush bg)
     {
         AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
-            bg ?? Brushes.Transparent, PenColorPicker.SelectedBrush, _angle, Canvas.Children.Count);
-        
+            bg, PenColorPicker.SelectedBrush, _angle);
         AbstractShapes.Add(shape);
-        DrawStrategy.Draw(shape, Canvas);
+        shape.DrawAlgorithm(Canvas);
 
         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
@@ -248,8 +244,6 @@ public partial class MainWindow
             s.StrokeThickness -= 3;
         }
     }
-    
-    
     
     void Canvas_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) => Rotate(sender, e.Delta > 0 ? DefaultAngleRotation : -DefaultAngleRotation);
     void RotateLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, -DefaultAngleRotation);
@@ -337,14 +331,13 @@ public partial class MainWindow
                 };
                 List<AbstractShape>? loadedShapes = JsonConvert.DeserializeObject<List<AbstractShape>>(json, settings);
 
-                if (loadedShapes != null)
+                if (loadedShapes is { Count: not 0 })
                 {
                     AbstractShapes = loadedShapes;
                     Canvas.Children.Clear();
                     foreach (var shape in AbstractShapes)
                     {
-                        var action = _buttonActions[shape.TagShape];
-                        action.Strategy.Draw(shape, Canvas);
+                        shape.DrawAlgorithm(Canvas);
                         
                         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
                         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;

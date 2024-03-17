@@ -1,12 +1,20 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Controls;
+using System.Windows.Media;
+using Newtonsoft.Json;
+using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
 public abstract class AbstractShape
 {
+    [JsonIgnore] 
+    public IDrawStrategy DrawStrategy { get; protected set; }
+    
+    [JsonIgnore]
     public int CanvasIndex { get; set; }
     
-    public object TagShape { get; }
+    [JsonIgnore]
+    public virtual object TagShape { get; }
 
     public int Angle { get; set; }
 
@@ -14,8 +22,7 @@ public abstract class AbstractShape
     
     public MyPoint DownRight { get; set; }
     
-    public AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, 
-        int angle, int canvasIndex, object tagShape)
+    public AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
@@ -24,15 +31,20 @@ public abstract class AbstractShape
         DownRight = downRight;
 
         Angle = angle;
-        TagShape = tagShape;
-        CanvasIndex = canvasIndex;
         
         RecalculateCornerOxy(topLeft, downRight);
     }
+
+    public void DrawAlgorithm(Canvas canvas)
+    {
+        CanvasIndex = canvas.Children.Count;
+        DrawStrategy.Draw(this, canvas);
+    }
     
+    [JsonIgnore]
     public int CornerOXY { get; private set; }
 
-    private void RecalculateCornerOxy(MyPoint start, MyPoint end)
+    void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
         //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
         if (end.X > start.X)

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
+using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Triangle;
 
@@ -8,10 +9,11 @@ public abstract class MyTriangle : AbstractShape
     public MyPoint VertexOX { get; set; } 
     public MyPoint VertexOY { get; set; }
 
-    protected MyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, 
-        int angle, int canvasIndex, object tagIndex)
-        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, tagIndex)
-    { }
+    protected MyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
+        : base(topLeft, downRight, bgColor, penColor, angle)
+    {
+        DrawStrategy = new TriangleDrawStrategy();
+    }
 
     public abstract void CalculateVertexByX(MyPoint vertex, MyPoint endPoint);
     public abstract void CalculateVertexByY(MyPoint vertex, MyPoint endPoint);

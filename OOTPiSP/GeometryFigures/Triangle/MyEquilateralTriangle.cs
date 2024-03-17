@@ -5,8 +5,10 @@ namespace OOTPiSP.GeometryFigures.Triangle;
 
 public class EquilateralMyTriangle : MyTriangle
 {
-    public EquilateralMyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle, int canvasIndex)
-        : base(topLeft, downRight, bgColor, penColor, angle, canvasIndex, "5")
+    public override object TagShape => "5";
+
+    public EquilateralMyTriangle(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
+        : base(topLeft, downRight, bgColor, penColor, angle)
     {
         CalculateVertexByX(TopLeft, DownRight);
         CalculateVertexByY(TopLeft, DownRight);
