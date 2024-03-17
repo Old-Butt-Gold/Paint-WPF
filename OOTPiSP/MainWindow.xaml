@@ -105,12 +105,12 @@
                                 <MenuItem Header="Файл" Icon="{DynamicResource File}" Margin="10">
                                         <MenuItem Header="Сохранить">
                                                 <MenuItem Header="JSON" Click="JSONSave_OnClick"/>
-                                                <MenuItem Header="XML" />
+                                                <MenuItem Header="XML" Click="XMLSave_OnClick"/>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Загрузить" >
                                                 <MenuItem Header="JSON" Click="JSONOpen_Click" />
-                                                <MenuItem Header="XML" />
+                                                <MenuItem Header="XML" Click="XMLOpen_OnClick"/>
                                         </MenuItem>
                                 </MenuItem>
                                 <MenuItem Header="Очистить холст" Click="ClearCanvas_OnClick" Margin="10"/>

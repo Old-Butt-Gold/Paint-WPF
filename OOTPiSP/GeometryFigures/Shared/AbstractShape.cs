@@ -1,10 +1,15 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
+using OOTPiSP.GeometryFigures.Ellipse;
+using OOTPiSP.GeometryFigures.Rectangle;
+using OOTPiSP.GeometryFigures.Triangle;
 using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
+[Serializable]
 public abstract class AbstractShape
 {
     [JsonIgnore] 
@@ -56,10 +61,10 @@ public abstract class AbstractShape
             CornerOXY = end.Y > start.Y ? 3 : 2;
         }
     }
-
-    public Brush BackgroundColor { get; set; }
     
-    public Brush PenColor { get; set; }
-
     public double StrokeThickness { get; set; } = 1;
+    
+    public Brush BackgroundColor { get; set; }
+
+    public Brush PenColor { get; set; }
 }

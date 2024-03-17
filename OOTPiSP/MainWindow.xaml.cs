@@ -3,14 +3,19 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Serialization;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using OOTPiSP.Factory;
+using OOTPiSP.GeometryFigures.Ellipse;
 using OOTPiSP.GeometryFigures.Shared;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace OOTPiSP;
 
@@ -191,7 +196,7 @@ public partial class MainWindow
             bg, PenColorPicker.SelectedBrush, _angle);
         AbstractShapes.Add(shape);
         shape.DrawAlgorithm(Canvas);
-
+        
         Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
 
@@ -312,6 +317,40 @@ public partial class MainWindow
             fs.Write(bytes, 0, bytes.Length);
         }
     }
+    
+    void XMLSave_OnClick(object sender, RoutedEventArgs e)
+    {
+        SaveFileDialog saveFileDialog = new()
+        {
+            Filter = "XML файлы (*.xml)|*.xml|Все файлы (*.*)|*.*"
+        };
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            if (!saveFileDialog.FileName.EndsWith(".xml"))
+            {
+                saveFileDialog.FileName += ".xml";
+            }
+            using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
+
+            List<AbstractShapeXML> list = new();
+            foreach (var item in AbstractShapes)
+            {
+                list.Add(new()
+                {
+                    Angle = item.Angle,
+                    BackgroundColor = item.BackgroundColor,
+                    DownRight = item.DownRight,
+                    PenColor = item.PenColor,
+                    StrokeThickness = item.StrokeThickness,
+                    TagShape = item.TagShape,
+                    TopLeft = item.TopLeft
+                });
+            }
+            
+            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
+            serializer.Serialize(fs, list);
+        }
+    }
 
     void JSONOpen_Click(object sender, RoutedEventArgs e)
     {
@@ -345,9 +384,52 @@ public partial class MainWindow
                         Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
                         Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
                     }
+                    MessageBox.Show($"Список фигур успешно загружен!");
                 }
 
-                MessageBox.Show($"Список фигур успешно загружен!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии файла JSON: {ex.Message}");
+            }
+        }
+    }
+    
+    void XMLOpen_OnClick(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog openFileDialog = new()
+        {
+            Filter = "XML файлы (*.xml)|*.xml"
+        };
+        if (openFileDialog.ShowDialog() == true)
+        {
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
+                using FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
+
+                if (serializer.Deserialize(fs) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+                {
+                    AbstractShapes.Clear();
+                    Canvas.Children.Clear();
+                    foreach (var item in loadedShapes)
+                    {
+                        var shape = _buttonActions[item.TagShape].CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor,
+                            item.PenColor, item.Angle);
+                        shape.StrokeThickness = item.StrokeThickness;
+                        AbstractShapes.Add(shape);
+                        shape.DrawAlgorithm(Canvas);
+                        
+                        Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
+                        Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
+
+                        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
+                        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+                    }
+                    
+                    MessageBox.Show($"Список фигур успешно загружен!");
+                }
+
             }
             catch (Exception ex)
             {
