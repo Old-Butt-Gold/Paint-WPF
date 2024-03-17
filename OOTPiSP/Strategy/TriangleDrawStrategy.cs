@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.GeometryFigures.Triangle;
 
@@ -7,7 +8,7 @@ namespace OOTPiSP.Strategy;
 
 public class TriangleDrawStrategy : IDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public Shape Draw(AbstractShape shape)
     {
         if (shape is MyTriangle myTriangle)
         {
@@ -15,7 +16,7 @@ public class TriangleDrawStrategy : IDrawStrategy
             double centerX = (myTriangle.TopLeft.X + myTriangle.VertexOX.X + myTriangle.VertexOY.X) / 3;
             double centerY = (myTriangle.TopLeft.Y + myTriangle.VertexOX.Y + myTriangle.VertexOY.Y) / 3;
 
-            System.Windows.Shapes.Polygon polygon = new()
+            Polygon polygon = new()
             {
                 Fill = myTriangle.BackgroundColor,
                 Stroke = myTriangle.PenColor,
@@ -27,9 +28,12 @@ public class TriangleDrawStrategy : IDrawStrategy
                 },
                 RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY),
                 Tag = myTriangle.CanvasIndex,
+                StrokeThickness = myTriangle.StrokeThickness,
             };
 
-            canvas.Children.Add(polygon);
-        } 
+            return polygon;
+        }
+
+        return null;
     }
 }

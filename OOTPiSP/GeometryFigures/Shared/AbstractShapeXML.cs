@@ -13,7 +13,7 @@ public class AbstractShapeXML
     
     public MyPoint DownRight { get; set; }
     
-    public double StrokeThickness { get; set; } = 1;
+    public double StrokeThickness { get; set; }
     
     [XmlIgnore]
     public Brush BackgroundColor { get; set; }

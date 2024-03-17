@@ -1,6 +1,5 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
+﻿using System.Windows.Media;
+using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -8,7 +7,7 @@ namespace OOTPiSP.Strategy;
 
 public class ArcDrawStrategy : IDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public Shape Draw(AbstractShape shape)
     {
         if (shape is MyArc myArc)
         {
@@ -38,18 +37,19 @@ public class ArcDrawStrategy : IDrawStrategy
             pathFigure.Segments.Add(arcSegment);
             pathGeometry.Figures.Add(pathFigure);
             
-            System.Windows.Shapes.Path path = new System.Windows.Shapes.Path
+            Path path = new Path
             {
                 Stroke = myArc.PenColor,
                 Fill = myArc.BackgroundColor,
                 Data = pathGeometry,
                 RenderTransform = new RotateTransform(myArc.Angle, centerX, centerY),
                 Tag = myArc.CanvasIndex,
+                StrokeThickness = myArc.StrokeThickness,
             };
 
-            
-
-            canvas.Children.Add(path);
+            return path;
         }
+
+        return null;
     }
 }

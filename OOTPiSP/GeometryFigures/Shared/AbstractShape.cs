@@ -1,10 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
-using System.Xml.Serialization;
+using System.Windows.Shapes;
 using Newtonsoft.Json;
-using OOTPiSP.GeometryFigures.Ellipse;
-using OOTPiSP.GeometryFigures.Rectangle;
-using OOTPiSP.GeometryFigures.Triangle;
 using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Shared;
@@ -27,7 +24,7 @@ public abstract class AbstractShape
     
     public MyPoint DownRight { get; set; }
     
-    public AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
+    protected AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
@@ -43,7 +40,24 @@ public abstract class AbstractShape
     public void DrawAlgorithm(Canvas canvas)
     {
         CanvasIndex = canvas.Children.Count;
-        DrawStrategy.Draw(this, canvas);
+        Shape drawnShape = DrawStrategy.Draw(this);
+        if (drawnShape != null)
+        {
+            canvas.Children.Add(drawnShape);
+        }
+    }
+
+    public void DrawAlgorithmIndex(Canvas canvas)
+    {
+        var drawnShape = DrawStrategy.Draw(this);
+        if (drawnShape != null)
+        {
+            canvas.Children.RemoveAt(CanvasIndex);
+            if (canvas.Children.Count == 0)
+                canvas.Children.Add(drawnShape);
+            else
+                canvas.Children.Insert(CanvasIndex, drawnShape);
+        }
     }
     
     [JsonIgnore]

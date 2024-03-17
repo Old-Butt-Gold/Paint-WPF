@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
-using Accessibility;
+using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures.Rectangle;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -9,17 +8,18 @@ namespace OOTPiSP.Strategy;
 
 public class RectangleDrawStrategy : IDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public Shape Draw(AbstractShape shape)
     {
         if (shape is MyRectangle myRectangle)
         {
-            System.Windows.Shapes.Rectangle rectangle = new()
+            Rectangle rectangle = new()
             {
                 Fill = myRectangle.BackgroundColor,
                 Stroke = myRectangle.PenColor,
                 Width = myRectangle.GetWidth(),
                 Height = myRectangle.GetHeight(),
                 Tag = myRectangle.CanvasIndex,
+                StrokeThickness = myRectangle.StrokeThickness,
             };
         
             Canvas.SetLeft(rectangle, myRectangle.TopLeft.X);
@@ -52,7 +52,10 @@ public class RectangleDrawStrategy : IDrawStrategy
                 (rectangle.Width, rectangle.Height) = (rectangle.Height, rectangle.Width);
             }
 
-            canvas.Children.Add(rectangle);
+            return rectangle;
+
         }
+
+        return null;
     }
 }

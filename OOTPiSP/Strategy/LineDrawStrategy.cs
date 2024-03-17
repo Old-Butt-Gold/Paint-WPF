@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -7,11 +6,11 @@ namespace OOTPiSP.Strategy;
 
 public class LineDrawStrategy : IDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public Shape Draw(AbstractShape shape)
     {
         if (shape is MyLine myLine)
         {
-            System.Windows.Shapes.Line line = new()
+            Line line = new()
             {
                 Fill = myLine.BackgroundColor,
                 Stroke = myLine.PenColor,
@@ -20,9 +19,12 @@ public class LineDrawStrategy : IDrawStrategy
                 Y1 = myLine.TopLeft.Y,
                 Y2 = myLine.DownRight.Y,
                 Tag = myLine.CanvasIndex,
+                StrokeThickness = myLine.StrokeThickness
             };
-            
-            canvas.Children.Add(line);
+
+            return line;
         }
+
+        return null;
     }
 }

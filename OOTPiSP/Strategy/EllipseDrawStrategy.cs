@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures.Ellipse;
 using OOTPiSP.GeometryFigures.Shared;
 
@@ -7,7 +8,7 @@ namespace OOTPiSP.Strategy;
 
 public class EllipseDrawStrategy : IDrawStrategy
 {
-    public void Draw(AbstractShape shape, Canvas canvas)
+    public Shape Draw(AbstractShape shape)
     {
         if (shape is MyEllipse myEllipse)
         {
@@ -53,8 +54,10 @@ public class EllipseDrawStrategy : IDrawStrategy
             {
                 (ellipse.Width, ellipse.Height) = (ellipse.Height, ellipse.Width);
             }
-        
-            canvas.Children.Add(ellipse);
+
+            return ellipse;
         }
+
+        return null;
     }
 }

@@ -3,17 +3,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
-using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using OOTPiSP.Factory;
-using OOTPiSP.GeometryFigures.Ellipse;
 using OOTPiSP.GeometryFigures.Shared;
 using Formatting = Newtonsoft.Json.Formatting;
 
@@ -38,7 +35,7 @@ public partial class MainWindow
     };
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
-    List<AbstractShape> AbstractShapes { get; set; } = new();
+    List<AbstractShape> AbstractShapes { get; set; } = [];
     
     void Button_Click(object sender, RoutedEventArgs e)
     {
@@ -60,7 +57,6 @@ public partial class MainWindow
 
     public MainWindow()
     {
-        
         InitializeComponent();
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (_, _) =>
         {
@@ -105,8 +101,15 @@ public partial class MainWindow
     {
         if (e is { ClickCount: 2, Source: Shape frameworkElement })
         {
-            MessageBox.Show(frameworkElement.Tag.ToString());
-            MessageBox.Show(AbstractShapes[(int) frameworkElement.Tag].CanvasIndex.ToString());
+            var tag = (int) frameworkElement.Tag;
+
+            var shape = AbstractShapes[tag];
+            
+            //Открытие нового окна
+            
+            shape.DrawAlgorithmIndex(Canvas);
+
+            SetHandlers(shape.CanvasIndex);
             return;
         }
         
@@ -194,14 +197,19 @@ public partial class MainWindow
     {
         AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
             bg, PenColorPicker.SelectedBrush, _angle);
+        
         AbstractShapes.Add(shape);
         shape.DrawAlgorithm(Canvas);
-        
-        Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
-        Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
 
-        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
-        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+        SetHandlers(shape.CanvasIndex);
+    }
+
+    void SetHandlers(int canvasIndex)
+    {
+        Canvas.Children[canvasIndex].PreviewMouseUp += Canvas_OnPreviewMouseUp;
+        Canvas.Children[canvasIndex].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
+        Canvas.Children[canvasIndex].MouseEnter += Shape_MouseEnter;
+        Canvas.Children[canvasIndex].MouseLeave += Shape_MouseLeave;
     }
 
     void Shape_MouseEnter(object sender, MouseEventArgs e)
@@ -283,15 +291,9 @@ public partial class MainWindow
         }
     }
 
-    void Maximize_OnClick(object sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-    }
+    void Maximize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
     
-    void Minimize_OnClick(object sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    void Minimize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
     void JSONSave_OnClick(object sender, RoutedEventArgs e)
     {
@@ -377,12 +379,8 @@ public partial class MainWindow
                     foreach (var shape in AbstractShapes)
                     {
                         shape.DrawAlgorithm(Canvas);
-                        
-                        Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
-                        Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
 
-                        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
-                        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+                        SetHandlers(shape.CanvasIndex);
                     }
                     MessageBox.Show($"Список фигур успешно загружен!");
                 }
@@ -414,17 +412,14 @@ public partial class MainWindow
                     Canvas.Children.Clear();
                     foreach (var item in loadedShapes)
                     {
-                        var shape = _buttonActions[item.TagShape].CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor,
-                            item.PenColor, item.Angle);
+                        var shape = _buttonActions[item.TagShape].CreateShape(
+                            item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor, item.Angle);
                         shape.StrokeThickness = item.StrokeThickness;
+                        
                         AbstractShapes.Add(shape);
                         shape.DrawAlgorithm(Canvas);
-                        
-                        Canvas.Children[^1].PreviewMouseUp += Canvas_OnPreviewMouseUp;
-                        Canvas.Children[^1].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
 
-                        Canvas.Children[^1].MouseEnter += Shape_MouseEnter;
-                        Canvas.Children[^1].MouseLeave += Shape_MouseLeave;
+                        SetHandlers(shape.CanvasIndex);
                     }
                     
                     MessageBox.Show($"Список фигур успешно загружен!");
@@ -433,7 +428,7 @@ public partial class MainWindow
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при открытии файла JSON: {ex.Message}");
+                MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
             }
         }
     }
