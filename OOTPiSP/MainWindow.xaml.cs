@@ -104,8 +104,9 @@ public partial class MainWindow
             var tag = (int) frameworkElement.Tag;
 
             var shape = AbstractShapes[tag];
-            
-            //Открытие нового окна
+
+            var shapeEditorWindow = new ShapeEditorWindow(shape);
+            shapeEditorWindow.ShowDialog();
             
             shape.DrawAlgorithmIndex(Canvas);
 
