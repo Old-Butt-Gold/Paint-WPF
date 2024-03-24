@@ -31,6 +31,12 @@ public partial class ShapeEditorWindow : INotifyPropertyChanged
 
         if (Shape.Angle < 0)
             Shape.Angle += 360;
+
+        /*if (Shape is MyTriangle myTriangle)
+        {
+            myTriangle.RecalculateOX();
+            myTriangle.RecalculateOY();
+        }*/
     }
 
     protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

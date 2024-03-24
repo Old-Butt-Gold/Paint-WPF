@@ -27,7 +27,6 @@ public class TriangleDrawStrategy : IDrawStrategy
                     new System.Windows.Point(myTriangle.VertexOY.X, myTriangle.VertexOY.Y),
                 },
                 RenderTransform = new RotateTransform(myTriangle.Angle, centerX, centerY),
-                Tag = myTriangle.CanvasIndex,
                 StrokeThickness = myTriangle.StrokeThickness,
             };
 

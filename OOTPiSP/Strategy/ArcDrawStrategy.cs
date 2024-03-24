@@ -43,7 +43,6 @@ public class ArcDrawStrategy : IDrawStrategy
                 Fill = myArc.BackgroundColor,
                 Data = pathGeometry,
                 RenderTransform = new RotateTransform(myArc.Angle, centerX, centerY),
-                Tag = myArc.CanvasIndex,
                 StrokeThickness = myArc.StrokeThickness,
             };
 

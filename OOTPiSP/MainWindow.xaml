@@ -7,7 +7,7 @@
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
         Title="Paint" Height="450" Width="800" 
-        WindowStyle="None" AllowsTransparency="True">
+        WindowStyle="None" AllowsTransparency="True" Background="{Binding ElementName=BackgroundPaintPicker, Path=SelectedBrush}">
     <WindowChrome.WindowChrome>
             <WindowChrome CaptionHeight="5"/>
     </WindowChrome.WindowChrome>    
@@ -101,7 +101,7 @@
                 
                 <!--Меню-->
                 <DockPanel DockPanel.Dock="Top" Background="Aquamarine" Height="40" ZIndex="1">
-                        <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center">
+                        <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center">
                                 <MenuItem Header="Файл" Icon="{DynamicResource File}" Margin="10">
                                         <MenuItem Header="Сохранить">
                                                 <MenuItem Header="JSON" Click="JSONSave_OnClick"/>
@@ -114,6 +114,17 @@
                                         </MenuItem>
                                 </MenuItem>
                                 <MenuItem Header="Очистить холст" Click="ClearCanvas_OnClick" Margin="10"/>
+                                <MenuItem OverridesDefaultStyle="True">
+                                        <MenuItem.Template>
+                                                <ControlTemplate TargetType="MenuItem">
+                                                                <ContentPresenter Content="{TemplateBinding Header}" 
+                                                                        Margin="5"/>
+                                                </ControlTemplate>
+                                        </MenuItem.Template>
+                                        <MenuItem.Header>
+                                                <hw:ColorPickerButton Height="Auto" Width="Auto" Content="Цвет фона" Name="BackgroundPaintPicker" SelectedBrush="LightGray" />
+                                        </MenuItem.Header>
+                                </MenuItem>
                         </Menu>
                         
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">

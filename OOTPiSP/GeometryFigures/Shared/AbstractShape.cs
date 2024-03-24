@@ -11,9 +11,9 @@ public abstract class AbstractShape
 {
     [JsonIgnore] 
     public IDrawStrategy DrawStrategy { get; protected set; }
-    
-    [JsonIgnore]
-    public int CanvasIndex { get; set; }
+
+    [JsonIgnore] 
+    public int CanvasIndex { get; set; } = -1;
     
     [JsonIgnore]
     public virtual object TagShape { get; }
@@ -39,27 +39,24 @@ public abstract class AbstractShape
 
     public void DrawAlgorithm(Canvas canvas)
     {
-        CanvasIndex = canvas.Children.Count;
         Shape drawnShape = DrawStrategy.Draw(this);
         if (drawnShape != null)
         {
-            canvas.Children.Add(drawnShape);
+            if (CanvasIndex < 0)
+            {
+                CanvasIndex = canvas.Children.Count;
+                canvas.Children.Add(drawnShape);
+            }
+            else
+            {
+                canvas.Children.RemoveAt(CanvasIndex);
+                canvas.Children.Insert(CanvasIndex, drawnShape);
+            }
+            drawnShape.Tag = CanvasIndex;
         }
     }
 
-    public void DrawAlgorithmIndex(Canvas canvas)
-    {
-        var drawnShape = DrawStrategy.Draw(this);
-        if (drawnShape != null)
-        {
-            canvas.Children.RemoveAt(CanvasIndex);
-            if (canvas.Children.Count == 0)
-                canvas.Children.Add(drawnShape);
-            else
-                canvas.Children.Insert(CanvasIndex, drawnShape);
-        }
-    }
-    
+
     [JsonIgnore]
     public int CornerOXY { get; private set; }
 

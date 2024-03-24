@@ -18,7 +18,6 @@ public class LineDrawStrategy : IDrawStrategy
                 X2 = myLine.DownRight.X,
                 Y1 = myLine.TopLeft.Y,
                 Y2 = myLine.DownRight.Y,
-                Tag = myLine.CanvasIndex,
                 StrokeThickness = myLine.StrokeThickness
             };
 

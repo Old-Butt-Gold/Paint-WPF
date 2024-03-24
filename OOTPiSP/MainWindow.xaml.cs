@@ -108,7 +108,7 @@ public partial class MainWindow
             var shapeEditorWindow = new ShapeEditorWindow(shape);
             shapeEditorWindow.ShowDialog();
             
-            shape.DrawAlgorithmIndex(Canvas);
+            shape.DrawAlgorithm(Canvas);
 
             SetHandlers(shape.CanvasIndex);
             return;

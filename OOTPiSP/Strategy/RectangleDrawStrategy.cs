@@ -18,7 +18,6 @@ public class RectangleDrawStrategy : IDrawStrategy
                 Stroke = myRectangle.PenColor,
                 Width = myRectangle.GetWidth(),
                 Height = myRectangle.GetHeight(),
-                Tag = myRectangle.CanvasIndex,
                 StrokeThickness = myRectangle.StrokeThickness,
             };
         

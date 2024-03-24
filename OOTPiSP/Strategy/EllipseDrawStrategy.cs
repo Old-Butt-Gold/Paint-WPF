@@ -21,7 +21,6 @@ public class EllipseDrawStrategy : IDrawStrategy
                 Stroke = myEllipse.PenColor,
                 Width =  width,
                 Height = height,
-                Tag = myEllipse.CanvasIndex,
                 StrokeThickness = myEllipse.StrokeThickness,
             };
         
