@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <None Remove="Assets\circle.png" />
+      <Resource Include="Assets\bg.jpg" />
       <Resource Include="Assets\circle.png" />
       <None Remove="Assets\ellipse.png" />
       <Resource Include="Assets\ellipse.png" />
@@ -53,6 +54,7 @@
       <None Remove="Assets\xml.png" />
       <None Remove="Assets\bracket-curly.png" />
       <None Remove="Assets\json (2).png" />
+      <None Remove="bg.jpg" />
     </ItemGroup>
 
 </Project>

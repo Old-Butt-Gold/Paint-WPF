@@ -38,65 +38,6 @@
         <CommandBinding Command="local:WindowCommands.MoveLeft" Executed="MoveLeft_OnExecuted" />            
     </Window.CommandBindings>
     
-    <Window.Resources>
-        <!--Стили-->
-        <Style x:Key="ButtonStyle">
-                <Style.Resources>
-                        <LinearGradientBrush x:Key="GradientBrushOnButton" StartPoint="0.5,1" EndPoint="0.5,0">
-                                <GradientStop Color="OrangeRed" Offset="0" />
-                                <GradientStop Color="BlanchedAlmond" Offset="0.5" />
-                                <GradientStop Color="RosyBrown" Offset="1" />
-                        </LinearGradientBrush> 
-                        
-                        <LinearGradientBrush x:Key="GradientBrush" StartPoint="0.5,1" EndPoint="0.5,0">
-                                <GradientStop Color="Yellow" Offset="0" />
-                                <GradientStop Color="GreenYellow" Offset="0.5" />
-                                <GradientStop Color="Aqua" Offset="1" />
-                        </LinearGradientBrush> 
-                </Style.Resources>
-                
-                <Style.Setters>
-                        <Setter Property="Button.Margin" Value="2" />
-                        <Setter Property="Button.Background" Value="{StaticResource GradientBrush}"/>
-                        <EventSetter Event="Button.Click" Handler="Button_Click"/>
-                        <Setter Property="Button.IsDefault" Value="True" />
-                </Style.Setters>
-                
-                <Style.Triggers>
-                       <Trigger Property="Button.IsFocused" Value="True">
-                               <Setter Property="Button.BorderBrush" Value="{StaticResource GradientBrushOnButton}" />
-                               <Setter Property="Button.BorderThickness" Value="2.5" />
-                       </Trigger> 
-                </Style.Triggers>
-        </Style>
-        
-        <Style x:Key="WindowsButtonStyle">
-                <Style.Setters>
-                        <Setter Property="Button.Margin" Value="0 5 10 2.5" />
-                        <Setter Property="Button.MinWidth" Value="30" />
-                        <Setter Property="Button.BorderThickness" Value="0" />
-                        <Setter Property="Button.Background" Value="Aquamarine"/>
-                </Style.Setters>
-        </Style>
-        
-        <!--Статические ресурсы-->
-        <Image x:Key="Circle" Source="./Assets/circle.png"/>
-        <Image x:Key="Ellipse" Source="./Assets/ellipse.png"/>
-        <Image x:Key="Square" Source="./Assets/square.png"/>
-        <Image x:Key="Rectangle" Source="./Assets/rectangle.png"/>
-        <Image x:Key="Line" Source="./Assets/line.png"/>
-        <Image x:Key="EquilateralTriangle" Source="./Assets/triangle.png"/>
-        <Image x:Key="IsoscelesTriangle" Source="./Assets/isosceles-triangle.png"/>
-        <Image x:Key="RightTriangle" Source="./Assets/right-triangle.png"/>
-        <Image x:Key="Arc" Source="./Assets/arc.png"/>
-        <Image x:Key="Pen" Source="./Assets/Pen.png"/>
-        <Image x:Key="Fill" Source="./Assets/Fill.png"/>
-        <Image x:Key="Exit" Source="./Assets/exit.png"/>
-        <Image x:Key="Minimize" Source="./Assets/minimize.png"/>
-        <Image x:Key="Maximize" Source="./Assets/maximize.png"/>
-        <Image x:Key="File" Source="./Assets/file.png"/>
-    </Window.Resources>
-        
         <DockPanel>
                 
                 <!--Меню-->
@@ -161,23 +102,23 @@
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
                             
                             <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Circle}"/>
+                                    Content="{StaticResource Circle}" Click="Button_Click"/>
                             <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Ellipse}" />
+                                    Content="{StaticResource Ellipse}" Click="Button_Click"/>
                             <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Square}" />
+                                    Content="{StaticResource Square}" Click="Button_Click"/>
                             <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Rectangle}"/>
+                                    Content="{StaticResource Rectangle}" Click="Button_Click"/>
                             <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Line}" />
+                                    Content="{StaticResource Line}" Click="Button_Click"/>
                             <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource EquilateralTriangle}"/>
+                                    Content="{StaticResource EquilateralTriangle}" Click="Button_Click"/>
                             <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource IsoscelesTriangle}"/>
+                                    Content="{StaticResource IsoscelesTriangle}" Click="Button_Click"/>
                             <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource RightTriangle}"/>
+                                    Content="{StaticResource RightTriangle}" Click="Button_Click"/>
                             <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Arc}"/>
+                                    Content="{StaticResource Arc}" Click="Button_Click"/>
                             
                         </Grid>
                         
