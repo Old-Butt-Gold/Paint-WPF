@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:OOTPiSP"
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
-        Title="Shape Editor" Height="450" Width="400"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner">
+        Title="Shape Editor" Height="450" Width="400" 
+        Name="EditorWindow" WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
         <Style TargetType="StackPanel">
@@ -34,7 +34,8 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="5">
+    <Grid Margin="5" 
+          DataContext="{Binding ElementName=EditorWindow, Path=Shape}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -47,38 +48,38 @@
 
         <StackPanel Grid.Row="0">
             <TextBlock Text="Цвет заливки" FontWeight="Bold"/>
-            <hw:ColorPickerButton SelectedBrush="{Binding Shape.BackgroundColor}" Content=""/>
+            <hw:ColorPickerButton SelectedBrush="{Binding Path=BackgroundColor}" Content=""/>
         </StackPanel>
 
         <StackPanel Grid.Row="1">
             <TextBlock Text="Цвет обводки" FontWeight="Bold"/>
-            <hw:ColorPickerButton SelectedBrush="{Binding Shape.PenColor}" Content=""/>
+            <hw:ColorPickerButton SelectedBrush="{Binding Path=PenColor}" Content=""/>
         </StackPanel>
 
         <StackPanel Grid.Row="2">
             <TextBlock Text="Толщина обводки" FontWeight="Bold"/>
-            <TextBox Text="{Binding Shape.StrokeThickness}"/>
+            <TextBox Text="{Binding Path=StrokeThickness}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3">
             <TextBlock Text="Верхний угол (X,Y)" FontWeight="Bold"/>
             <StackPanel Orientation="Horizontal">
-                <TextBox Width="100" Text="{Binding Shape.TopLeft.X}"/>
-                <TextBox Width="100" Text="{Binding Shape.TopLeft.Y}" Margin="20,0,0,0"/>
+                <TextBox Width="100" Text="{Binding Path=TopLeft.X}"/>
+                <TextBox Width="100" Text="{Binding Path=TopLeft.Y}" Margin="20,0,0,0"/>
             </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Row="4">
             <TextBlock Text="Нижний правый угол (X,Y)" FontWeight="Bold"/>
             <StackPanel Orientation="Horizontal">
-                <TextBox Width="100" Text="{Binding Shape.DownRight.X}" />
-                <TextBox Width="100" Text="{Binding Shape.DownRight.Y}" Margin="20,0,0,0"/>
+                <TextBox Width="100" Text="{Binding Path=DownRight.X}" />
+                <TextBox Width="100" Text="{Binding Path=DownRight.Y}" Margin="20,0,0,0"/>
             </StackPanel>
         </StackPanel>
         
         <StackPanel Grid.Row="5">
             <TextBlock Text="Угол поворота" FontWeight="Bold"/>
-            <TextBox Text="{Binding Shape.Angle, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding Path=Angle, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
         <Button Grid.Row="6" Content="Применить" Click="ApplyButton_Click" IsCancel="True"/>

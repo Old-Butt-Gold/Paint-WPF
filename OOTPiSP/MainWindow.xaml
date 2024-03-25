@@ -55,17 +55,20 @@
                                         </MenuItem>
                                 </MenuItem>
                                 <MenuItem Header="Очистить холст" Click="ClearCanvas_OnClick" Margin="10"/>
+                                
                                 <MenuItem OverridesDefaultStyle="True">
                                         <MenuItem.Template>
                                                 <ControlTemplate TargetType="MenuItem">
-                                                                <ContentPresenter Content="{TemplateBinding Header}" 
-                                                                        Margin="5"/>
+                                                        <ContentControl Content="{TemplateBinding Header}" 
+                                                                        Margin="5" Height="Auto" Width="Auto"/>
                                                 </ControlTemplate>
                                         </MenuItem.Template>
+                                        
                                         <MenuItem.Header>
-                                                <hw:ColorPickerButton Height="Auto" Width="Auto" Content="Цвет фона" Name="BackgroundPaintPicker" SelectedBrush="LightGray" />
+                                                <hw:ColorPickerButton Content="Цвет фона" Name="BackgroundPaintPicker" SelectedBrush="LightGray" />
                                         </MenuItem.Header>
                                 </MenuItem>
+                                
                         </Menu>
                         
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">

@@ -1,24 +1,26 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP;
 
-public partial class ShapeEditorWindow : INotifyPropertyChanged
+public partial class ShapeEditorWindow
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    AbstractShape _shape;
     public AbstractShape Shape
     {
-        get => _shape;
-        set
-        {
-            _shape = value;
-            OnPropertyChanged(nameof(Shape));
-        }
+        get => (AbstractShape)GetValue(ShapeProperty);
+        set => SetValue(ShapeProperty, value);
     }
 
+    public static readonly DependencyProperty ShapeProperty;
+
+    static ShapeEditorWindow()
+    {
+        ShapeProperty = DependencyProperty.Register(
+            "Shape", 
+            typeof(AbstractShape), 
+            typeof(ShapeEditorWindow));
+    }
+    
     public ShapeEditorWindow(AbstractShape shape)
     {
         InitializeComponent();
@@ -31,13 +33,5 @@ public partial class ShapeEditorWindow : INotifyPropertyChanged
 
         if (Shape.Angle < 0)
             Shape.Angle += 360;
-
-        /*if (Shape is MyTriangle myTriangle)
-        {
-            myTriangle.RecalculateOX();
-            myTriangle.RecalculateOY();
-        }*/
     }
-
-    protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

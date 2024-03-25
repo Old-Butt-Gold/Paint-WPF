@@ -7,6 +7,6 @@ public partial class App
     public App()
     {
         SplashScreen splashScreen = new("Assets/bg.jpg");
-        splashScreen.Show(true, true);
+        splashScreen.Show(true, false);
     }
 }
