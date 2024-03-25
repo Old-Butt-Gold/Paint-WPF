@@ -1,15 +1,20 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using OOTPiSP.Strategy;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 
 [Serializable]
-public abstract class AbstractShape
+public abstract partial class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
 {
-    [JsonIgnore] 
+    int _angle;
+    double _strokeThickness = 1;
+
+    [JsonIgnore]
     public IDrawStrategy DrawStrategy { get; protected set; }
 
     [JsonIgnore] 
@@ -18,11 +23,51 @@ public abstract class AbstractShape
     [JsonIgnore]
     public virtual object TagShape { get; }
 
-    public int Angle { get; set; }
+    public int Angle
+    {
+        get => _angle;
+        set
+        {
+            if (value is > -360 and < 360)
+            {
+                _angle = value;
+                _errors["Angle"] = null;
+            }
+            else
+            {
+                _errors["Angle"] = "Угол должен быть в диапазоне от -360 до 360!";
+            }
+        }
+    }
+
+    public double StrokeThickness
+    {
+        get => _strokeThickness;
+        set
+        {
+            if (value is >= 0 and <= 72)
+            {
+                _strokeThickness = value;
+                _errors["StrokeThickness"] = null;
+            }
+            else
+            {
+                _errors["StrokeThickness"] = "Толщина карандаша должна быть от 0.0 до 72.0!";
+            }
+
+        }
+    }
 
     public MyPoint TopLeft { get; set; }
     
     public MyPoint DownRight { get; set; }
+    
+    [JsonIgnore]
+    public int CornerOXY { get; private set; }
+    
+    public Brush BackgroundColor { get; set; }
+
+    public Brush PenColor { get; set; }
     
     protected AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
     {
@@ -32,7 +77,7 @@ public abstract class AbstractShape
         TopLeft = topLeft;
         DownRight = downRight;
 
-        Angle = angle;
+        Angle = angle % 360;
         
         RecalculateCornerOxy(topLeft, downRight);
     }
@@ -56,10 +101,6 @@ public abstract class AbstractShape
         }
     }
 
-
-    [JsonIgnore]
-    public int CornerOXY { get; private set; }
-
     void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
         //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
@@ -73,9 +114,24 @@ public abstract class AbstractShape
         }
     }
     
-    public double StrokeThickness { get; set; } = 1;
+    #region IDataErrorInfo Members
     
-    public Brush BackgroundColor { get; set; }
+    [JsonIgnore]
+    [XmlIgnore]
+    public string Error => string.Empty;
 
-    public Brush PenColor { get; set; }
+    Dictionary<string, string> _errors = new();
+
+    [JsonIgnore]
+    public bool IsValid => _errors.Values.All(x => x == null);
+
+    [JsonIgnore]
+    public IEnumerable<string> GetErrors => _errors.Values.Where(x => x != null);
+
+    [JsonIgnore]
+    [XmlIgnore]
+    //Для валидации
+    public string this[string columnName] => _errors.GetValueOrDefault(columnName);
+
+    #endregion
 }

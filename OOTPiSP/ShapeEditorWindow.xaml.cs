@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using OOTPiSP.GeometryFigures.Shared;
 
 namespace OOTPiSP;
@@ -27,11 +28,19 @@ public partial class ShapeEditorWindow
         Shape = shape;
     }
 
-    void ApplyButton_Click(object sender, RoutedEventArgs e)
+    void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
-        Shape.Angle %= 360;
-
-        if (Shape.Angle < 0)
-            Shape.Angle += 360;
+        if (!Shape.IsValid)
+        {
+            var list = Shape.GetErrors;
+            MessageBox.Show("Присутствуют ошибки в данных: \n" + string.Join("\n", list), "Валидация", MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+        else
+        {
+            Close();
+        }
     }
+
+    void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e) => ButtonBase_OnClick(sender, null);
 }

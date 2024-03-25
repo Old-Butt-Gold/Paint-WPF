@@ -272,10 +272,6 @@ public partial class MainWindow
     {
         _angle += angleDelta;
         
-        if (_angle < 0)
-            _angle += 360;
-        _angle %= 360;
-        
         if (_mouseArgs != null)
         {
             Canvas_OnPreviewMouseMove(sender, _mouseArgs);
