@@ -1,4 +1,4 @@
-﻿namespace OOTPiSP.GeometryFigures.Shared;
+﻿namespace SharedComponents;
 
 public class MyPoint
 {

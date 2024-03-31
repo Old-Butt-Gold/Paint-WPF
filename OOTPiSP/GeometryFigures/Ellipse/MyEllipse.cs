@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
+using SharedComponents;
 
 namespace OOTPiSP.GeometryFigures.Ellipse;
 
@@ -15,7 +16,6 @@ public class MyEllipse : AbstractShape
         DrawStrategy = new EllipseDrawStrategy();
     }
     
-
     public virtual double GetWidth() => Math.Abs(TopLeft.X - DownRight.X);
     public virtual double GetHeight() => Math.Abs(TopLeft.Y - DownRight.Y);
 

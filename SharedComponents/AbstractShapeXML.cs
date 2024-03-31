@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Xml.Serialization;
+using SharedComponents;
 
 namespace OOTPiSP.GeometryFigures.Shared;
 

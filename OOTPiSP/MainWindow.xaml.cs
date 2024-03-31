@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Reflection;
+using System.Runtime.Loader;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,12 +7,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
-using System.Xml.Serialization;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using OOTPiSP.Factory;
-using OOTPiSP.GeometryFigures.Shared;
-using Formatting = Newtonsoft.Json.Formatting;
+using SharedComponents;
 
 namespace OOTPiSP;
 
@@ -33,6 +30,9 @@ public partial class MainWindow
         { "7", new RightTriangleFactory() },
         { "8", new ArcFactory() }
     };
+
+    MyXMLSerializer MyXmlSerializer { get; set; } = new();
+    MyJsonSerializer MyJsonSerializer { get; set; } = new();
     
     AbstractFactory Factory { get; set; } = new CircleFactory();
     List<AbstractShape> AbstractShapes { get; set; } = [];
@@ -64,7 +64,6 @@ public partial class MainWindow
                 MessageBoxResult.Yes)
                 Close();
         }));
-        
     }
 
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -235,7 +234,7 @@ public partial class MainWindow
 
             var blurAnimation = new DoubleAnimation
             {
-                To = 70,
+                To = 30,
                 Duration = TimeSpan.FromSeconds(0.5),
                 AutoReverse = true,
                 RepeatBehavior = RepeatBehavior.Forever,
@@ -304,16 +303,8 @@ public partial class MainWindow
             {
                 saveFileDialog.FileName += ".json";
             }
-            using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
-            
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.Objects
-            };
-            string json = JsonConvert.SerializeObject(AbstractShapes, settings);
-            byte[] bytes = Encoding.UTF8.GetBytes(json);
-            fs.Write(bytes, 0, bytes.Length);
+
+            MyJsonSerializer.Serialize(saveFileDialog.FileName, AbstractShapes);
         }
     }
     
@@ -329,25 +320,7 @@ public partial class MainWindow
             {
                 saveFileDialog.FileName += ".xml";
             }
-            using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
-
-            List<AbstractShapeXML> list = new();
-            foreach (var item in AbstractShapes)
-            {
-                list.Add(new()
-                {
-                    Angle = item.Angle,
-                    BackgroundColor = item.BackgroundColor,
-                    DownRight = item.DownRight,
-                    PenColor = item.PenColor,
-                    StrokeThickness = item.StrokeThickness,
-                    TagShape = item.TagShape,
-                    TopLeft = item.TopLeft
-                });
-            }
-            
-            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-            serializer.Serialize(fs, list);
+            MyXmlSerializer.Serialize(saveFileDialog.FileName, AbstractShapes);
         }
     }
 
@@ -359,33 +332,18 @@ public partial class MainWindow
         };
         if (openFileDialog.ShowDialog() == true)
         {
-            try
+            var loadedShapes = MyJsonSerializer.Deserialize(openFileDialog.FileName);
+            if (loadedShapes is { Count: not 0 })
             {
-                string json = File.ReadAllText(openFileDialog.FileName);
-
-                var settings = new JsonSerializerSettings()
+                AbstractShapes = loadedShapes;
+                Canvas.Children.Clear();
+                foreach (var shape in AbstractShapes)
                 {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                };
-                List<AbstractShape>? loadedShapes = JsonConvert.DeserializeObject<List<AbstractShape>>(json, settings);
+                    shape.DrawAlgorithm(Canvas);
 
-                if (loadedShapes is { Count: not 0 })
-                {
-                    AbstractShapes = loadedShapes;
-                    Canvas.Children.Clear();
-                    foreach (var shape in AbstractShapes)
-                    {
-                        shape.DrawAlgorithm(Canvas);
-
-                        SetHandlers(shape.CanvasIndex);
-                    }
-                    MessageBox.Show($"Список фигур успешно загружен!");
+                    SetHandlers(shape.CanvasIndex);
                 }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при открытии файла JSON: {ex.Message}");
+                MessageBox.Show($"Список фигур успешно загружен!");
             }
         }
     }
@@ -398,34 +356,27 @@ public partial class MainWindow
         };
         if (openFileDialog.ShowDialog() == true)
         {
-            try
+            var listShapes = MyXmlSerializer.Deserialize(openFileDialog.FileName);
+            if (listShapes is not null)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-                using FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
-
-                if (serializer.Deserialize(fs) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+                AbstractShapes.Clear();
+                Canvas.Children.Clear();
+                foreach (var item in listShapes)
                 {
-                    AbstractShapes.Clear();
-                    Canvas.Children.Clear();
-                    foreach (var item in loadedShapes)
+                    if (_buttonActions.TryGetValue(item.TagShape, out var factory))
                     {
-                        var shape = _buttonActions[item.TagShape].CreateShape(
+                        var shape = factory.CreateShape(
                             item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor, item.Angle);
                         shape.StrokeThickness = item.StrokeThickness;
-                        
+
                         AbstractShapes.Add(shape);
                         shape.DrawAlgorithm(Canvas);
 
                         SetHandlers(shape.CanvasIndex);
                     }
-                    
-                    MessageBox.Show($"Список фигур успешно загружен!");
                 }
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
+                MessageBox.Show($"Список фигур успешно загружен!");
             }
         }
     }
@@ -434,5 +385,43 @@ public partial class MainWindow
     {
         AbstractShapes.Clear();
         Canvas.Children.Clear();
+    }
+
+    void LoadPlugin_Click(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog openFileDialog = new()
+        {
+            Filter = "Динамическая библиотека (*.dll)|*.dll"
+        };
+        if (openFileDialog.ShowDialog() == true)
+        {
+            Assembly assembly = Assembly.LoadFrom(openFileDialog.FileName);
+            var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(AbstractFactory)));
+            foreach (var type in types)
+            {
+                if (Activator.CreateInstance(type) is AbstractFactory factory)
+                {
+                    var shape = factory.CreateShape(new(), new(), Brushes.Black, Brushes.Black, 0);
+                    _buttonActions[shape.TagShape] = factory;
+
+                    Button newButton = new Button
+                    {
+                        Content = shape.ToString(),
+                        Style = (Style)FindResource("ButtonStyle"),
+                        Tag = shape.TagShape,
+                    };
+                    newButton.Click += Button_Click;
+
+                    int columnIndex = ButtonGrid.ColumnDefinitions.Count; // Определяем индекс колонки
+                    ButtonGrid.ColumnDefinitions.Add(
+                        new()
+                        {
+                            Width = new GridLength(1, GridUnitType.Star),
+                        });
+                    Grid.SetColumn(newButton, columnIndex); // Устанавливаем кнопке колонку в Grid
+                    ButtonGrid.Children.Add(newButton); // Добавляем кнопку в дочерние элементы Grid
+                }
+            }
+        }
     }
 }

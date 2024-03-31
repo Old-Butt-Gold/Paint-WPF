@@ -1,6 +1,7 @@
 ﻿using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures;
 using OOTPiSP.GeometryFigures.Shared;
+using SharedComponents;
 
 namespace OOTPiSP.Strategy;
 

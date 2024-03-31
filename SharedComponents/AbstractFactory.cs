@@ -1,7 +1,6 @@
 ﻿using System.Windows.Media;
-using OOTPiSP.GeometryFigures.Shared;
 
-namespace OOTPiSP.Factory;
+namespace SharedComponents;
 
 public abstract class AbstractFactory
 {

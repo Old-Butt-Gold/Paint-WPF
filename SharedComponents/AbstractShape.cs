@@ -4,12 +4,11 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
-using OOTPiSP.Strategy;
 
-namespace OOTPiSP.GeometryFigures.Shared;
+namespace SharedComponents;
 
 [Serializable]
-public abstract partial class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
+public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
 {
     int _angle;
     double _strokeThickness = 1;

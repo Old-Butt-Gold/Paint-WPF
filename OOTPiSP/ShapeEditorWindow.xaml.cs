@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using OOTPiSP.GeometryFigures.Shared;
+using SharedComponents;
 
 namespace OOTPiSP;
 

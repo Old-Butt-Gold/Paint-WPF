@@ -39,7 +39,6 @@
     </Window.CommandBindings>
     
         <DockPanel>
-                
                 <!--Меню-->
                 <DockPanel DockPanel.Dock="Top" Background="Aquamarine" Height="40" ZIndex="1">
                         <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center">
@@ -69,12 +68,14 @@
                                         </MenuItem.Header>
                                 </MenuItem>
                                 
+                                <MenuItem Header="Загрузить плагин" Margin="10" Click="LoadPlugin_Click"/>
+                                
                         </Menu>
                         
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Minimize}" Click="Minimize_OnClick"/>
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Maximize}" Click="Maximize_OnClick"/>
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Exit}" Command="Close"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Minimize}" Click="Minimize_OnClick" ToolTip="Свернуть окно"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Maximize}" Click="Maximize_OnClick" ToolTip="Развернуть окно"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Exit}" Command="Close" ToolTip="Закрыть"/>
                         </StackPanel>
                 </DockPanel>
                 
@@ -85,7 +86,7 @@
                                 <RowDefinition Height="11*" />
                         </Grid.RowDefinitions>
                         <!-- Панель инструментов -->
-                        <Grid Grid.Row="0" ZIndex="1" Background="Aquamarine">
+                        <Grid x:Name="ButtonGrid" Grid.Row="0" ZIndex="1" Background="Aquamarine">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="1.5*"/>
@@ -122,7 +123,6 @@
                                     Content="{StaticResource RightTriangle}" Click="Button_Click"/>
                             <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
                                     Content="{StaticResource Arc}" Click="Button_Click"/>
-                            
                         </Grid>
                         
                         <!--Отрисовка-->

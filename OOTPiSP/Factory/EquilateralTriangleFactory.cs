@@ -1,6 +1,7 @@
 ﻿using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.GeometryFigures.Triangle;
+using SharedComponents;
 
 namespace OOTPiSP.Factory;
 

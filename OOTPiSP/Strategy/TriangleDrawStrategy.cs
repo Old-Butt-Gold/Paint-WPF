@@ -3,6 +3,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.GeometryFigures.Triangle;
+using SharedComponents;
 
 namespace OOTPiSP.Strategy;
 
