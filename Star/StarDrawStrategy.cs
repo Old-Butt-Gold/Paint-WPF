@@ -17,9 +17,9 @@ public class StarDrawStrategy : IDrawStrategy
                 Math.Abs(star.TopLeft.Y - star.DownRight.Y)) / 2;
             double innerRadius = outerRadius / 2;
  
-            int points = 5; // Number of star points
+            int points = 5;
             double angleIncrement = Math.PI / points;
-            double startAngle = -Math.PI / 2; // Start angle
+            double startAngle = -Math.PI / 2;
  
             PathGeometry pathGeometry = new PathGeometry();
             PathFigure pathFigure = new PathFigure

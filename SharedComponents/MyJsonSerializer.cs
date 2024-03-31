@@ -40,6 +40,5 @@ public class MyJsonSerializer
             MessageBox.Show($"Ошибка при открытии файла JSON: {ex.Message}");
             return null;
         }
-        return null;
     }
 }

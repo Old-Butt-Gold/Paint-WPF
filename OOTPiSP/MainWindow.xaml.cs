@@ -395,7 +395,8 @@ public partial class MainWindow
         };
         if (openFileDialog.ShowDialog() == true)
         {
-            Assembly assembly = Assembly.LoadFrom(openFileDialog.FileName);
+            var context = new AssemblyLoadContext("DynamicLoad", true);
+            Assembly assembly = context.LoadFromAssemblyPath(openFileDialog.FileName);
             var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(AbstractFactory)));
             foreach (var type in types)
             {
@@ -412,16 +413,17 @@ public partial class MainWindow
                     };
                     newButton.Click += Button_Click;
 
-                    int columnIndex = ButtonGrid.ColumnDefinitions.Count; // Определяем индекс колонки
+                    int columnIndex = ButtonGrid.ColumnDefinitions.Count;
                     ButtonGrid.ColumnDefinitions.Add(
                         new()
                         {
                             Width = new GridLength(1, GridUnitType.Star),
                         });
-                    Grid.SetColumn(newButton, columnIndex); // Устанавливаем кнопке колонку в Grid
-                    ButtonGrid.Children.Add(newButton); // Добавляем кнопку в дочерние элементы Grid
+                    Grid.SetColumn(newButton, columnIndex);
+                    ButtonGrid.Children.Add(newButton);
                 }
             }
+            context.Unload();
         }
     }
 }

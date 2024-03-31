@@ -17,11 +17,9 @@ public class SunDrawStrategy : IDrawStrategy
  
             PathGeometry pathGeometry = new PathGeometry();
  
-            // Draw the main circle of the sun
             EllipseGeometry mainCircle = new EllipseGeometry(new Point(centerX, centerY), radius, radius);
             pathGeometry.AddGeometry(mainCircle);
  
-            // Draw sun rays
             for (int i = 0; i < 16; i++)
             {
                 double angle = i * Math.PI / 8; // 22.5 degrees between each ray
