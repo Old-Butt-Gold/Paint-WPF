@@ -1,5 +1,4 @@
 ﻿using System.Windows.Media;
-using OOTPiSP.GeometryFigures.Shared;
 using OOTPiSP.Strategy;
 using SharedComponents;
 

@@ -2,54 +2,73 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
-using OOTPiSP.GeometryFigures.Shared;
+using Microsoft.Win32;
 
 namespace SharedComponents;
 
 public class MyXMLSerializer
 {
-    public List<AbstractShapeXML>? Deserialize(string fileName)
+    public List<AbstractShapeXML>? Deserialize()
     {
-        try
+        OpenFileDialog openFileDialog = new()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-            using FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
-
-            if (serializer.Deserialize(fs) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+            Filter = "XML файлы (*.xml)|*.xml"
+        };
+        if (openFileDialog.ShowDialog() == true)
+        {
+            try
             {
-                return loadedShapes;
-            }
+                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
+                using FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
 
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
-            return null;
+                if (serializer.Deserialize(fs) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+                {
+                    return loadedShapes;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
+                return null;
+            }
         }
 
         return null;
     }
 
-    public void Serialize(string fileName, IEnumerable<AbstractShape> abstractShapes)
+    public void Serialize(IEnumerable<AbstractShape> abstractShapes)
     {
-        using FileStream fs = new FileStream(fileName, FileMode.Create);
-
-        List<AbstractShapeXML> list = new();
-        foreach (var item in abstractShapes)
+        SaveFileDialog saveFileDialog = new()
         {
-            list.Add(new()
+            Filter = "XML файлы (*.xml)|*.xml|Все файлы (*.*)|*.*"
+        };
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            if (!saveFileDialog.FileName.EndsWith(".xml"))
             {
-                Angle = item.Angle,
-                BackgroundColor = item.BackgroundColor,
-                DownRight = item.DownRight,
-                PenColor = item.PenColor,
-                StrokeThickness = item.StrokeThickness,
-                TagShape = item.TagShape,
-                TopLeft = item.TopLeft
-            });
+                saveFileDialog.FileName += ".xml";
+            }
+
+            using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
+
+            List<AbstractShapeXML> list = new();
+            foreach (var item in abstractShapes)
+            {
+                list.Add(new()
+                {
+                    Angle = item.Angle,
+                    BackgroundColor = item.BackgroundColor,
+                    DownRight = item.DownRight,
+                    PenColor = item.PenColor,
+                    StrokeThickness = item.StrokeThickness,
+                    TagShape = item.TagShape,
+                    TopLeft = item.TopLeft
+                });
+            }
+
+            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
+            serializer.Serialize(fs, list);
         }
-            
-        XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-        serializer.Serialize(fs, list);
     }
 }

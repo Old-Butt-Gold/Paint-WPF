@@ -7,7 +7,7 @@
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         mc:Ignorable="d"
         Title="Shape Editor" Height="450" Width="400" 
-        Name="EditorWindow" WindowStartupLocation="CenterOwner">
+        Name="EditorWindow" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" >
     
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="Close" />
@@ -61,8 +61,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="5" 
-          DataContext="{Binding ElementName=EditorWindow, Path=Shape}">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

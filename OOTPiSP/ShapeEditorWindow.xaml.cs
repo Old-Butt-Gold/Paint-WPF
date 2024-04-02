@@ -1,32 +1,19 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using OOTPiSP.GeometryFigures.Shared;
 using SharedComponents;
 
 namespace OOTPiSP;
 
 public partial class ShapeEditorWindow
 {
-    public AbstractShape Shape
-    {
-        get => (AbstractShape)GetValue(ShapeProperty);
-        set => SetValue(ShapeProperty, value);
-    }
+    private AbstractShape Shape { get; set; }
 
-    public static readonly DependencyProperty ShapeProperty;
-
-    static ShapeEditorWindow()
-    {
-        ShapeProperty = DependencyProperty.Register(
-            "Shape", 
-            typeof(AbstractShape), 
-            typeof(ShapeEditorWindow));
-    }
-    
     public ShapeEditorWindow(AbstractShape shape)
     {
         InitializeComponent();
         Shape = shape;
+        //DataContext меняет также, как и DependencyProperty (для DP необязательно INotifyPropertyChanged)
+        DataContext = shape;
     }
 
     void ButtonBase_OnClick(object sender, RoutedEventArgs e)

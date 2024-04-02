@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -8,17 +9,30 @@ using Newtonsoft.Json;
 namespace SharedComponents;
 
 [Serializable]
-public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
+public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
 {
-    int _angle;
-    double _strokeThickness = 1;
+    private int _angle;
+    private double _strokeThickness = 1;
+    private Brush _backgroundColor;
+    private Brush _penColor;
+    private MyPoint _topLeft;
+    private MyPoint _downRight;
+    private int _canvasIndex = -1;
 
     [JsonIgnore]
     public IDrawStrategy DrawStrategy { get; protected set; }
 
-    [JsonIgnore] 
-    public int CanvasIndex { get; set; } = -1;
-    
+    [JsonIgnore]
+    public int CanvasIndex
+    {
+        get => _canvasIndex;
+        set
+        {
+            _canvasIndex = value;
+            OnPropertyChanged();
+        }
+    }
+
     [JsonIgnore]
     public virtual object TagShape { get; }
 
@@ -30,6 +44,7 @@ public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
             if (value is > -360 and < 360)
             {
                 _angle = value;
+                OnPropertyChanged();
                 _errors["Angle"] = null;
             }
             else
@@ -47,38 +62,70 @@ public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
             if (value is >= 0 and <= 72)
             {
                 _strokeThickness = value;
+                OnPropertyChanged();
                 _errors["StrokeThickness"] = null;
             }
             else
             {
                 _errors["StrokeThickness"] = "Толщина карандаша должна быть от 0.0 до 72.0!";
             }
-
         }
     }
 
-    public MyPoint TopLeft { get; set; }
-    
-    public MyPoint DownRight { get; set; }
-    
+    public MyPoint TopLeft
+    {
+        get => _topLeft;
+        set
+        {
+            _topLeft = value;
+            OnPropertyChanged();
+            RecalculateCornerOxy(_topLeft, _downRight);
+        }
+    }
+
+    public MyPoint DownRight
+    {
+        get => _downRight;
+        set
+        {
+            _downRight = value;
+            OnPropertyChanged();
+            RecalculateCornerOxy(_topLeft, _downRight);
+        }
+    }
+
     [JsonIgnore]
     public int CornerOXY { get; private set; }
-    
-    public Brush BackgroundColor { get; set; }
 
-    public Brush PenColor { get; set; }
-    
+    public Brush BackgroundColor
+    {
+        get => _backgroundColor;
+        set
+        {
+            _backgroundColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Brush PenColor
+    {
+        get => _penColor;
+        set
+        {
+            _penColor = value;
+            OnPropertyChanged();
+        }
+    }
+
     protected AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
     {
         BackgroundColor = bgColor;
         PenColor = penColor;
-        
+
         TopLeft = topLeft;
         DownRight = downRight;
 
         Angle = angle % 360;
-        
-        RecalculateCornerOxy(topLeft, downRight);
     }
 
     public void DrawAlgorithm(Canvas canvas)
@@ -100,26 +147,29 @@ public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
         }
     }
 
-    void RecalculateCornerOxy(MyPoint start, MyPoint end)
+    private void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
-        //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
-        if (end.X > start.X)
+        if (start is not null && end is not null)
         {
-            CornerOXY = end.Y > start.Y ? 4 : 1; 
-        }
-        else
-        {
-            CornerOXY = end.Y > start.Y ? 3 : 2;
+            //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
+            if (end.X > start.X)
+            {
+                CornerOXY = end.Y > start.Y ? 4 : 1;
+            }
+            else
+            {
+                CornerOXY = end.Y > start.Y ? 3 : 2;
+            }
         }
     }
-    
+
     #region IDataErrorInfo Members
-    
+
     [JsonIgnore]
     [XmlIgnore]
     public string Error => string.Empty;
 
-    Dictionary<string, string> _errors = new();
+    private readonly Dictionary<string, string> _errors = new();
 
     [JsonIgnore]
     public bool IsValid => _errors.Values.All(x => x == null);
@@ -131,6 +181,17 @@ public abstract class AbstractShape : IDataErrorInfo //, INotifyPropertyChanged
     [XmlIgnore]
     //Для валидации
     public string this[string columnName] => _errors.GetValueOrDefault(columnName);
+
+    #endregion
+
+    #region INotifyPropertyChanged Members
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     #endregion
 }

@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
 
-namespace OOTPiSP;
+namespace OOTPiSP.Commands;
 
-public static class WindowCommands
+public static class ShapeCommands
 {
     public static RoutedCommand RotateLeft { get; set; }
     public static RoutedCommand RotateRight { get; set; }
@@ -12,7 +12,7 @@ public static class WindowCommands
     public static RoutedCommand MoveRight { get; set; }
     public static RoutedCommand MoveDown { get; set; }
     
-    static WindowCommands()
+    static ShapeCommands()
     {
         RotateLeft = new RoutedCommand("RotateLeft", typeof(MainWindow));
         RotateRight = new RoutedCommand("RotateRight", typeof(MainWindow));

@@ -19,8 +19,9 @@
                 <Style.Setters>
                         <Setter Property="Button.Margin" Value="2" />
                         <Setter Property="Button.Background" Value="{StaticResource GradientBrush}"/>
-                        <!--<EventSetter Event="Button.Click" Handler="Button_Click"/>-->
                         <Setter Property="Button.IsDefault" Value="True" />
+                        <Setter Property="Button.Command" Value="{Binding SelectShapeCommand}"/>
+                        <Setter Property="Button.CommandParameter" Value="{Binding (Button.Tag), RelativeSource={RelativeSource Self}}"/>
                 </Style.Setters>
                 
                 <Style.Triggers>

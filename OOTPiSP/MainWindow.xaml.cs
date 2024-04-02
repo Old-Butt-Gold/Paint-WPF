@@ -18,32 +18,7 @@ public partial class MainWindow
     const int DefaultAngleRotation = 2;
     const int DefaultMoveCoordinate = 2;
     
-    readonly Dictionary<object, AbstractFactory> _buttonActions = new()
-    {
-        { "0", new CircleFactory() },
-        { "1", new EllipseFactory() },
-        { "2", new SquareFactory() },
-        { "3", new RectangleFactory() },
-        { "4", new LineFactory() },
-        { "5", new EquilateralTriangleFactory() },
-        { "6", new IsoscelesTriangleFactory() },
-        { "7", new RightTriangleFactory() },
-        { "8", new ArcFactory() }
-    };
-
-    MyXMLSerializer MyXmlSerializer { get; set; } = new();
-    MyJsonSerializer MyJsonSerializer { get; set; } = new();
-    
-    AbstractFactory Factory { get; set; } = new CircleFactory();
-    List<AbstractShape> AbstractShapes { get; set; } = [];
-    
-    void Button_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button button && _buttonActions.TryGetValue(button.Tag, out var action))
-        {
-             Factory = action;
-        }
-    }
+    public List<AbstractShape> AbstractShapes { get; set; } = [];
     
     bool _isHandledButton;
     MyPoint _downMyPoint;
@@ -55,16 +30,9 @@ public partial class MainWindow
     
     MouseEventArgs? _mouseArgs;
 
-    public MainWindow()
-    {
-        InitializeComponent();
-        CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (_, _) =>
-        {
-            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) ==
-                MessageBoxResult.Yes)
-                Close();
-        }));
-    }
+    public MainViewModel MainViewModel { get; set; } = new();
+
+    public MainWindow() => InitializeComponent();
 
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
@@ -195,7 +163,7 @@ public partial class MainWindow
 
     void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush bg)
     {
-        AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
+        AbstractShape shape = MainViewModel.Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
             bg, PenColorPicker.SelectedBrush, _angle);
         
         AbstractShapes.Add(shape);
@@ -204,7 +172,7 @@ public partial class MainWindow
         SetHandlers(shape.CanvasIndex);
     }
 
-    void SetHandlers(int canvasIndex)
+    public void SetHandlers(int canvasIndex)
     {
         Canvas.Children[canvasIndex].PreviewMouseUp += Canvas_OnPreviewMouseUp;
         Canvas.Children[canvasIndex].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
@@ -229,12 +197,12 @@ public partial class MainWindow
                 Duration = TimeSpan.FromSeconds(0.5),
                 AutoReverse = true,
                 RepeatBehavior = RepeatBehavior.Forever,
-                EasingFunction = new SineEase() { EasingMode = EasingMode.EaseOut },
+                EasingFunction = new SineEase() { EasingMode = EasingMode.EaseInOut },
             };
 
             var blurAnimation = new DoubleAnimation
             {
-                To = 30,
+                To = 25,
                 Duration = TimeSpan.FromSeconds(0.5),
                 AutoReverse = true,
                 RepeatBehavior = RepeatBehavior.Forever,
@@ -245,7 +213,7 @@ public partial class MainWindow
             effect.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blurAnimation);
             s.Effect = effect;
 
-            s.StrokeThickness += 3;
+            s.StrokeThickness += 1;
         }
     }
     
@@ -254,7 +222,7 @@ public partial class MainWindow
         if (sender is Shape s)
         {
             s.Effect = null;
-            s.StrokeThickness -= 3;
+            s.StrokeThickness -= 1;
         }
     }
     
@@ -284,146 +252,6 @@ public partial class MainWindow
         if (_mouseArgs != null)
         {
             Canvas_OnPreviewMouseMove(sender, _mouseArgs);
-        }
-    }
-
-    void Maximize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-    
-    void Minimize_OnClick(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    void JSONSave_OnClick(object sender, RoutedEventArgs e)
-    {
-        SaveFileDialog saveFileDialog = new()
-        {
-            Filter = "JSON файлы (*.json)|*.json|Все файлы (*.*)|*.*"
-        };
-        if (saveFileDialog.ShowDialog() == true)
-        {
-            if (!saveFileDialog.FileName.EndsWith(".json"))
-            {
-                saveFileDialog.FileName += ".json";
-            }
-
-            MyJsonSerializer.Serialize(saveFileDialog.FileName, AbstractShapes);
-        }
-    }
-    
-    void XMLSave_OnClick(object sender, RoutedEventArgs e)
-    {
-        SaveFileDialog saveFileDialog = new()
-        {
-            Filter = "XML файлы (*.xml)|*.xml|Все файлы (*.*)|*.*"
-        };
-        if (saveFileDialog.ShowDialog() == true)
-        {
-            if (!saveFileDialog.FileName.EndsWith(".xml"))
-            {
-                saveFileDialog.FileName += ".xml";
-            }
-            MyXmlSerializer.Serialize(saveFileDialog.FileName, AbstractShapes);
-        }
-    }
-
-    void JSONOpen_Click(object sender, RoutedEventArgs e)
-    {
-        OpenFileDialog openFileDialog = new()
-        {
-            Filter = "JSON файлы (*.json)|*.json"
-        };
-        if (openFileDialog.ShowDialog() == true)
-        {
-            var loadedShapes = MyJsonSerializer.Deserialize(openFileDialog.FileName);
-            if (loadedShapes is { Count: not 0 })
-            {
-                AbstractShapes = loadedShapes;
-                Canvas.Children.Clear();
-                foreach (var shape in AbstractShapes)
-                {
-                    shape.DrawAlgorithm(Canvas);
-
-                    SetHandlers(shape.CanvasIndex);
-                }
-                MessageBox.Show($"Список фигур успешно загружен!");
-            }
-        }
-    }
-    
-    void XMLOpen_OnClick(object sender, RoutedEventArgs e)
-    {
-        OpenFileDialog openFileDialog = new()
-        {
-            Filter = "XML файлы (*.xml)|*.xml"
-        };
-        if (openFileDialog.ShowDialog() == true)
-        {
-            var listShapes = MyXmlSerializer.Deserialize(openFileDialog.FileName);
-            if (listShapes is not null)
-            {
-                AbstractShapes.Clear();
-                Canvas.Children.Clear();
-                foreach (var item in listShapes)
-                {
-                    if (_buttonActions.TryGetValue(item.TagShape, out var factory))
-                    {
-                        var shape = factory.CreateShape(
-                            item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor, item.Angle);
-                        shape.StrokeThickness = item.StrokeThickness;
-
-                        AbstractShapes.Add(shape);
-                        shape.DrawAlgorithm(Canvas);
-
-                        SetHandlers(shape.CanvasIndex);
-                    }
-                }
-
-                MessageBox.Show($"Список фигур успешно загружен!");
-            }
-        }
-    }
-
-    void ClearCanvas_OnClick(object sender, RoutedEventArgs e)
-    {
-        AbstractShapes.Clear();
-        Canvas.Children.Clear();
-    }
-
-    void LoadPlugin_Click(object sender, RoutedEventArgs e)
-    {
-        OpenFileDialog openFileDialog = new()
-        {
-            Filter = "Динамическая библиотека (*.dll)|*.dll"
-        };
-        if (openFileDialog.ShowDialog() == true)
-        {
-            var context = new AssemblyLoadContext("DynamicLoad", true);
-            Assembly assembly = context.LoadFromAssemblyPath(openFileDialog.FileName);
-            var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(AbstractFactory)));
-            foreach (var type in types)
-            {
-                if (Activator.CreateInstance(type) is AbstractFactory factory)
-                {
-                    var shape = factory.CreateShape(new(), new(), Brushes.Black, Brushes.Black, 0);
-                    _buttonActions[shape.TagShape] = factory;
-
-                    Button newButton = new Button
-                    {
-                        Content = shape.ToString(),
-                        Style = (Style)FindResource("ButtonStyle"),
-                        Tag = shape.TagShape,
-                    };
-                    newButton.Click += Button_Click;
-
-                    int columnIndex = ButtonGrid.ColumnDefinitions.Count;
-                    ButtonGrid.ColumnDefinitions.Add(
-                        new()
-                        {
-                            Width = new GridLength(1, GridUnitType.Star),
-                        });
-                    Grid.SetColumn(newButton, columnIndex);
-                    ButtonGrid.Children.Add(newButton);
-                }
-            }
-            context.Unload();
         }
     }
 }

@@ -5,37 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOTPiSP"
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
+        xmlns:commands="clr-namespace:OOTPiSP.Commands"
         mc:Ignorable="d"
-        Title="Paint" Height="450" Width="800" 
-        WindowStyle="None" AllowsTransparency="True" Background="{Binding ElementName=BackgroundPaintPicker, Path=SelectedBrush}">
+        Title="Paint" Height="450" Width="800" Name="MW"
+        WindowStyle="None" AllowsTransparency="True" DataContext="{Binding MainViewModel, RelativeSource={RelativeSource Self}}"
+        Background="{Binding ElementName=BackgroundPaintPicker, Path=SelectedBrush}">
     <WindowChrome.WindowChrome>
             <WindowChrome CaptionHeight="5"/>
     </WindowChrome.WindowChrome>    
-        
+    
     <Window.InputBindings>
-            <KeyBinding Command="Close" Key="Esc" />
-            <KeyBinding Command="local:WindowCommands.RotateLeft" Key="LeftShift" Modifiers="Shift" />
-            <KeyBinding Command="local:WindowCommands.RotateRight" Key="RightShift" Modifiers="Shift" />
-            <KeyBinding Command="local:WindowCommands.RotateReset" Key="LeftCtrl" Modifiers="Control" />
-            <KeyBinding Command="local:WindowCommands.RotateReset" Key="RightCtrl" Modifiers="Control" />
-            <KeyBinding Command="local:WindowCommands.MoveDown" Key="Down" />
-            <KeyBinding Command="local:WindowCommands.MoveDown" Key="S" />
-            <KeyBinding Command="local:WindowCommands.MoveUp" Key="Up" />
-            <KeyBinding Command="local:WindowCommands.MoveUp" Key="W" />
-            <KeyBinding Command="local:WindowCommands.MoveLeft" Key="Left" />
-            <KeyBinding Command="local:WindowCommands.MoveLeft" Key="A" />
-            <KeyBinding Command="local:WindowCommands.MoveRight" Key="Right" />
-            <KeyBinding Command="local:WindowCommands.MoveRight" Key="D" />
+            <KeyBinding Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=MW}" Key="Esc" />
+            <KeyBinding Command="commands:ShapeCommands.RotateLeft" Key="LeftShift" Modifiers="Shift" />
+            <KeyBinding Command="commands:ShapeCommands.RotateRight" Key="RightShift" Modifiers="Shift" />
+            <KeyBinding Command="commands:ShapeCommands.RotateReset" Key="LeftCtrl" Modifiers="Control" />
+            <KeyBinding Command="commands:ShapeCommands.RotateReset" Key="RightCtrl" Modifiers="Control" />
+            <KeyBinding Command="commands:ShapeCommands.MoveDown" Key="Down" />
+            <KeyBinding Command="commands:ShapeCommands.MoveDown" Key="S" />
+            <KeyBinding Command="commands:ShapeCommands.MoveUp" Key="Up" />
+            <KeyBinding Command="commands:ShapeCommands.MoveUp" Key="W" />
+            <KeyBinding Command="commands:ShapeCommands.MoveLeft" Key="Left" />
+            <KeyBinding Command="commands:ShapeCommands.MoveLeft" Key="A" />
+            <KeyBinding Command="commands:ShapeCommands.MoveRight" Key="Right" />
+            <KeyBinding Command="commands:ShapeCommands.MoveRight" Key="D" />
     </Window.InputBindings>
         
     <Window.CommandBindings>
-        <CommandBinding Command="local:WindowCommands.RotateLeft" Executed="RotateLeft_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.RotateRight" Executed="RotateRight_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.RotateReset" Executed="RotateReset_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.MoveUp" Executed="MoveUp_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.MoveDown" Executed="MoveDown_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.MoveRight" Executed="MoveRight_OnExecuted" />            
-        <CommandBinding Command="local:WindowCommands.MoveLeft" Executed="MoveLeft_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.RotateLeft" Executed="RotateLeft_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.RotateRight" Executed="RotateRight_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.RotateReset" Executed="RotateReset_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.MoveUp" Executed="MoveUp_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.MoveDown" Executed="MoveDown_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.MoveRight" Executed="MoveRight_OnExecuted" />            
+        <CommandBinding Command="commands:ShapeCommands.MoveLeft" Executed="MoveLeft_OnExecuted" />            
     </Window.CommandBindings>
     
         <DockPanel>
@@ -44,16 +46,16 @@
                         <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center">
                                 <MenuItem Header="Файл" Icon="{DynamicResource File}" Margin="10">
                                         <MenuItem Header="Сохранить">
-                                                <MenuItem Header="JSON" Click="JSONSave_OnClick"/>
-                                                <MenuItem Header="XML" Click="XMLSave_OnClick"/>
+                                                <MenuItem Header="JSON" Command="{Binding JsonSaveCommand}" CommandParameter="{Binding ElementName=MW}"/>
+                                                <MenuItem Header="XML" Command="{Binding XMLSaveCommand}" CommandParameter="{Binding ElementName=MW}"/>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Загрузить" >
-                                                <MenuItem Header="JSON" Click="JSONOpen_Click" />
-                                                <MenuItem Header="XML" Click="XMLOpen_OnClick"/>
+                                                <MenuItem Header="JSON" Command="{Binding JsonLoadCommand}" CommandParameter="{Binding ElementName=MW}" />
+                                                <MenuItem Header="XML" Command="{Binding XMLLoadCommand}" CommandParameter="{Binding ElementName=MW}"/>
                                         </MenuItem>
                                 </MenuItem>
-                                <MenuItem Header="Очистить холст" Click="ClearCanvas_OnClick" Margin="10"/>
+                                <MenuItem Header="Очистить холст" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=MW}" Margin="10"/>
                                 
                                 <MenuItem OverridesDefaultStyle="True">
                                         <MenuItem.Template>
@@ -68,14 +70,14 @@
                                         </MenuItem.Header>
                                 </MenuItem>
                                 
-                                <MenuItem Header="Загрузить плагин" Margin="10" Click="LoadPlugin_Click"/>
+                                <MenuItem Header="Загрузить плагин" Margin="10" Command="{Binding LoadPluginCommand}" CommandParameter="{Binding ElementName=MW}"/>
                                 
                         </Menu>
                         
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Minimize}" Click="Minimize_OnClick" ToolTip="Свернуть окно"/>
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Maximize}" Click="Maximize_OnClick" ToolTip="Развернуть окно"/>
-                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Exit}" Command="Close" ToolTip="Закрыть"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Minimize}" Command="{Binding MinimizeWindowCommand}" CommandParameter="{Binding ElementName=MW}" ToolTip="Свернуть окно"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Maximize}" Command="{Binding MaximizeWindowCommand}" CommandParameter="{Binding ElementName=MW}" ToolTip="Развернуть окно"/>
+                                <Button Style="{StaticResource WindowsButtonStyle}" Content="{StaticResource Exit}" Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=MW}" ToolTip="Закрыть"/>
                         </StackPanel>
                 </DockPanel>
                 
@@ -106,23 +108,23 @@
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
                             
                             <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Circle}" Click="Button_Click"/>
+                                    Content="{StaticResource Circle}" />
                             <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Ellipse}" Click="Button_Click"/>
+                                    Content="{StaticResource Ellipse}" />
                             <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Square}" Click="Button_Click"/>
+                                    Content="{StaticResource Square}" />
                             <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Rectangle}" Click="Button_Click"/>
+                                    Content="{StaticResource Rectangle}" />
                             <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Line}" Click="Button_Click"/>
+                                    Content="{StaticResource Line}" />
                             <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource EquilateralTriangle}" Click="Button_Click"/>
+                                    Content="{StaticResource EquilateralTriangle}" />
                             <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource IsoscelesTriangle}" Click="Button_Click"/>
+                                    Content="{StaticResource IsoscelesTriangle}" />
                             <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource RightTriangle}" Click="Button_Click"/>
+                                    Content="{StaticResource RightTriangle}" />
                             <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Arc}" Click="Button_Click"/>
+                                    Content="{StaticResource Arc}" />
                         </Grid>
                         
                         <!--Отрисовка-->

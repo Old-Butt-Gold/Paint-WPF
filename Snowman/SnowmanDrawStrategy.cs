@@ -26,14 +26,17 @@ public class SnowmanDrawStrategy : IDrawStrategy
             EllipseGeometry rightEye = new EllipseGeometry(new Point(centerX + 10, centerY - 65), 5, 5);
 
             PathGeometry mouthGeometry = new PathGeometry();
-            PathFigure mouthFigure = new PathFigure();
-            mouthFigure.StartPoint = new Point(centerX - 15, centerY - 55);
+            PathFigure mouthFigure = new PathFigure
+            {
+                StartPoint = new Point(centerX - 15, centerY - 55)
+            };
             BezierSegment bezierSegment = new BezierSegment(new Point(centerX - 10, centerY - 50),
                 new Point(centerX + 10, centerY - 50),
                 new Point(centerX + 15, centerY - 55),
                 true);
             mouthFigure.Segments.Add(bezierSegment);
             mouthGeometry.Figures.Add(mouthFigure);
+            mouthFigure.IsClosed = true;
 
             PathGeometry hatGeometry = new PathGeometry();
             PathFigure hatFigure = new PathFigure
@@ -46,6 +49,7 @@ public class SnowmanDrawStrategy : IDrawStrategy
             hatFigure.Segments.Add(hatLine1);
             hatFigure.Segments.Add(hatLine2);
             hatFigure.Segments.Add(hatLine3);
+            hatFigure.IsClosed = true;
             hatGeometry.Figures.Add(hatFigure);
 
             GeometryGroup snowmanGeometry = new GeometryGroup();

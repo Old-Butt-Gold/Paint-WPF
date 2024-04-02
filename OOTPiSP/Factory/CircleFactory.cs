@@ -1,6 +1,5 @@
 ﻿using System.Windows.Media;
 using OOTPiSP.GeometryFigures.Ellipse;
-using OOTPiSP.GeometryFigures.Shared;
 using SharedComponents;
 
 namespace OOTPiSP.Factory;
