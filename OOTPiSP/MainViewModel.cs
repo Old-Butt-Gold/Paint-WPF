@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,22 @@ namespace OOTPiSP;
 
 public class MainViewModel : INotifyPropertyChanged
 {
+    const int DefaultAngleRotation = 2;
+    const int DefaultMoveCoordinate = 2;
+    
+    public List<AbstractShape> AbstractShapes { get; set; } = [];
+    
+    public MyPoint MouseEndPosition { get; set; }
+    
+    public MyPoint DownMyPoint { get; set; }
+    public MyPoint UpMyPoint { get; set; }
+    
+    public bool IsHandledButton { get; set; }
+    
+    public int Angle { get; set; }
+    public int ArrowsX { get; set; }
+    public int ArrowsY { get; set; }
+    
     public ICommand MinimizeWindowCommand { get; private set; }
     public ICommand MaximizeWindowCommand { get; private set; }
     public ICommand ExitWindowCommand { get; private set; }
@@ -23,6 +40,15 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand XMLLoadCommand { get; private set; }
     public ICommand ClearCommand { get; private set; }
     public ICommand SelectShapeCommand { get; private set; }
+    public ICommand MouseWheelCommand { get; private set; }
+    public ICommand MouseUpCommand { get; private set; }
+    public ICommand RotateLeftCommand {get; private set;}
+    public ICommand RotateRightCommand {get; private set;} 
+    public ICommand RotateResetCommand {get; private set;}
+    public ICommand MoveUpCommand {get; private set;}
+    public ICommand MoveDownCommand {get; private set;} 
+    public ICommand MoveRightCommand {get; private set;}
+    public ICommand MoveLeftCommand {get; private set;} 
     
     readonly Dictionary<object, AbstractFactory> _buttonActions = new()
     {
@@ -60,6 +86,104 @@ public class MainViewModel : INotifyPropertyChanged
         XMLLoadCommand = new RelayCommand(XmlLoad);
         ClearCommand = new RelayCommand(Clear);
         SelectShapeCommand = new RelayCommand(SelectShape);
+        
+        MouseWheelCommand = new RelayCommand(MouseWheel, _ => AbstractShape.Canvas.Children.Count > 0);
+        MouseUpCommand = new RelayCommand(MouseUp);
+        RotateLeftCommand = new RelayCommand(RotateLeft, _ => AbstractShape.Canvas.Children.Count > 0);
+        RotateRightCommand = new RelayCommand(RotateRight, _ => AbstractShape.Canvas.Children.Count > 0);
+        RotateResetCommand = new RelayCommand(RotateReset, _ => AbstractShape.Canvas.Children.Count > 0);
+        MoveUpCommand = new RelayCommand(MoveUp, _ => AbstractShape.Canvas.Children.Count > 0);
+        MoveDownCommand = new RelayCommand(MoveDown, _ => AbstractShape.Canvas.Children.Count > 0);
+        MoveLeftCommand = new RelayCommand(MoveLeft, _ => AbstractShape.Canvas.Children.Count > 0);
+        MoveRightCommand = new RelayCommand(MoveRight, _ => AbstractShape.Canvas.Children.Count > 0);
+    }
+
+    void MouseUp(object obj)
+    {
+        DownMyPoint = null;
+        UpMyPoint = null;
+        Angle = 0;
+        ArrowsX = 0;
+        ArrowsY = 0;
+        MouseEndPosition = null;
+        IsHandledButton = false;
+    }
+
+    void RotateLeft(object obj)
+    {
+        Rotate(-DefaultAngleRotation);
+    }
+    
+    void RotateRight(object obj)
+    {
+        Rotate(DefaultAngleRotation);
+    }
+    
+    void RotateReset(object obj)
+    {
+        var currentIndex = AbstractShape.Canvas.Children.Count - 1;
+        var shape = AbstractShapes[currentIndex];
+        shape.Angle = 0;
+        Angle = 0;
+        shape.DrawAlgorithm();
+    }
+
+    void MoveUp(object obj)
+    {
+        Move(0, -DefaultMoveCoordinate);
+    }
+    
+    void MoveDown(object obj)
+    {
+        Move(0, DefaultMoveCoordinate);
+    }
+    
+    void MoveLeft(object obj)
+    {
+        Move(-DefaultMoveCoordinate, 0);
+    }
+    
+    void MoveRight(object obj)
+    {
+        Move(DefaultMoveCoordinate, 0);
+    }
+
+    void MouseWheel(object obj)
+    {
+        if (obj is MouseWheelEventArgs e)
+        {
+            Rotate(e.Delta > 0 ? DefaultAngleRotation : -DefaultAngleRotation);
+        }
+    }
+    
+    void Rotate(int angleDelta)
+    {
+        var currentIndex = AbstractShape.Canvas.Children.Count - 1;
+        var shape = AbstractShapes[currentIndex];
+        shape.Angle += angleDelta;
+        Angle = shape.Angle;
+        shape.DrawAlgorithm();
+    }
+
+    void Move(int deltaX, int deltaY)
+    {
+        var currentIndex = AbstractShape.Canvas.Children.Count - 1;
+        var shape = AbstractShapes[currentIndex];
+
+        ArrowsX += deltaX;
+        ArrowsY += deltaY;
+        
+        shape.TopLeft.X += deltaX;
+        shape.TopLeft.Y += deltaY;
+        
+        shape.DownRight.X += deltaX;
+        shape.DownRight.Y += deltaY;
+
+        //Для корректного создания фигуры после движения фигуры при движении мыши
+        MouseEndPosition.X += deltaX;
+        MouseEndPosition.Y += deltaY;
+        
+        shape.DrawAlgorithm();
     }
 
     void SelectShape(object parameter)
@@ -74,7 +198,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (parameter is MainWindow window)
         {
-            window.AbstractShapes.Clear();
+            AbstractShapes.Clear();
             window.Canvas.Children.Clear();
         }
     }
@@ -86,7 +210,7 @@ public class MainViewModel : INotifyPropertyChanged
             var listShapes = new MyXMLSerializer().Deserialize();
             if (listShapes is not null)
             {
-                window.AbstractShapes.Clear();
+                AbstractShapes.Clear();
                 window.Canvas.Children.Clear();
                 foreach (var item in listShapes)
                 {
@@ -95,8 +219,8 @@ public class MainViewModel : INotifyPropertyChanged
                         var shape = factory.CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor, item.Angle);
                         shape.StrokeThickness = item.StrokeThickness;
 
-                        window.AbstractShapes.Add(shape);
-                        shape.DrawAlgorithm(window.Canvas);
+                        AbstractShapes.Add(shape);
+                        shape.DrawAlgorithm();
 
                         window.SetHandlers(shape.CanvasIndex);
                     }
@@ -113,11 +237,14 @@ public class MainViewModel : INotifyPropertyChanged
             var loadedShapes = new MyJsonSerializer().Deserialize();
             if (loadedShapes is { Count: not 0 })
             {
-                window.AbstractShapes = loadedShapes;
+                AbstractShapes = loadedShapes;
                 window.Canvas.Children.Clear();
+                //Надо, ибо JSON заполняет свойства и вызывается метод отрисовки
+                AbstractShapes.ForEach(shape => shape.CanvasIndex = -1);
+                
                 foreach (var shape in loadedShapes)
                 {
-                    shape.DrawAlgorithm(window.Canvas);
+                    shape.DrawAlgorithm();
                     window.SetHandlers(shape.CanvasIndex);
                 }
                 MessageBox.Show($"Список фигур успешно загружен!");
@@ -129,7 +256,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (parameter is MainWindow window)
         {
-            new MyJsonSerializer().Serialize(window.AbstractShapes);
+            new MyJsonSerializer().Serialize(AbstractShapes);
         }
     }
 
@@ -137,7 +264,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (parameter is MainWindow window)
         {
-            new MyXMLSerializer().Serialize(window.AbstractShapes);
+            new MyXMLSerializer().Serialize(AbstractShapes);
         }
     }
 
@@ -201,8 +328,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (parameter is Window window)
         {
-            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) ==
-                MessageBoxResult.Yes)
+            if (MessageBox.Show("Выйти из программы?", "Выход", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 window.Close();
         }
     }

@@ -1,38 +1,21 @@
-﻿using System.Reflection;
-using System.Runtime.Loader;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
-using Microsoft.Win32;
-using OOTPiSP.Factory;
 using SharedComponents;
 
 namespace OOTPiSP;
 
 public partial class MainWindow
 {
-    const int DefaultAngleRotation = 2;
-    const int DefaultMoveCoordinate = 2;
-    
-    public List<AbstractShape> AbstractShapes { get; set; } = [];
-    
-    bool _isHandledButton;
-    MyPoint _downMyPoint;
-    MyPoint _upMyPoint;
-
-    int _angle;
-    int _arrowsX;
-    int _arrowsY;
-    
-    MouseEventArgs? _mouseArgs;
-
     public MainViewModel MainViewModel { get; set; } = new();
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        AbstractShape.Canvas = Canvas;
+    }
 
     void Canvas_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
@@ -55,12 +38,12 @@ public partial class MainWindow
             }
             Canvas.Children.RemoveAt(tag);
 
-            for (int i = tag + 1; i < AbstractShapes.Count; i++)
+            for (int i = tag + 1; i < MainViewModel.AbstractShapes.Count; i++)
             {
-                AbstractShapes[i].CanvasIndex--;
+                MainViewModel.AbstractShapes[i].CanvasIndex--;
             }
 
-            AbstractShapes.RemoveAt(tag);
+            MainViewModel.AbstractShapes.RemoveAt(tag);
         }
     }
     
@@ -70,70 +53,47 @@ public partial class MainWindow
         {
             var tag = (int) frameworkElement.Tag;
 
-            var shape = AbstractShapes[tag];
+            var shape = MainViewModel.AbstractShapes[tag];
 
             var shapeEditorWindow = new ShapeEditorWindow(shape);
             shapeEditorWindow.ShowDialog();
-            
-            shape.DrawAlgorithm(Canvas);
+            shape.DrawAlgorithm();
 
             SetHandlers(shape.CanvasIndex);
             return;
         }
         
-        ResetManipulationParams();
-        _downMyPoint = GetMousePosition(e);
+        MainViewModel.DownMyPoint = GetMousePosition(e);
     }
 
     void Canvas_OnPreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (_downMyPoint is null) //Поскольку если начать вести от другого элемента, то будет Exception
+        if (MainViewModel.DownMyPoint is null) //Поскольку если начать вести от другого элемента, то будет Exception
             return;
-        
-        _mouseArgs = e;
+
         if (e.LeftButton == MouseButtonState.Pressed)
         {
-            if (_isHandledButton)
+            if (MainViewModel.IsHandledButton)
             {
                 RemoveLastShape();
             }
             else
             {
-                _isHandledButton = true;
+                MainViewModel.IsHandledButton = true;
             }
 
-            var mousePosition = e.GetPosition(Canvas);
-            var topLeftX = _downMyPoint.X + _arrowsX;
-            var topLeftY = _downMyPoint.Y + _arrowsY;
-            var downRightX = mousePosition.X + _arrowsX;
-            var downRightY = mousePosition.Y + _arrowsY;
-            DrawShape(topLeftX, topLeftY, downRightX, downRightY, Brushes.Transparent);
+            MainViewModel.MouseEndPosition = GetMousePosition(e);
+            var topLeftX = MainViewModel.DownMyPoint.X + MainViewModel.ArrowsX;
+            var topLeftY = MainViewModel.DownMyPoint.Y + MainViewModel.ArrowsY;
+            var downRightX = MainViewModel.MouseEndPosition.X + MainViewModel.ArrowsX;
+            var downRightY = MainViewModel.MouseEndPosition.Y + MainViewModel.ArrowsY;
+            
+            AbstractShape shape = MainViewModel.Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
+                FillColorPicker.SelectedBrush, PenColorPicker.SelectedBrush, MainViewModel.Angle);
+            shape.DrawAlgorithm();
+            MainViewModel.AbstractShapes.Add(shape);
+            SetHandlers(shape.CanvasIndex);
         }
-    }
-
-    void Canvas_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
-    {
-        if (e.ChangedButton == MouseButton.Left)
-        {
-            _upMyPoint = GetMousePosition(e);
-
-            if (_isHandledButton)
-            {
-                RemoveLastShape();
-                _isHandledButton = false;
-                
-                var topLeftX = _downMyPoint.X + _arrowsX;
-                var topLeftY = _downMyPoint.Y + _arrowsY;
-                var downRightX = _upMyPoint.X + _arrowsX;
-                var downRightY = _upMyPoint.Y + _arrowsY;
-             
-                DrawShape(topLeftX, topLeftY, downRightX, downRightY, FillColorPicker.SelectedBrush);
-            }
-        }
-
-        _downMyPoint = null;
-        _upMyPoint = null;
-        _mouseArgs = null;
     }
     
     void RemoveLastShape()
@@ -142,18 +102,11 @@ public partial class MainWindow
         if (count > 0)
         {
             Canvas.Children.RemoveAt(count - 1);
-            AbstractShapes.RemoveAt(count - 1);
+            MainViewModel.AbstractShapes.RemoveAt(count - 1);
         }
 
     }
     
-    void ResetManipulationParams()
-    {
-        _angle = 0;
-        _arrowsX = 0;
-        _arrowsY = 0;
-        _isHandledButton = false;
-    }
     
     MyPoint GetMousePosition(MouseEventArgs e)
     {
@@ -161,21 +114,20 @@ public partial class MainWindow
         return new(mousePosition.X, mousePosition.Y);
     }
 
-    void DrawShape(double topLeftX, double topLeftY, double downRightX, double downRightY, Brush bg)
-    {
-        AbstractShape shape = MainViewModel.Factory.CreateShape(new(topLeftX, topLeftY), new(downRightX, downRightY),
-            bg, PenColorPicker.SelectedBrush, _angle);
-        
-        AbstractShapes.Add(shape);
-        shape.DrawAlgorithm(Canvas);
-
-        SetHandlers(shape.CanvasIndex);
-    }
-
     public void SetHandlers(int canvasIndex)
     {
-        Canvas.Children[canvasIndex].PreviewMouseUp += Canvas_OnPreviewMouseUp;
-        Canvas.Children[canvasIndex].PreviewMouseWheel += Canvas_OnPreviewMouseWheel;
+        Canvas.Children[canvasIndex].PreviewMouseUp += (_, e) =>
+        {
+            if (MainViewModel.MouseUpCommand.CanExecute(e))
+                MainViewModel.MouseUpCommand.Execute(e);
+        };
+        
+        Canvas.Children[canvasIndex].PreviewMouseWheel += (_, e) =>
+        {
+            if (MainViewModel.MouseWheelCommand.CanExecute(e))
+                MainViewModel.MouseWheelCommand.Execute(e);
+        };
+        
         Canvas.Children[canvasIndex].MouseEnter += Shape_MouseEnter;
         Canvas.Children[canvasIndex].MouseLeave += Shape_MouseLeave;
     }
@@ -225,33 +177,5 @@ public partial class MainWindow
             s.StrokeThickness -= 1;
         }
     }
-    
-    void Canvas_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) => Rotate(sender, e.Delta > 0 ? DefaultAngleRotation : -DefaultAngleRotation);
-    void RotateLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, -DefaultAngleRotation);
-    void RotateRight_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, DefaultAngleRotation);
-    void RotateReset_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Rotate(sender, 360 - _angle);
-    void MoveUp_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, 0, -DefaultMoveCoordinate);
-    void MoveDown_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, 0, DefaultMoveCoordinate);
-    void MoveRight_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, DefaultMoveCoordinate, 0);
-    void MoveLeft_OnExecuted(object sender, ExecutedRoutedEventArgs e) => Move(sender, -DefaultMoveCoordinate, 0);
-    
-    void Rotate(object sender, int angleDelta)
-    {
-        _angle += angleDelta;
-        
-        if (_mouseArgs != null)
-        {
-            Canvas_OnPreviewMouseMove(sender, _mouseArgs);
-        }
-    }
 
-    void Move(object sender, int deltaX, int deltaY)
-    {
-        _arrowsX += deltaX;
-        _arrowsY += deltaY;
-        if (_mouseArgs != null)
-        {
-            Canvas_OnPreviewMouseMove(sender, _mouseArgs);
-        }
-    }
 }

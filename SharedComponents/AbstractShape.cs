@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
@@ -11,27 +10,22 @@ namespace SharedComponents;
 [Serializable]
 public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
 {
-    private int _angle;
-    private double _strokeThickness = 1;
-    private Brush _backgroundColor;
-    private Brush _penColor;
-    private MyPoint _topLeft;
-    private MyPoint _downRight;
-    private int _canvasIndex = -1;
+    [JsonIgnore]
+    [XmlIgnore]
+    public static Canvas Canvas { get; set; }
+    
+    int _angle;
+    double _strokeThickness = 1;
+    Brush _backgroundColor;
+    Brush _penColor;
+    MyPoint _topLeft;
+    MyPoint _downRight;
 
     [JsonIgnore]
     public IDrawStrategy DrawStrategy { get; protected set; }
 
-    [JsonIgnore]
-    public int CanvasIndex
-    {
-        get => _canvasIndex;
-        set
-        {
-            _canvasIndex = value;
-            OnPropertyChanged();
-        }
-    }
+    [JsonIgnore] 
+    public int CanvasIndex { get; set; } = -1;
 
     [JsonIgnore]
     public virtual object TagShape { get; }
@@ -45,6 +39,7 @@ public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
             {
                 _angle = value;
                 OnPropertyChanged();
+                DrawAlgorithm();
                 _errors["Angle"] = null;
             }
             else
@@ -63,6 +58,7 @@ public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
             {
                 _strokeThickness = value;
                 OnPropertyChanged();
+                DrawAlgorithm();
                 _errors["StrokeThickness"] = null;
             }
             else
@@ -103,6 +99,7 @@ public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
         set
         {
             _backgroundColor = value;
+            DrawAlgorithm();
             OnPropertyChanged();
         }
     }
@@ -113,53 +110,54 @@ public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged
         set
         {
             _penColor = value;
+            DrawAlgorithm();
             OnPropertyChanged();
         }
     }
 
     protected AbstractShape(MyPoint topLeft, MyPoint downRight, Brush bgColor, Brush penColor, int angle)
     {
-        BackgroundColor = bgColor;
-        PenColor = penColor;
+        _backgroundColor = bgColor;
+        _penColor = penColor;
 
-        TopLeft = topLeft;
-        DownRight = downRight;
+        _topLeft = topLeft;
+        _downRight = downRight;
 
-        Angle = angle % 360;
+        RecalculateCornerOxy(_topLeft, _downRight);
+        
+        _angle = angle % 360;
     }
 
-    public void DrawAlgorithm(Canvas canvas)
+    public void DrawAlgorithm()
     {
-        Shape drawnShape = DrawStrategy.Draw(this);
+        var drawnShape = DrawStrategy.Draw(this);
+
         if (drawnShape != null)
         {
             if (CanvasIndex < 0)
             {
-                CanvasIndex = canvas.Children.Count;
-                canvas.Children.Add(drawnShape);
+                CanvasIndex = Canvas.Children.Count;
+                Canvas.Children.Add(drawnShape);
             }
             else
             {
-                canvas.Children.RemoveAt(CanvasIndex);
-                canvas.Children.Insert(CanvasIndex, drawnShape);
+                Canvas.Children.RemoveAt(CanvasIndex);
+                Canvas.Children.Insert(CanvasIndex, drawnShape);
             }
             drawnShape.Tag = CanvasIndex;
         }
     }
 
-    private void RecalculateCornerOxy(MyPoint start, MyPoint end)
+    void RecalculateCornerOxy(MyPoint start, MyPoint end)
     {
-        if (start is not null && end is not null)
+        //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
+        if (end.X > start.X)
         {
-            //X увеличивается вправо; Y увеличивает вниз (0; 0) – левый верхний угол
-            if (end.X > start.X)
-            {
-                CornerOXY = end.Y > start.Y ? 4 : 1;
-            }
-            else
-            {
-                CornerOXY = end.Y > start.Y ? 3 : 2;
-            }
+            CornerOXY = end.Y > start.Y ? 4 : 1;
+        }
+        else
+        {
+            CornerOXY = end.Y > start.Y ? 3 : 2;
         }
     }
 

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOTPiSP"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         xmlns:commands="clr-namespace:OOTPiSP.Commands"
         mc:Ignorable="d"
@@ -13,33 +14,23 @@
     <WindowChrome.WindowChrome>
             <WindowChrome CaptionHeight="5"/>
     </WindowChrome.WindowChrome>    
-    
+        
     <Window.InputBindings>
             <KeyBinding Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=MW}" Key="Esc" />
-            <KeyBinding Command="commands:ShapeCommands.RotateLeft" Key="LeftShift" Modifiers="Shift" />
-            <KeyBinding Command="commands:ShapeCommands.RotateRight" Key="RightShift" Modifiers="Shift" />
-            <KeyBinding Command="commands:ShapeCommands.RotateReset" Key="LeftCtrl" Modifiers="Control" />
-            <KeyBinding Command="commands:ShapeCommands.RotateReset" Key="RightCtrl" Modifiers="Control" />
-            <KeyBinding Command="commands:ShapeCommands.MoveDown" Key="Down" />
-            <KeyBinding Command="commands:ShapeCommands.MoveDown" Key="S" />
-            <KeyBinding Command="commands:ShapeCommands.MoveUp" Key="Up" />
-            <KeyBinding Command="commands:ShapeCommands.MoveUp" Key="W" />
-            <KeyBinding Command="commands:ShapeCommands.MoveLeft" Key="Left" />
-            <KeyBinding Command="commands:ShapeCommands.MoveLeft" Key="A" />
-            <KeyBinding Command="commands:ShapeCommands.MoveRight" Key="Right" />
-            <KeyBinding Command="commands:ShapeCommands.MoveRight" Key="D" />
+            <KeyBinding Command="{Binding RotateLeftCommand}" CommandParameter="{Binding ElementName=MW}"  Key="LeftShift" Modifiers="Shift" />
+            <KeyBinding Command="{Binding RotateRightCommand}" CommandParameter="{Binding ElementName=MW}" Key="RightShift" Modifiers="Shift" />
+            <KeyBinding Command="{Binding RotateResetCommand}" CommandParameter="{Binding ElementName=MW}" Key="LeftCtrl" Modifiers="Control" />
+            <KeyBinding Command="{Binding RotateResetCommand}" CommandParameter="{Binding ElementName=MW}" Key="RightCtrl" Modifiers="Control" />
+            <KeyBinding Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=MW}" Key="Down" />
+            <KeyBinding Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=MW}" Key="S" />
+            <KeyBinding Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=MW}" Key="Up" />
+            <KeyBinding Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=MW}" Key="W" />
+            <KeyBinding Command="{Binding MoveLeftCommand}" CommandParameter="{Binding ElementName=MW}" Key="Left" />
+            <KeyBinding Command="{Binding MoveLeftCommand}" CommandParameter="{Binding ElementName=MW}" Key="A" />
+            <KeyBinding Command="{Binding MoveRightCommand}" CommandParameter="{Binding ElementName=MW}" Key="Right" />
+            <KeyBinding Command="{Binding MoveRightCommand}" CommandParameter="{Binding ElementName=MW}" Key="D" />
     </Window.InputBindings>
         
-    <Window.CommandBindings>
-        <CommandBinding Command="commands:ShapeCommands.RotateLeft" Executed="RotateLeft_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.RotateRight" Executed="RotateRight_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.RotateReset" Executed="RotateReset_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.MoveUp" Executed="MoveUp_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.MoveDown" Executed="MoveDown_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.MoveRight" Executed="MoveRight_OnExecuted" />            
-        <CommandBinding Command="commands:ShapeCommands.MoveLeft" Executed="MoveLeft_OnExecuted" />            
-    </Window.CommandBindings>
-    
         <DockPanel>
                 <!--Меню-->
                 <DockPanel DockPanel.Dock="Top" Background="Aquamarine" Height="40" ZIndex="1">
@@ -129,11 +120,18 @@
                         
                         <!--Отрисовка-->
                         <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" 
-                                PreviewMouseWheel="Canvas_OnPreviewMouseWheel" 
                                 PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
                                 PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
-                                PreviewMouseMove="Canvas_OnPreviewMouseMove"
-                                PreviewMouseUp="Canvas_OnPreviewMouseUp" />
+                                PreviewMouseMove="Canvas_OnPreviewMouseMove">
+                                <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PreviewMouseWheel">
+                                                <i:InvokeCommandAction Command="{Binding MouseWheelCommand}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseUp">
+                                                <i:InvokeCommandAction Command="{Binding MouseUpCommand}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                        </Canvas>
                 </Grid>
         </DockPanel>
 </Window>
