@@ -1,11 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
 using OOTPiSP.Commands;
 using OOTPiSP.Factory;
 using SharedComponents;
@@ -16,6 +18,9 @@ public class MainViewModel : INotifyPropertyChanged
 {
     const int DefaultAngleRotation = 2;
     const int DefaultMoveCoordinate = 2;
+
+    public Brush FillSelectedBrush { get; set; } = Brushes.Black;
+    public Brush StrokeSelectedBrush { get; set; } = Brushes.Black;
     
     public List<AbstractShape> AbstractShapes { get; set; } = [];
     
@@ -42,6 +47,9 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand SelectShapeCommand { get; private set; }
     public ICommand MouseWheelCommand { get; private set; }
     public ICommand MouseUpCommand { get; private set; }
+    public ICommand MouseLeftDownCommand { get; private set; }
+    public ICommand MouseRightDownCommand { get; private set; }
+    public ICommand MouseMoveCommand { get; private set; }
     public ICommand RotateLeftCommand {get; private set;}
     public ICommand RotateRightCommand {get; private set;} 
     public ICommand RotateResetCommand {get; private set;}
@@ -89,6 +97,10 @@ public class MainViewModel : INotifyPropertyChanged
         
         MouseWheelCommand = new RelayCommand(MouseWheel, _ => AbstractShape.Canvas.Children.Count > 0);
         MouseUpCommand = new RelayCommand(MouseUp);
+        MouseLeftDownCommand = new RelayCommand(MouseLeftDown);
+        MouseRightDownCommand = new RelayCommand(MouseRightDown);
+        MouseMoveCommand = new RelayCommand(MouseMove);
+        
         RotateLeftCommand = new RelayCommand(RotateLeft, _ => AbstractShape.Canvas.Children.Count > 0);
         RotateRightCommand = new RelayCommand(RotateRight, _ => AbstractShape.Canvas.Children.Count > 0);
         RotateResetCommand = new RelayCommand(RotateReset, _ => AbstractShape.Canvas.Children.Count > 0);
@@ -98,7 +110,180 @@ public class MainViewModel : INotifyPropertyChanged
         MoveRightCommand = new RelayCommand(MoveRight, _ => AbstractShape.Canvas.Children.Count > 0);
     }
 
+    private void MouseMove(object obj)
+    {
+        if (obj is MouseEventArgs e)
+        {
+            if (DownMyPoint is null) //Поскольку если начать вести от другого элемента, то будет Exception
+                return;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (IsHandledButton)
+                {
+                    RemoveLastShape();
+                }
+                else
+                {
+                    IsHandledButton = true;
+                }
+
+                MouseEndPosition = GetMousePosition(e);
+                var topLeftX = DownMyPoint.X + ArrowsX;
+                var topLeftY = DownMyPoint.Y + ArrowsY;
+                var downRightX = MouseEndPosition.X + ArrowsX;
+                var downRightY = MouseEndPosition.Y + ArrowsY;
+
+                AbstractShape shape = Factory.CreateShape(new(topLeftX, topLeftY),
+                    new(downRightX, downRightY),
+                    FillSelectedBrush, StrokeSelectedBrush, Angle);
+                shape.DrawAlgorithm();
+                AbstractShapes.Add(shape);
+                SetHandlers(shape.CanvasIndex);
+            }
+        }
+    }
+
+    void RemoveLastShape()
+    {
+        int count = AbstractShapes.Count;
+        if (count > 0)
+        {
+            AbstractShape.Canvas.Children.RemoveAt(count - 1);
+            AbstractShapes.RemoveAt(count - 1);
+        }
+
+    }
+
+    private void MouseRightDown(object obj)
+    {
+        if (obj is MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                RemoveLastShape();
+                return;
+            }
+
+            if (e is { ClickCount: 1, OriginalSource: Shape shape })
+            {
+                int tag = (int)shape.Tag;
+                for (int i = tag + 1; i < AbstractShape.Canvas.Children.Count; i++)
+                {
+                    if (AbstractShape.Canvas.Children[i] is Shape item)
+                    {
+                        int tagTemp = (int)item.Tag;
+                        item.Tag = --tagTemp;
+                    }
+                }
+                AbstractShape.Canvas.Children.RemoveAt(tag);
+
+                for (int i = tag + 1; i < AbstractShapes.Count; i++)
+                {
+                    AbstractShapes[i].CanvasIndex--;
+                }
+
+                AbstractShapes.RemoveAt(tag);
+            }
+        }
+    }
+
+    private void MouseLeftDown(object obj)
+    {
+        ResetManipulationParams();
+        if (obj is MouseButtonEventArgs e)
+        {
+            if (e is { ClickCount: 2, Source: Shape frameworkElement })
+            {
+                var tag = (int) frameworkElement.Tag;
+
+                var shape = AbstractShapes[tag];
+
+                var shapeEditorWindow = new ShapeEditorWindow(shape);
+                shapeEditorWindow.ShowDialog();
+                shape.DrawAlgorithm();
+
+                SetHandlers(shape.CanvasIndex);
+                return;
+            }
+        
+            DownMyPoint = GetMousePosition(e);
+        }
+    }
+    
+    MyPoint GetMousePosition(MouseEventArgs e)
+    {
+        var mousePosition = e.GetPosition(AbstractShape.Canvas);
+        return new(mousePosition.X, mousePosition.Y);
+    }
+
+    public void SetHandlers(int canvasIndex)
+    {
+        var canvasChild = AbstractShape.Canvas.Children[canvasIndex];
+        canvasChild.PreviewMouseUp += (_, e) =>
+        {
+            if (MouseUpCommand.CanExecute(e))
+                MouseUpCommand.Execute(e);
+        };
+        
+        canvasChild.PreviewMouseWheel += (_, e) =>
+        {
+            if (MouseWheelCommand.CanExecute(e))
+                MouseWheelCommand.Execute(e);
+        };
+
+        canvasChild.MouseEnter += (sender, _) =>
+        {
+            if (sender is Shape s)
+            {
+                var effect = new DropShadowEffect
+                {
+                    BlurRadius = 0,
+                    ShadowDepth = 0,
+                    RenderingBias = RenderingBias.Quality
+                };
+
+                var colorAnimation = new ColorAnimation
+                {
+                    To = ((SolidColorBrush)s.Stroke).Color,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever,
+                    EasingFunction = new SineEase() { EasingMode = EasingMode.EaseInOut },
+                };
+
+                var blurAnimation = new DoubleAnimation
+                {
+                    To = 25,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever,
+                    EasingFunction = new SineEase() { EasingMode = EasingMode.EaseInOut }
+                };
+                
+                effect.BeginAnimation(DropShadowEffect.ColorProperty, colorAnimation);
+                effect.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blurAnimation);
+                s.Effect = effect;
+
+                s.StrokeThickness += 1;
+            }
+        };
+        canvasChild.MouseLeave += (sender, args) =>
+        {
+            if (sender is Shape s)
+            {
+                s.ClearValue(Shape.EffectProperty);
+                s.StrokeThickness -= 1;
+            }
+        };
+    }
+
     void MouseUp(object obj)
+    {
+        ResetManipulationParams();
+    }
+
+    void ResetManipulationParams()
     {
         DownMyPoint = null;
         UpMyPoint = null;
@@ -106,7 +291,7 @@ public class MainViewModel : INotifyPropertyChanged
         ArrowsX = 0;
         ArrowsY = 0;
         MouseEndPosition = null;
-        IsHandledButton = false;
+        IsHandledButton = false;   
     }
 
     void RotateLeft(object obj)
@@ -126,6 +311,7 @@ public class MainViewModel : INotifyPropertyChanged
         shape.Angle = 0;
         Angle = 0;
         shape.DrawAlgorithm();
+        SetHandlers(shape.CanvasIndex);
     }
 
     void MoveUp(object obj)
@@ -163,6 +349,7 @@ public class MainViewModel : INotifyPropertyChanged
         shape.Angle += angleDelta;
         Angle = shape.Angle;
         shape.DrawAlgorithm();
+        SetHandlers(shape.CanvasIndex);
     }
 
     void Move(int deltaX, int deltaY)
@@ -184,6 +371,7 @@ public class MainViewModel : INotifyPropertyChanged
         MouseEndPosition.Y += deltaY;
         
         shape.DrawAlgorithm();
+        SetHandlers(shape.CanvasIndex);
     }
 
     void SelectShape(object parameter)
@@ -222,7 +410,7 @@ public class MainViewModel : INotifyPropertyChanged
                         AbstractShapes.Add(shape);
                         shape.DrawAlgorithm();
 
-                        window.SetHandlers(shape.CanvasIndex);
+                        SetHandlers(shape.CanvasIndex);
                     }
                 }
                 MessageBox.Show($"Список фигур успешно загружен!");
@@ -245,7 +433,7 @@ public class MainViewModel : INotifyPropertyChanged
                 foreach (var shape in loadedShapes)
                 {
                     shape.DrawAlgorithm();
-                    window.SetHandlers(shape.CanvasIndex);
+                    SetHandlers(shape.CanvasIndex);
                 }
                 MessageBox.Show($"Список фигур успешно загружен!");
             }

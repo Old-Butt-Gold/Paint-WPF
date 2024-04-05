@@ -94,9 +94,10 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}" Name="FillColorPicker" 
-                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="Black"/>
-                            <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="PenColorPicker" 
-                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="Black" />
+                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=FillSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="StrokeColorPicker" 
+                                                  Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=StrokeSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            </hw:ColorPickerButton>
                             
                             <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
                                     Content="{StaticResource Circle}" />
@@ -119,16 +120,22 @@
                         </Grid>
                         
                         <!--Отрисовка-->
-                        <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" 
-                                PreviewMouseRightButtonDown="Canvas_OnPreviewMouseRightButtonDown"
-                                PreviewMouseLeftButtonDown="Canvas_OnPreviewMouseLeftButtonDown"
-                                PreviewMouseMove="Canvas_OnPreviewMouseMove">
+                        <Canvas Grid.Row="1" Name="Canvas" Background ="Transparent" >
                                 <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewMouseWheel">
                                                 <i:InvokeCommandAction Command="{Binding MouseWheelCommand}" PassEventArgsToCommand="True" />
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="PreviewMouseUp">
                                                 <i:InvokeCommandAction Command="{Binding MouseUpCommand}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                                <i:InvokeCommandAction Command="{Binding MouseLeftDownCommand}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                                <i:InvokeCommandAction Command="{Binding MouseRightDownCommand}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseMove">
+                                                <i:InvokeCommandAction Command="{Binding MouseMoveCommand}" PassEventArgsToCommand="True" />
                                         </i:EventTrigger>
                                 </i:Interaction.Triggers>
                         </Canvas>
