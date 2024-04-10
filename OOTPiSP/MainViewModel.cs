@@ -272,7 +272,7 @@ public class MainViewModel : INotifyPropertyChanged
         {
             if (sender is Shape s)
             {
-                s.ClearValue(Shape.EffectProperty);
+                s.ClearValue(UIElement.EffectProperty);
                 s.StrokeThickness -= 1;
             }
         };
@@ -290,7 +290,6 @@ public class MainViewModel : INotifyPropertyChanged
         Angle = 0;
         ArrowsX = 0;
         ArrowsY = 0;
-        MouseEndPosition = null;
         IsHandledButton = false;   
     }
 
@@ -384,76 +383,64 @@ public class MainViewModel : INotifyPropertyChanged
 
     void Clear(object parameter)
     {
-        if (parameter is MainWindow window)
-        {
-            AbstractShapes.Clear();
-            window.Canvas.Children.Clear();
-        }
+        AbstractShapes.Clear();
+        AbstractShape.Canvas.Children.Clear();
     }
 
     private void XmlLoad(object parameter)
     {
-        if (parameter is MainWindow window)
+        var listShapes = new MyXMLSerializer().Deserialize();
+        if (listShapes is not null)
         {
-            var listShapes = new MyXMLSerializer().Deserialize();
-            if (listShapes is not null)
+            AbstractShapes.Clear();
+            AbstractShape.Canvas.Children.Clear();
+            foreach (var item in listShapes)
             {
-                AbstractShapes.Clear();
-                window.Canvas.Children.Clear();
-                foreach (var item in listShapes)
+                if (_buttonActions.TryGetValue(item.TagShape, out var factory))
                 {
-                    if (_buttonActions.TryGetValue(item.TagShape, out var factory))
-                    {
-                        var shape = factory.CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor, item.Angle);
-                        shape.StrokeThickness = item.StrokeThickness;
+                    var shape = factory.CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor,
+                        item.Angle);
+                    shape.StrokeThickness = item.StrokeThickness;
 
-                        AbstractShapes.Add(shape);
-                        shape.DrawAlgorithm();
+                    AbstractShapes.Add(shape);
+                    shape.DrawAlgorithm();
 
-                        SetHandlers(shape.CanvasIndex);
-                    }
+                    SetHandlers(shape.CanvasIndex);
                 }
-                MessageBox.Show($"Список фигур успешно загружен!");
             }
+
+            MessageBox.Show($"Список фигур успешно загружен!");
         }
     }
 
     void JsonLoad(object parameter)
     {
-        if (parameter is MainWindow window)
+        var loadedShapes = new MyJsonSerializer().Deserialize();
+        if (loadedShapes is { Count: not 0 })
         {
-            var loadedShapes = new MyJsonSerializer().Deserialize();
-            if (loadedShapes is { Count: not 0 })
+            AbstractShapes = loadedShapes;
+            AbstractShape.Canvas.Children.Clear();
+            //Надо, ибо JSON заполняет свойства и вызывается метод отрисовки
+            AbstractShapes.ForEach(shape => shape.CanvasIndex = -1);
+
+            foreach (var shape in loadedShapes)
             {
-                AbstractShapes = loadedShapes;
-                window.Canvas.Children.Clear();
-                //Надо, ибо JSON заполняет свойства и вызывается метод отрисовки
-                AbstractShapes.ForEach(shape => shape.CanvasIndex = -1);
-                
-                foreach (var shape in loadedShapes)
-                {
-                    shape.DrawAlgorithm();
-                    SetHandlers(shape.CanvasIndex);
-                }
-                MessageBox.Show($"Список фигур успешно загружен!");
+                shape.DrawAlgorithm();
+                SetHandlers(shape.CanvasIndex);
             }
+
+            MessageBox.Show($"Список фигур успешно загружен!");
         }
     }
 
     void JsonSave(object parameter)
     {
-        if (parameter is MainWindow window)
-        {
-            new MyJsonSerializer().Serialize(AbstractShapes);
-        }
+        new MyJsonSerializer().Serialize(AbstractShapes);
     }
 
     void XmlSave(object parameter)
     {
-        if (parameter is MainWindow window)
-        {
-            new MyXMLSerializer().Serialize(AbstractShapes);
-        }
+        new MyXMLSerializer().Serialize(AbstractShapes);
     }
 
     void LoadPlugin(object parameter)

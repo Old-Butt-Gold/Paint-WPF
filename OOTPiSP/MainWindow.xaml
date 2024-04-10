@@ -30,15 +30,14 @@
             <KeyBinding Command="{Binding MoveRightCommand}" CommandParameter="{Binding ElementName=MW}" Key="Right" />
             <KeyBinding Command="{Binding MoveRightCommand}" CommandParameter="{Binding ElementName=MW}" Key="D" />
     </Window.InputBindings>
-        
         <DockPanel>
                 <!--Меню-->
                 <DockPanel DockPanel.Dock="Top" Background="Aquamarine" Height="40" ZIndex="1">
                         <Menu Background="Aquamarine" DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center">
                                 <MenuItem Header="Файл" Icon="{DynamicResource File}" Margin="10">
                                         <MenuItem Header="Сохранить">
-                                                <MenuItem Header="JSON" Command="{Binding JsonSaveCommand}" CommandParameter="{Binding ElementName=MW}"/>
-                                                <MenuItem Header="XML" Command="{Binding XMLSaveCommand}" CommandParameter="{Binding ElementName=MW}"/>
+                                                <MenuItem Header="JSON" Command="{Binding JsonSaveCommand}" />
+                                                <MenuItem Header="XML" Command="{Binding XMLSaveCommand}" />
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Загрузить" >
@@ -46,7 +45,7 @@
                                                 <MenuItem Header="XML" Command="{Binding XMLLoadCommand}" CommandParameter="{Binding ElementName=MW}"/>
                                         </MenuItem>
                                 </MenuItem>
-                                <MenuItem Header="Очистить холст" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=MW}" Margin="10"/>
+                                <MenuItem Header="Очистить холст" Command="{Binding ClearCommand}" Margin="10"/>
                                 
                                 <MenuItem OverridesDefaultStyle="True">
                                         <MenuItem.Template>
@@ -93,9 +92,9 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}" Name="FillColorPicker" 
+                            <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}"
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=FillSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}" Name="StrokeColorPicker" 
+                            <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}"
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=StrokeSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             </hw:ColorPickerButton>
                             
