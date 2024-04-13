@@ -10,6 +10,6 @@ public partial class MainWindow
     {
         InitializeComponent();
         AbstractShape.Canvas = Canvas;
+        MainViewModel.LoadCurrentFiguresDynamic(this);
     }
-
 }

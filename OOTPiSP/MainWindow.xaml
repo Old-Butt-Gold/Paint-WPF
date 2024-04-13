@@ -82,40 +82,12 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="1.5*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <hw:ColorPickerButton Grid.Column="0" Content="{StaticResource Fill}"
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=FillSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <hw:ColorPickerButton Grid.Column="1" Content="{StaticResource Pen}"
                                                   Style="{StaticResource ButtonStyle}" SelectedBrush="{Binding Path=StrokeSelectedBrush, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             </hw:ColorPickerButton>
-                            
-                            <Button Grid.Column="2" Tag="0" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Circle}" />
-                            <Button Grid.Column="3" Tag="1" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Ellipse}" />
-                            <Button Grid.Column="4" Tag="2" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Square}" />
-                            <Button Grid.Column="5" Tag="3" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Rectangle}" />
-                            <Button Grid.Column="6" Tag="4" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Line}" />
-                            <Button Grid.Column="7" Tag="5" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource EquilateralTriangle}" />
-                            <Button Grid.Column="8" Tag="6" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource IsoscelesTriangle}" />
-                            <Button Grid.Column="9" Tag="7" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource RightTriangle}" />
-                            <Button Grid.Column="10" Tag="8" Style="{StaticResource ButtonStyle}"
-                                    Content="{StaticResource Arc}" />
                         </Grid>
                         
                         <!--Отрисовка-->

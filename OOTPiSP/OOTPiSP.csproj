@@ -61,4 +61,8 @@
       <ProjectReference Include="..\SharedComponents\SharedComponents.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DynamicLoad\" />
+    </ItemGroup>
+
 </Project>

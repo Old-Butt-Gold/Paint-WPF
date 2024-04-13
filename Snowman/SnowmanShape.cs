@@ -13,6 +13,5 @@ public class SnowmanShape : AbstractShape
         DrawStrategy = new SnowmanDrawStrategy();
     }
     
-    public override string ToString() =>
-        $"Снеговик";
+    public override string ToString() => $"Снеговик";
 }

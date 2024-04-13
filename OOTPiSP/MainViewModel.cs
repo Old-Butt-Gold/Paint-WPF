@@ -9,7 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using OOTPiSP.Commands;
-using OOTPiSP.Factory;
+using OOTPiSP.Instruments;
 using SharedComponents;
 
 namespace OOTPiSP;
@@ -58,20 +58,10 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand MoveRightCommand {get; private set;}
     public ICommand MoveLeftCommand {get; private set;} 
     
-    readonly Dictionary<object, AbstractFactory> _buttonActions = new()
-    {
-        { "0", new CircleFactory() },
-        { "1", new EllipseFactory() },
-        { "2", new SquareFactory() },
-        { "3", new RectangleFactory() },
-        { "4", new LineFactory() },
-        { "5", new EquilateralTriangleFactory() },
-        { "6", new IsoscelesTriangleFactory() },
-        { "7", new RightTriangleFactory() },
-        { "8", new ArcFactory() }
-    };
-   
-    AbstractFactory _factory = new CircleFactory();
+    readonly Dictionary<object, AbstractFactory> _buttonActions = new();
+    
+    AbstractFactory _factory;
+    
     public AbstractFactory Factory
     {
         get => _factory;
@@ -81,6 +71,8 @@ public class MainViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(Factory));
         }
     }
+
+    bool _wasLoadedStartFigures;
 
     public MainViewModel()
     {
@@ -96,10 +88,10 @@ public class MainViewModel : INotifyPropertyChanged
         SelectShapeCommand = new RelayCommand(SelectShape);
         
         MouseWheelCommand = new RelayCommand(MouseWheel, _ => AbstractShape.Canvas.Children.Count > 0);
-        MouseUpCommand = new RelayCommand(MouseUp);
-        MouseLeftDownCommand = new RelayCommand(MouseLeftDown);
-        MouseRightDownCommand = new RelayCommand(MouseRightDown);
-        MouseMoveCommand = new RelayCommand(MouseMove);
+        MouseUpCommand = new RelayCommand(MouseUp, _ => _factory != null);
+        MouseLeftDownCommand = new RelayCommand(MouseLeftDown, _ => _factory != null);
+        MouseRightDownCommand = new RelayCommand(MouseRightDown, _ => _factory != null);
+        MouseMoveCommand = new RelayCommand(MouseMove, _ => _factory != null);
         
         RotateLeftCommand = new RelayCommand(RotateLeft, _ => AbstractShape.Canvas.Children.Count > 0);
         RotateRightCommand = new RelayCommand(RotateRight, _ => AbstractShape.Canvas.Children.Count > 0);
@@ -481,6 +473,62 @@ public class MainViewModel : INotifyPropertyChanged
                 window.ButtonGrid.Children.Add(newButton);
             }
         }
+    }
+
+    public void LoadCurrentFiguresDynamic(MainWindow window)
+    {
+        if (!_wasLoadedStartFigures)
+        {
+            PluginLoader pluginLoader = new();
+            var factoryList = pluginLoader.LoadPluginInCurrentAssembly();
+            foreach (var factory in factoryList)
+            {
+                var shape = factory.CreateShape(new(), new(), Brushes.Black, Brushes.Black, 0);
+                _buttonActions[shape.TagShape] = factory;
+
+                Button newButton = new Button
+                {
+                    Content = GetImage(shape.TagShape),
+                    Style = (Style)window.FindResource("ButtonStyle"),
+                    Tag = shape.TagShape,
+                    Command = SelectShapeCommand,
+                };
+
+                //Установление привязки
+                Binding binding = new()
+                {
+                    RelativeSource = RelativeSource.Self,
+                    Path = new PropertyPath("Tag")
+                };
+                newButton.SetBinding(Button.CommandParameterProperty, binding);
+
+
+                int columnIndex = window.ButtonGrid.ColumnDefinitions.Count;
+                window.ButtonGrid.ColumnDefinitions.Add(
+                    new()
+                    {
+                        Width = new GridLength(1, GridUnitType.Star),
+                    });
+                Grid.SetColumn(newButton, columnIndex);
+                window.ButtonGrid.Children.Add(newButton);
+            }
+
+            _wasLoadedStartFigures = true;
+        }
+
+        Image GetImage(object tag) =>
+            tag switch
+            {
+                "0" => (Image)window.FindResource("Circle"),
+                "1" => (Image)window.FindResource("Ellipse"),
+                "2" => (Image)window.FindResource("Square"),
+                "3" => (Image)window.FindResource("Rectangle"),
+                "4" => (Image)window.FindResource("Line"),
+                "5" => (Image)window.FindResource("EquilateralTriangle"),
+                "6" => (Image)window.FindResource("IsoscelesTriangle"),
+                "7" => (Image)window.FindResource("RightTriangle"),
+                _ => (Image)window.FindResource("Arc"),
+            };
     }
 
     void MinimizeWindow(object parameter)
