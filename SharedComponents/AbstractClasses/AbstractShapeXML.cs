@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media;
 using System.Xml.Serialization;
 
-namespace SharedComponents;
+namespace SharedComponents.AbstractClasses;
 
 public class AbstractShapeXML
 {

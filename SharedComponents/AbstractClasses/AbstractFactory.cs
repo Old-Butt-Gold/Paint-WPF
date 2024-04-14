@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace SharedComponents;
+namespace SharedComponents.AbstractClasses;
 
 public abstract class AbstractFactory
 {

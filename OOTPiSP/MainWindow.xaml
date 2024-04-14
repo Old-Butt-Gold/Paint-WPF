@@ -60,7 +60,11 @@
                                         </MenuItem.Header>
                                 </MenuItem>
                                 
-                                <MenuItem Header="Загрузить плагин" Margin="10" Command="{Binding LoadPluginCommand}" CommandParameter="{Binding ElementName=MW}"/>
+                                <MenuItem Name="PluginSettings" Header="Плагин" Margin="10">
+                                        <MenuItem Header="Загрузить фигуры" Command="{Binding LoadPluginShapeCommand}" CommandParameter="{Binding ElementName=MW}"/>
+                                        <Separator />
+                                        <MenuItem Header="Загрузить функционал" Command="{Binding LoadPluginFunctionalityCommand}" CommandParameter="{Binding ElementName=MW}"/>
+                                </MenuItem>
                                 
                         </Menu>
                         

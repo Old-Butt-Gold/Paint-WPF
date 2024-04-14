@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using SharedComponents;
+using SharedComponents.AbstractClasses;
+using SharedComponents.Interfaces;
 
 namespace Heart;
 

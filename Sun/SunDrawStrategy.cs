@@ -2,6 +2,8 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
+using SharedComponents.Interfaces;
 
 namespace Sun;
 

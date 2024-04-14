@@ -3,9 +3,9 @@ using System.Text;
 using System.Windows;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using SharedComponents;
+using SharedComponents.AbstractClasses;
 
-namespace OOTPiSP.Instruments;
+namespace SharedComponents.Instruments;
 
 public class MyJsonSerializer
 {

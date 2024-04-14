@@ -4,8 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using SharedComponents.Interfaces;
 
-namespace SharedComponents;
+namespace SharedComponents.AbstractClasses;
 
 [Serializable]
 public abstract class AbstractShape : IDataErrorInfo, INotifyPropertyChanged

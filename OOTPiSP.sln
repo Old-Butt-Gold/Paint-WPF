@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Star", "Star\Star.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heart", "Heart\Heart.csproj", "{0FD5EE02-F967-4CF7-A32B-886C7B47EA82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivatorPlugin", "ArchivatorPlugin\ArchivatorPlugin.csproj", "{AF59E785-F164-4EA3-8C55-978DEDD554AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{0FD5EE02-F967-4CF7-A32B-886C7B47EA82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FD5EE02-F967-4CF7-A32B-886C7B47EA82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FD5EE02-F967-4CF7-A32B-886C7B47EA82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF59E785-F164-4EA3-8C55-978DEDD554AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF59E785-F164-4EA3-8C55-978DEDD554AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF59E785-F164-4EA3-8C55-978DEDD554AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF59E785-F164-4EA3-8C55-978DEDD554AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

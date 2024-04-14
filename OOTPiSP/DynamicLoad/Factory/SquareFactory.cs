@@ -1,6 +1,7 @@
 ﻿using System.Windows.Media;
 using OOTPiSP.DynamicLoad.GeometryFigures.Rectangle;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
 
 namespace OOTPiSP.DynamicLoad.Factory;
 

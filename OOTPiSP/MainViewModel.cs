@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,8 +10,9 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using OOTPiSP.Commands;
-using OOTPiSP.Instruments;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
+using SharedComponents.Instruments;
 
 namespace OOTPiSP;
 
@@ -34,11 +36,18 @@ public class MainViewModel : INotifyPropertyChanged
     public int Angle { get; set; }
     public int ArrowsX { get; set; }
     public int ArrowsY { get; set; }
+
+    public PluginLoader PluginLoader { get; } = new();
+    public MyXMLSerializer XmlSerializer { get; } = new();
+    public MyJsonSerializer JsonSerializer { get; } = new();
+
+    Dictionary<string, bool> CurrentFunctionalPlugins { get; } = new();
     
     public ICommand MinimizeWindowCommand { get; private set; }
     public ICommand MaximizeWindowCommand { get; private set; }
     public ICommand ExitWindowCommand { get; private set; }
-    public ICommand LoadPluginCommand { get; private set; }
+    public ICommand LoadPluginShapeCommand { get; private set; }
+    public ICommand LoadPluginFunctionalityCommand { get; private set; }
     public ICommand XMLSaveCommand { get; private set; }
     public ICommand JsonSaveCommand { get; private set; }
     public ICommand JsonLoadCommand { get; private set; }
@@ -79,7 +88,8 @@ public class MainViewModel : INotifyPropertyChanged
         MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
         MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
         ExitWindowCommand = new RelayCommand(ExitWindow);
-        LoadPluginCommand = new RelayCommand(LoadPlugin);
+        LoadPluginShapeCommand = new RelayCommand(LoadPluginShape);
+        LoadPluginFunctionalityCommand = new RelayCommand(LoadPluginFunctionality);
         XMLSaveCommand = new RelayCommand(XmlSave);
         JsonSaveCommand = new RelayCommand(JsonSave);
         JsonLoadCommand = new RelayCommand(JsonLoad);
@@ -379,9 +389,9 @@ public class MainViewModel : INotifyPropertyChanged
         AbstractShape.Canvas.Children.Clear();
     }
 
-    private void XmlLoad(object parameter)
+    void XmlLoad(object parameter)
     {
-        var listShapes = new MyXMLSerializer().Deserialize();
+        var listShapes = XmlSerializer.Deserialize();
         if (listShapes is not null)
         {
             AbstractShapes.Clear();
@@ -401,13 +411,13 @@ public class MainViewModel : INotifyPropertyChanged
                 }
             }
 
-            MessageBox.Show($"Список фигур успешно загружен!");
+            MessageBox.Show("Список фигур успешно загружен!");
         }
     }
 
     void JsonLoad(object parameter)
     {
-        var loadedShapes = new MyJsonSerializer().Deserialize();
+        var loadedShapes = JsonSerializer.Deserialize();
         if (loadedShapes is { Count: not 0 })
         {
             AbstractShapes = loadedShapes;
@@ -427,50 +437,96 @@ public class MainViewModel : INotifyPropertyChanged
 
     void JsonSave(object parameter)
     {
-        new MyJsonSerializer().Serialize(AbstractShapes);
+        JsonSerializer.Serialize(AbstractShapes);
     }
 
     void XmlSave(object parameter)
     {
-        new MyXMLSerializer().Serialize(AbstractShapes);
+        XmlSerializer.Serialize(AbstractShapes);
+    }
+    
+    
+    
+    //TODO
+    void LoadPluginFunctionality(object obj)
+    {
+        if (obj is MainWindow window)
+        {
+            var list = PluginLoader.LoadPluginFunctionality();
+            foreach (var item in list)
+            {
+                if (CurrentFunctionalPlugins.TryGetValue(item.GetType().Name, out var result))
+                {
+                    MessageBox.Show($"Функциональность '{item.Name}' уже загружена.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    continue;
+                }
+
+                CurrentFunctionalPlugins[item.GetType().Name] = true;
+                
+                MenuItem menuItem = new()
+                {
+                    Header = item.Name,
+                };
+                menuItem.Items.Add(new MenuItem()
+                {
+                    Header = "Открыть",
+                    Command = new RelayCommand((_ =>
+                    {
+                        if (item.LoadFile(AbstractShapes, _buttonActions))
+                        {
+                            foreach (var shape in AbstractShapes)
+                            {
+                                SetHandlers(shape.CanvasIndex);
+                            }
+                        }
+                    }))
+                });
+                menuItem.Items.Add(new MenuItem()
+                {
+                    Header = "Сохранить",
+                    Command = new RelayCommand((_ => item.SaveToFile(AbstractShapes)))
+                });
+                window.PluginSettings.Items.Add(menuItem);
+            }
+        }
     }
 
-    void LoadPlugin(object parameter)
+    void LoadPluginShape(object parameter)
     {
         if (parameter is MainWindow window)
         {
-            PluginLoader pluginLoader = new();
-            var factoryList = pluginLoader.LoadPlugin();
+            var factoryList = PluginLoader.LoadPluginShape();
             foreach (var factory in factoryList)
             {
                 var shape = factory.CreateShape(new(), new(), Brushes.Black, Brushes.Black, 0);
-                _buttonActions[shape.TagShape] = factory;
-
-                Button newButton = new Button
+                if (_buttonActions.TryAdd(shape.TagShape, factory))
                 {
-                    Content = shape.ToString(),
-                    Style = (Style)window.FindResource("ButtonStyle"),
-                    Tag = shape.TagShape,
-                    Command = SelectShapeCommand,
-                };
-
-                //Установление привязки
-                Binding binding = new()
-                {
-                    RelativeSource = RelativeSource.Self,
-                    Path = new PropertyPath("Tag")
-                };
-                newButton.SetBinding(Button.CommandParameterProperty, binding);
-
-
-                int columnIndex = window.ButtonGrid.ColumnDefinitions.Count;
-                window.ButtonGrid.ColumnDefinitions.Add(
-                    new()
+                    Button newButton = new Button
                     {
-                        Width = new GridLength(1, GridUnitType.Star),
-                    });
-                Grid.SetColumn(newButton, columnIndex);
-                window.ButtonGrid.Children.Add(newButton);
+                        Content = shape.ToString(),
+                        Style = (Style)window.FindResource("ButtonStyle"),
+                        Tag = shape.TagShape,
+                        Command = SelectShapeCommand,
+                    };
+
+                    //Установление привязки
+                    Binding binding = new()
+                    {
+                        RelativeSource = RelativeSource.Self,
+                        Path = new PropertyPath("Tag")
+                    };
+                    newButton.SetBinding(Button.CommandParameterProperty, binding);
+
+
+                    int columnIndex = window.ButtonGrid.ColumnDefinitions.Count;
+                    window.ButtonGrid.ColumnDefinitions.Add(
+                        new()
+                        {
+                            Width = new GridLength(1, GridUnitType.Star),
+                        });
+                    Grid.SetColumn(newButton, columnIndex);
+                    window.ButtonGrid.Children.Add(newButton);
+                }
             }
         }
     }
@@ -479,8 +535,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (!_wasLoadedStartFigures)
         {
-            PluginLoader pluginLoader = new();
-            var factoryList = pluginLoader.LoadPluginInCurrentAssembly();
+            var factoryList = PluginLoader.LoadPluginInCurrentAssembly();
             foreach (var factory in factoryList)
             {
                 var shape = factory.CreateShape(new(), new(), Brushes.Black, Brushes.Black, 0);
@@ -501,8 +556,7 @@ public class MainViewModel : INotifyPropertyChanged
                     Path = new PropertyPath("Tag")
                 };
                 newButton.SetBinding(Button.CommandParameterProperty, binding);
-
-
+                
                 int columnIndex = window.ButtonGrid.ColumnDefinitions.Count;
                 window.ButtonGrid.ColumnDefinitions.Add(
                     new()

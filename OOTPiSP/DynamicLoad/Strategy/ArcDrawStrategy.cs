@@ -2,6 +2,8 @@
 using System.Windows.Shapes;
 using OOTPiSP.DynamicLoad.GeometryFigures;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
+using SharedComponents.Interfaces;
 
 namespace OOTPiSP.DynamicLoad.Strategy;
 

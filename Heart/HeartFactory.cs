@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
 
 namespace Heart;
 

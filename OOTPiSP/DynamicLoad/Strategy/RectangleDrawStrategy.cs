@@ -3,6 +3,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using OOTPiSP.DynamicLoad.GeometryFigures.Rectangle;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
+using SharedComponents.Interfaces;
 
 namespace OOTPiSP.DynamicLoad.Strategy;
 

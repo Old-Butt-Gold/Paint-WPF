@@ -1,6 +1,7 @@
 ﻿using System.Windows.Shapes;
+using SharedComponents.AbstractClasses;
 
-namespace SharedComponents;
+namespace SharedComponents.Interfaces;
 
 public interface IDrawStrategy
 {

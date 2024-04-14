@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using SharedComponents;
+using SharedComponents.AbstractClasses;
 
 namespace OOTPiSP;
 

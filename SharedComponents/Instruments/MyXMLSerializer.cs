@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Xml.Serialization;
 using Microsoft.Win32;
-using SharedComponents;
+using SharedComponents.AbstractClasses;
 
-namespace OOTPiSP.Instruments;
+namespace SharedComponents.Instruments;
 
 public class MyXMLSerializer
 {
@@ -16,28 +16,38 @@ public class MyXMLSerializer
         };
         if (openFileDialog.ShowDialog() == true)
         {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-                using FileStream fs = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
+            return Deserialize(openFileDialog.FileName);
+        }
+        return null;
+    }
 
-                if (serializer.Deserialize(fs) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
-                {
-                    return loadedShapes;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
-                return null;
-            }
+    public List<AbstractShapeXML>? Deserialize(string filePath)
+    {
+        try
+        {
+            using FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
+            return Deserialize(fs);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
         }
 
         return null;
     }
 
-    public void Serialize(IEnumerable<AbstractShape> abstractShapes)
+    public List<AbstractShapeXML>? Deserialize(Stream stream)
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
+        if (serializer.Deserialize(stream) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+        {
+            return loadedShapes;
+        }
+
+        return null;
+    }
+
+    public string Serialize(IEnumerable<AbstractShape> abstractShapes)
     {
         SaveFileDialog saveFileDialog = new()
         {
@@ -51,7 +61,7 @@ public class MyXMLSerializer
             }
 
             using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
-
+            
             List<AbstractShapeXML> list = new();
             foreach (var item in abstractShapes)
             {
@@ -70,5 +80,7 @@ public class MyXMLSerializer
             XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
             serializer.Serialize(fs, list);
         }
+
+        return saveFileDialog.FileName;
     }
 }
