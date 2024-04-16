@@ -15,6 +15,5 @@ public class MyArc : AbstractShape
         DrawStrategy = new ArcDrawStrategy();
     }
 
-    public override string ToString() =>
-        $"Дуга";
+    public override string ToString() => $"Дуга";
 }
