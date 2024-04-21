@@ -2,10 +2,10 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using SharedComponents.AbstractClasses;
-using SharedComponents.AdapterInstruments;
+using SharedComponents.AdapterShape;
 using SharedComponents.Interfaces;
 
-namespace Adapter.StarAdapter;
+namespace AdapterShape.StarAdapter;
 
 public class AdapterDrawStrategy : IDrawStrategy
 {

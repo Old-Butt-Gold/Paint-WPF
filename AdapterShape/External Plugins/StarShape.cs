@@ -1,8 +1,8 @@
 using System.Windows;
 using System.Windows.Media;
-using SharedComponents.AdapterInstruments;
+using SharedComponents.AdapterShape;
 
-namespace Adapter.External_Plugins;
+namespace AdapterShape.External_Plugins;
 
 public class StarShape : MySprite
 {

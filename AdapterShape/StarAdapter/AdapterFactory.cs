@@ -2,7 +2,7 @@ using System.Windows.Media;
 using SharedComponents;
 using SharedComponents.AbstractClasses;
 
-namespace Adapter.StarAdapter;
+namespace AdapterShape.StarAdapter;
 
 public class AdapterFactory : AbstractFactory
 {

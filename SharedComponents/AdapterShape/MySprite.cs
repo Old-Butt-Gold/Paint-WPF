@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace SharedComponents.AdapterInstruments;
+namespace SharedComponents.AdapterShape;
 
 public abstract class MySprite
 {

@@ -1,10 +1,10 @@
 using System.Windows.Media;
-using Adapter.External_Plugins;
+using AdapterShape.External_Plugins;
 using SharedComponents;
 using SharedComponents.AbstractClasses;
-using SharedComponents.AdapterInstruments;
+using SharedComponents.AdapterShape;
 
-namespace Adapter.StarAdapter;
+namespace AdapterShape.StarAdapter;
 
 public class AdapterShape : AbstractShape
 {

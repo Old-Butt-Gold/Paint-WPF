@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heart", "Heart\Heart.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivatorPlugin", "ArchivatorPlugin\ArchivatorPlugin.csproj", "{AF59E785-F164-4EA3-8C55-978DEDD554AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter", "Adapter\Adapter.csproj", "{E08B9B18-A7C9-4270-9BE8-ADDF06DEEB78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdapterShape", "AdapterShape\AdapterShape.csproj", "{E08B9B18-A7C9-4270-9BE8-ADDF06DEEB78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

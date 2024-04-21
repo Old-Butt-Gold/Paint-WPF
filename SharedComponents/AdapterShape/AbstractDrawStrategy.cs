@@ -1,7 +1,7 @@
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
-namespace SharedComponents.AdapterInstruments;
+namespace SharedComponents.AdapterShape;
 
 public interface AbstractDrawStrategy
 {
