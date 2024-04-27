@@ -31,12 +31,13 @@ public class ArchivatorPlugin : IPluginFunctionality
         File.Delete(fileName);
     }
 
-    public bool LoadFile(List<AbstractShape> abstractShapes, Dictionary<object, AbstractFactory> dictionary)
+    public (bool result, List<AbstractShape>? abstractShapes) LoadFile(Dictionary<object, AbstractFactory> dictionary)
     {
         OpenFileDialog openFileDialog = new()
         {
             Filter = "gz файлы (*.gz)|*.gz"
         };
+        List<AbstractShape> abstractShapes = [];
         if (openFileDialog.ShowDialog() == true)
         {
             using FileStream sourceStream = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
@@ -64,9 +65,9 @@ public class ArchivatorPlugin : IPluginFunctionality
                 }
 
                 MessageBox.Show("Список фигур успешно загружен!");
-                return true;
+                return (true, abstractShapes);
             }
         }
-        return false;
+        return (false, abstractShapes);
     }
 }

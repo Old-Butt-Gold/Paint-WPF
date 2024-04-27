@@ -13,6 +13,7 @@ using OOTPiSP.Commands;
 using SharedComponents;
 using SharedComponents.AbstractClasses;
 using SharedComponents.Instruments;
+using SharedComponents.Interfaces;
 
 namespace OOTPiSP;
 
@@ -41,7 +42,7 @@ public class MainViewModel : INotifyPropertyChanged
     public MyXMLSerializer XmlSerializer { get; } = new();
     public MyJsonSerializer JsonSerializer { get; } = new();
 
-    Dictionary<string, bool> CurrentFunctionalPlugins { get; } = new();
+    IPluginFunctionality? PluginFunctionalityXML { get; set; } = null;
     
     public ICommand MinimizeWindowCommand { get; private set; }
     public ICommand MaximizeWindowCommand { get; private set; }
@@ -391,27 +392,43 @@ public class MainViewModel : INotifyPropertyChanged
 
     void XmlLoad(object parameter)
     {
-        var listShapes = XmlSerializer.Deserialize();
-        if (listShapes is not null)
+        if (PluginFunctionalityXML is null)
         {
-            AbstractShapes.Clear();
-            AbstractShape.Canvas.Children.Clear();
-            foreach (var item in listShapes)
+            var listShapes = XmlSerializer.Deserialize();
+            if (listShapes is not null)
             {
-                if (_buttonActions.TryGetValue(item.TagShape, out var factory))
+                AbstractShapes.Clear();
+                AbstractShape.Canvas.Children.Clear();
+                foreach (var item in listShapes)
                 {
-                    var shape = factory.CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor, item.PenColor,
-                        item.Angle);
-                    shape.StrokeThickness = item.StrokeThickness;
+                    if (_buttonActions.TryGetValue(item.TagShape, out var factory))
+                    {
+                        var shape = factory.CreateShape(item.TopLeft, item.DownRight, item.BackgroundColor,
+                            item.PenColor,
+                            item.Angle);
+                        shape.StrokeThickness = item.StrokeThickness;
 
-                    AbstractShapes.Add(shape);
-                    shape.DrawAlgorithm();
+                        AbstractShapes.Add(shape);
+                        shape.DrawAlgorithm();
 
+                        SetHandlers(shape.CanvasIndex);
+                    }
+                }
+
+                MessageBox.Show("Список фигур успешно загружен!");
+            }
+        }
+        else
+        {
+            var temp = PluginFunctionalityXML.LoadFile(_buttonActions);
+            if (temp.result)
+            {
+                AbstractShapes = temp.abstractShapes!;
+                foreach (var shape in AbstractShapes)
+                {
                     SetHandlers(shape.CanvasIndex);
                 }
             }
-
-            MessageBox.Show("Список фигур успешно загружен!");
         }
     }
 
@@ -422,7 +439,7 @@ public class MainViewModel : INotifyPropertyChanged
         {
             AbstractShapes = loadedShapes;
             AbstractShape.Canvas.Children.Clear();
-            //Надо, ибо JSON заполняет свойства и вызывается метод отрисовки
+            
             AbstractShapes.ForEach(shape => shape.CanvasIndex = -1);
 
             foreach (var shape in loadedShapes)
@@ -442,12 +459,17 @@ public class MainViewModel : INotifyPropertyChanged
 
     void XmlSave(object parameter)
     {
-        XmlSerializer.Serialize(AbstractShapes);
+        if (PluginFunctionalityXML == null)
+        {
+            XmlSerializer.Serialize(AbstractShapes);
+        }
+        else
+        {
+            PluginFunctionalityXML.SaveToFile(AbstractShapes);
+        }
     }
     
     
-    
-    //TODO
     void LoadPluginFunctionality(object obj)
     {
         if (obj is MainWindow window)
@@ -455,37 +477,23 @@ public class MainViewModel : INotifyPropertyChanged
             var list = PluginLoader.LoadPluginFunctionality();
             foreach (var item in list)
             {
-                if (CurrentFunctionalPlugins.TryGetValue(item.GetType().Name, out var result))
+                if (PluginFunctionalityXML != null && PluginFunctionalityXML.Name == item.Name)
                 {
                     MessageBox.Show($"Функциональность '{item.Name}' уже загружена.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
                     continue;
                 }
 
-                CurrentFunctionalPlugins[item.GetType().Name] = true;
+                if (PluginFunctionalityXML != null)
+                {
+                    window.PluginSettings.Items.RemoveAt(window.PluginSettings.Items.Count - 1);
+                }
+                
+                PluginFunctionalityXML = item;
                 
                 MenuItem menuItem = new()
                 {
                     Header = item.Name,
                 };
-                menuItem.Items.Add(new MenuItem()
-                {
-                    Header = "Открыть",
-                    Command = new RelayCommand((_ =>
-                    {
-                        if (item.LoadFile(AbstractShapes, _buttonActions))
-                        {
-                            foreach (var shape in AbstractShapes)
-                            {
-                                SetHandlers(shape.CanvasIndex);
-                            }
-                        }
-                    }))
-                });
-                menuItem.Items.Add(new MenuItem()
-                {
-                    Header = "Сохранить",
-                    Command = new RelayCommand((_ => item.SaveToFile(AbstractShapes)))
-                });
                 window.PluginSettings.Items.Add(menuItem);
             }
         }
