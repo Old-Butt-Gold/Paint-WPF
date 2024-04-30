@@ -1,17 +1,15 @@
-using System.IO;
-using System.IO.Compression;
-using System.Windows;
-using Microsoft.Win32;
 using SharedComponents.AbstractClasses;
 using SharedComponents.Instruments;
 using SharedComponents.Interfaces;
 
-namespace ArchivatorPlugin;
+namespace AdapterCryptorForm;
 
-public class ArchivatorPlugin : IPluginFunctionality
+public class AdapterCryptorPlugin : IPluginFunctionality
 {
-    public string Name => "Архиватор XML";
+    CryptField Adaptee { get; set; } = new();
 
+    public string Name => "Шифрование XML";
+        
     public void SaveToFile(List<AbstractShape> abstractShapes)
     {
         MyXMLSerializer myXmlSerializer = new();
@@ -19,21 +17,27 @@ public class ArchivatorPlugin : IPluginFunctionality
 
         if (fileName != string.Empty)
         {
-            //Изначальный
-            using (FileStream sourceStream = new FileStream(fileName, FileMode.Open))
+            DialogResult result;
+            using (var sourceStream = new FileStream(fileName, FileMode.Open))
             {
-                using FileStream fileArchive = File.Create(fileName + ".gz");
+                result = Adaptee.ShowDialog();
 
-                using (GZipStream compressionStream = new GZipStream(fileArchive, CompressionLevel.Optimal, true))
+                if (result == DialogResult.Yes)
                 {
-                    sourceStream.CopyTo(compressionStream);
-                }
+                    var encryptedStream = Adaptee.PostprocessorSave(sourceStream);
 
-                MessageBox.Show(
-                    $"Сжатие прошло успешно.\nИсходный размер: {sourceStream.Length}\nСжатый размер: {fileArchive.Length}");
+                    using FileStream fileEncrypted = File.Create(fileName + ".crp");
+
+                    encryptedStream.CopyTo(fileEncrypted);
+
+                    MessageBox.Show($"Шифрование прошло успешно");
+                }
             }
 
-            File.Delete(fileName);
+            if (result == DialogResult.Yes)
+            {
+                File.Delete(fileName);
+            }
         }
     }
 
@@ -41,18 +45,21 @@ public class ArchivatorPlugin : IPluginFunctionality
     {
         OpenFileDialog openFileDialog = new()
         {
-            Filter = "gz файлы (*.gz)|*.gz"
+            Filter = "CRP файлы (*.crp)|*.crp|XML файлы (*.xml)|*.xml"
         };
         List<AbstractShape> abstractShapes = [];
-        if (openFileDialog.ShowDialog() == true)
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
             using FileStream sourceStream = new FileStream(openFileDialog.FileName, FileMode.OpenOrCreate);
-            using GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress);
-            using MemoryStream memoryStream = new(); //Для сохранения потока в памяти
-            decompressionStream.CopyTo(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var result = Adaptee.ShowDialog();
             MyXMLSerializer myXmlSerializer = new();
-            var listShapes = myXmlSerializer.Deserialize(memoryStream);
+
+            var listShapes = myXmlSerializer.Deserialize(
+                result == DialogResult.Yes 
+                ? Adaptee.PostprocessorLoad(sourceStream) 
+                : sourceStream);
+
             if (listShapes is not null)
             {
                 abstractShapes.Clear();

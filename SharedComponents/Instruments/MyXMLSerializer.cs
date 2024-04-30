@@ -23,25 +23,23 @@ public class MyXMLSerializer
 
     public List<AbstractShapeXML>? Deserialize(string filePath)
     {
-        try
-        {
-            using FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
-            return Deserialize(fs);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
-        }
-
-        return null;
+        using FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
+        return Deserialize(fs);
     }
 
     public List<AbstractShapeXML>? Deserialize(Stream stream)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractShapeXML>));
-        if (serializer.Deserialize(stream) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+        try
         {
-            return loadedShapes;
+            if (serializer.Deserialize(stream) is List<AbstractShapeXML> { Count: not 0 } loadedShapes)
+            {
+                return loadedShapes;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при открытии файла XML: {ex.Message}");
         }
 
         return null;
